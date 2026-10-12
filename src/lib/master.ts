@@ -25,7 +25,7 @@ async function sendCredentialsEmail(
   if (!resendKey) return;
   try {
     const { url: portalUrl, displayUrl: portalDisplayUrl } = resolveTenantPortalUrl(tenantDomain);
-    const from = process.env["EMAIL_FROM"] || "Yoova HRMS <noreply@yoovaventures.com>";
+    const from = process.env["EMAIL_FROM"] || "teamstuff intranet <noreply@teamstuff.com>";
     const resp = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {

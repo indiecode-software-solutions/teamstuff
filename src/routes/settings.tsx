@@ -253,7 +253,7 @@ export function SettingsPageContent({
   const [logoDisplay, setLogoDisplay] = useState<CompanyLogoDisplay>("logo_and_name");
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const logoInputRef = useRef<HTMLInputElement | null>(null);
-  const [companyDomain, setCompanyDomain] = useState("yoovaventures.com");
+  const [companyDomain, setCompanyDomain] = useState("teamstuff.com");
   const [workStartTime, setWorkStartTime] = useState("09:30");
   const [workEndTime, setWorkEndTime] = useState("18:30");
   const [inductionEnabled, setInductionEnabled] = useState(true);
@@ -358,7 +358,7 @@ export function SettingsPageContent({
           .maybeSingle();
         if (comp) {
           setCompanyName(comp.name || "Teamstuff");
-          setCompanyDomain(comp.tenant_domain || "yoovaventures.com");
+          setCompanyDomain(comp.tenant_domain || "teamstuff.com");
           setWorkStartTime(comp.default_work_start_time || "09:30");
           setWorkEndTime(comp.default_work_end_time || "18:30");
           setCompanyShortName(comp.short_name || comp.name || "");
@@ -449,7 +449,7 @@ export function SettingsPageContent({
           // Table is empty. Auto-create a default company tenant
           const { data: newCompany, error: compErr } = await supabase
             .from("companies")
-            .insert({ name: "Teamstuff", tenant_domain: "yoovaventures.com" })
+            .insert({ name: "Teamstuff", tenant_domain: "teamstuff.com" })
             .select()
             .single();
 

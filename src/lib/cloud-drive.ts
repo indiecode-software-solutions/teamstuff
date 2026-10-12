@@ -232,7 +232,7 @@ export async function getAuthenticatedUserContext(): Promise<CurrentUserContext 
         companyId: "c1111111-1111-1111-1111-111111111111", // Default demo tenant
         companyName: "Teamstuff",
         name: profile?.name || user.email?.split("@")[0] || "User",
-        email: user.email || "user@yoovaventures.com",
+        email: user.email || "user@teamstuff.com",
         photoUrl: photoUrl || null,
       };
     }

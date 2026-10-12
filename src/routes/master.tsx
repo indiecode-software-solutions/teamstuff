@@ -1074,7 +1074,7 @@ function MasterPage() {
                               <div >
                                 {c.tenant_domain ? (
                                   <span >
-                                    {c.tenant_domain}.yoovaventures.com
+                                    {c.tenant_domain.includes(".") ? c.tenant_domain : `${c.tenant_domain}.teamstuff.com`}
                                   </span>
                                 ) : (
                                   <span >Default domain</span>
@@ -1278,7 +1278,7 @@ function MasterPage() {
                   </div>
                   <span >
                     {form.tenantDomain
-                      ? `${form.tenantDomain.toLowerCase().replace(/[^a-z0-9-]/g, "")}.yoovaventures.com`
+                      ? `${form.tenantDomain.toLowerCase().replace(/[^a-z0-9-]/g, "")}.teamstuff.com`
                       : "Default Domain"}
                   </span>
                 </div>

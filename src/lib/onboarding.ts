@@ -174,7 +174,7 @@ export const adminOnboardEmployee = createServerFn({ method: "POST" })
       const resendKey = process.env["RESEND_API"];
       if (resendKey) {
         try {
-          const from = process.env["EMAIL_FROM"] || "Yoova HRMS <noreply@yoovaventures.com>";
+          const from = process.env["EMAIL_FROM"] || "teamstuff intranet <noreply@teamstuff.com>";
           const html = `<!DOCTYPE html>
 <html>
   <body style="margin:0;padding:0;background:#f6f6f6;font-family:Arial,Helvetica,sans-serif;">

@@ -132,7 +132,7 @@ export function resolveTenantPortalUrl(tenantDomain?: string | null): {
   url: string;
   displayUrl: string;
 } {
-  const rootDomain = "yoovaventures.com";
+  const rootDomain = "teamstuff.com";
   const raw = (tenantDomain || "")
     .trim()
     .toLowerCase()
@@ -230,7 +230,7 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
     const compRes = await admin
       .from("companies")
       .select("id, name, short_name, tenant_domain, brand_color, logo_url, brand_tagline, login_hero_url, favicon_url, status")
-      .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
+      .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.teamstuff.com,tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
       .eq("status", "active")
       .maybeSingle();
 
@@ -238,7 +238,7 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
       const fb = await admin
         .from("companies")
         .select("id, name, short_name, tenant_domain, brand_color, logo_url, brand_tagline, login_hero_url, status")
-        .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
+        .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.teamstuff.com,tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
         .eq("status", "active")
         .maybeSingle();
       comp = fb.data;
@@ -316,7 +316,7 @@ export async function fetchTenantBranding(tenantSlug: string): Promise<TenantBra
     const res = await supabase
       .from("companies")
       .select("id, name, short_name, tenant_domain, brand_color, logo_url, brand_tagline, login_hero_url, favicon_url")
-      .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
+      .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.teamstuff.com,tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
       .eq("status", "active")
       .maybeSingle();
 
@@ -324,7 +324,7 @@ export async function fetchTenantBranding(tenantSlug: string): Promise<TenantBra
       const fallback = await supabase
         .from("companies")
         .select("id, name, short_name, tenant_domain, brand_color, logo_url, brand_tagline, login_hero_url")
-        .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
+        .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.teamstuff.com,tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
         .eq("status", "active")
         .maybeSingle();
       data = fallback.data;

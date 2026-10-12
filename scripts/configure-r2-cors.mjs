@@ -43,7 +43,16 @@ const corsRules = {
     {
       AllowedHeaders: ["*"],
       AllowedMethods: ["GET", "PUT", "POST", "DELETE", "HEAD"],
-      AllowedOrigins: ["https://www.yoovaventures.com", "http://localhost:3000", "http://localhost:5173"],
+      AllowedOrigins: [
+        "https://teamstuff.vercel.app",
+        "https://teamstuff.app",
+        "https://www.teamstuff.app",
+        "https://teamstuff.com",
+        "https://www.teamstuff.com",
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://localhost:8080",
+      ],
       ExposeHeaders: ["ETag"],
       MaxAgeSeconds: 3000,
     },
