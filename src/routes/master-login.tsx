@@ -1,13 +1,24 @@
 import React, { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Eye as Visibility, EyeOff as VisibilityOff, ArrowRight, Loader2 } from "lucide-react";
+import {
+  Eye as Visibility,
+  EyeOff as VisibilityOff,
+  ArrowRight,
+  Loader2,
+  Mail,
+  Lock,
+  ShieldCheck,
+  AlertCircle,
+  CheckCircle2,
+  X,
+} from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { masterLogin } from "../lib/master";
 
 export const Route = createFileRoute("/master-login")({
   head: () => ({
-    title: "Console Login",
-    meta: [{ name: "description", content: "Authentication." }],
+    title: "Master Console Login | Teamstuff",
+    meta: [{ name: "description", content: "Master Admin Console authentication." }],
   }),
   component: MasterLoginPage,
 });
@@ -57,79 +68,133 @@ function MasterLoginPage() {
   };
 
   return (
-    <div >
-      <form
-        onSubmit={handleLogin}
-        
-      >
-        <div >
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            autoComplete="username"
-            autoFocus
-            
-          />
+    <div className="master-login-page">
+      <div className="master-login-card">
+        {/* Header with Security Badge and Branding */}
+        <div className="master-login-header">
+          <div className="master-login-badge">
+            <span className="master-login-badge-dot" />
+            <ShieldCheck size={13} />
+            <span>Platform Security</span>
+          </div>
+
+          <div className="master-login-brand">
+            <img
+              src="/teamstuff_logo.png"
+              alt="Teamstuff Intranet"
+              className="master-login-logo"
+            />
+          </div>
+
+          <div className="master-login-title-group">
+            <h1 className="master-login-title">Master Console</h1>
+            <p className="master-login-subtitle">
+              Enter root credentials to manage multi-tenant environments, storage & system accounts.
+            </p>
+          </div>
         </div>
 
-        <div >
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            autoComplete="current-password"
-            
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword((v) => !v)}
-            tabIndex={-1}
-            
-          >
-            {showPassword ? <VisibilityOff size={18} /> : <Visibility size={18} />}
-          </button>
-        </div>
+        {/* Credentials Form */}
+        <form onSubmit={handleLogin} className="master-login-form">
+          <div className="master-login-field">
+            <label htmlFor="master-email" className="master-login-label">
+              Admin Email
+            </label>
+            <div className="master-login-input-wrap">
+              <span className="master-login-input-icon">
+                <Mail size={16} />
+              </span>
+              <input
+                id="master-email"
+                type="email"
+                className="master-login-input"
+                placeholder="root@teamstuff.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                autoComplete="username"
+                autoFocus
+                required
+              />
+            </div>
+          </div>
 
-        <div >
-          <div />
+          <div className="master-login-field">
+            <label htmlFor="master-password" className="master-login-label">
+              Master Password
+            </label>
+            <div className="master-login-input-wrap">
+              <span className="master-login-input-icon">
+                <Lock size={16} />
+              </span>
+              <input
+                id="master-password"
+                type={showPassword ? "text" : "password"}
+                className="master-login-input"
+                placeholder="••••••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                className="master-login-eye-btn"
+                onClick={() => setShowPassword((v) => !v)}
+                tabIndex={-1}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <VisibilityOff size={16} /> : <Visibility size={16} />}
+              </button>
+            </div>
+          </div>
+
           <button
             type="submit"
+            className="master-login-submit-btn"
             disabled={loading}
-            
           >
             {loading ? (
               <>
-                <span>Signing in</span>
-                <Loader2 size={16}  />
+                <Loader2 size={16} className="master-login-spinner" />
+                <span>Authenticating...</span>
               </>
             ) : (
               <>
-                <span>Sign in</span>
-                <ArrowRight size={18} />
+                <span>Authenticate Session</span>
+                <ArrowRight size={16} />
               </>
             )}
           </button>
-        </div>
-      </form>
+        </form>
 
-      {/* Toast Notification */}
-      {toast.open && (
-        <div className="fade-in">
-          <div
-            className={`${ toast.severity === "error" ? "" : "" }`}
-          >
-            <span>{toast.message}</span>
-            <button
-              type="button"
-              onClick={() => setToast((t) => ({ ...t, open: false }))}
-              
-            >
-              ✕
-            </button>
+        {/* Footer & Audit Notice */}
+        <div className="master-login-footer">
+          <div className="master-login-security-tag">
+            <span>TLS 1.3 Encrypted • Audit Monitored</span>
           </div>
+          <a href="/login" className="master-login-back-link">
+            ← Return to Employee Intranet
+          </a>
+        </div>
+      </div>
+
+      {/* Floating Toast Notification */}
+      {toast.open && (
+        <div className={`master-login-toast ${toast.severity}`}>
+          {toast.severity === "error" ? (
+            <AlertCircle size={16} color="#ef4444" />
+          ) : (
+            <CheckCircle2 size={16} color="#10b981" />
+          )}
+          <span>{toast.message}</span>
+          <button
+            type="button"
+            className="master-login-toast-close"
+            onClick={() => setToast((t) => ({ ...t, open: false }))}
+            aria-label="Dismiss message"
+          >
+            <X size={14} />
+          </button>
         </div>
       )}
     </div>
