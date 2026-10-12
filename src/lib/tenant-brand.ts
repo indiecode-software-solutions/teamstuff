@@ -36,6 +36,9 @@ const RESERVED_SUBDOMAINS = new Set([
   "portal",
   "preview",
   "intranet",
+  "teamstuff",
+  "capoasis",
+  "corporate-intranet",
 ]);
 
 /**
@@ -55,6 +58,25 @@ export function extractTenantSlugFromHostStr(host: string): string | null {
     if (parts.length === 2 && parts[1] === "localhost") {
       const sub = parts[0];
       return RESERVED_SUBDOMAINS.has(sub) ? null : sub;
+    }
+
+    // Platform deployment domains: *.vercel.app, *.lovable.app, *.pages.dev, *.netlify.app, etc.
+    // e.g. teamstuff.vercel.app has 3 parts (project.vercel.app) where the first part is the app name, NOT a tenant.
+    // A tenant on a platform domain would require 4+ parts (e.g. acme.teamstuff.vercel.app).
+    const isPlatformHost =
+      hostname.endsWith(".vercel.app") ||
+      hostname.endsWith(".lovable.app") ||
+      hostname.endsWith(".pages.dev") ||
+      hostname.endsWith(".netlify.app") ||
+      hostname.endsWith(".onrender.com") ||
+      hostname.endsWith(".railway.app");
+
+    if (isPlatformHost) {
+      if (parts.length >= 4) {
+        const sub = parts[0];
+        return RESERVED_SUBDOMAINS.has(sub) ? null : sub;
+      }
+      return null;
     }
 
     // Case: acme.yoovaventures.com or acme.domain.com (3+ parts)
