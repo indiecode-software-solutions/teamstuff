@@ -21,7 +21,7 @@ const r2Client = new S3Client({
   requestChecksumCalculation: "WHEN_REQUIRED",
 });
 
-const BUCKET_NAME = import.meta.env["VITE_R2_BUCKET_NAME"] || "intranet-storage";
+const BUCKET_NAME = import.meta.env["VITE_R2_BUCKET_NAME"] || "teamstuff";
 
 /**
  * Re-keys every object under companies/<oldName>/ to companies/<newName>/

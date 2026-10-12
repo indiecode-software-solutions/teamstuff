@@ -22,7 +22,7 @@ const env = loadEnv();
 const accessKeyId = env.VITE_R2_ACCESS_KEY_ID;
 const secretAccessKey = env.VITE_R2_SECRET_ACCESS_KEY;
 const endpoint = env.VITE_R2_ENDPOINT;
-const bucketName = env.VITE_R2_BUCKET_NAME || "intranet-storage";
+const bucketName = env.VITE_R2_BUCKET_NAME || "teamstuff";
 
 if (!accessKeyId || !secretAccessKey || !endpoint) {
   console.error("Missing R2 credentials in .env");
