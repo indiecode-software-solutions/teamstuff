@@ -3,9 +3,9 @@ import Layout from "../components/Layout";
 
 export const Route = createFileRoute("/resources")({
   head: () => ({
-    title: "CapOasis | Resources",
+    title: "Teamstuff | Resources",
     meta: [
-      { name: "description", content: "Resources portal and employee guides for CapOasis." },
+      { name: "description", content: "Resources portal and employee guides for Teamstuff." },
     ],
   }),
   component: ResourcesLayout,

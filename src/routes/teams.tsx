@@ -4,7 +4,7 @@ import Layout from "../components/Layout";
 
 export const Route = createFileRoute("/teams")({
   head: () => ({
-    title: "CapOasis | Teams Workspaces",
+    title: "Teamstuff | Teams Workspaces",
     meta: [
       {
         name: "description",

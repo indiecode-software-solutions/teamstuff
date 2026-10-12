@@ -5,7 +5,7 @@ import type { HRTabKey } from "../components/hr/HRWorkspaceTabs";
 
 export const Route = createFileRoute("/admin-console/hr/$tab")({
   head: () => ({
-    title: "CapOasis | Admin Console — HR",
+    title: "Teamstuff | Admin Console — HR",
     meta: [{ name: "description", content: "HR management inside the admin console." }],
   }),
   component: AdminConsoleHrTab,

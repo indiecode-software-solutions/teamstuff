@@ -41,18 +41,19 @@ export async function hashString(value: string): Promise<string> {
 }
 
 // Session unlock management with 15-minute inactivity expiry (persists across tab navigations, cleared on tab close or after 15m idle)
-const SESSION_STORAGE_KEY_PREFIX = "capoasis_safelock_session_";
+const SESSION_STORAGE_KEY_PREFIX = "teamstuff_safelock_session_";
 const SESSION_TIMEOUT_MS = 15 * 60 * 1000; // 15 minutes
 
 export function isSessionUnlocked(userId: string): boolean {
   if (typeof window === "undefined" || !userId) return false;
   try {
-    const raw = sessionStorage.getItem(`${SESSION_STORAGE_KEY_PREFIX}${userId}`);
+    const raw = sessionStorage.getItem(`${SESSION_STORAGE_KEY_PREFIX}${userId}`) || sessionStorage.getItem(`capoasis_safelock_session_${userId}`);
     if (!raw) return false;
     const lastActive = parseInt(raw, 10);
     if (isNaN(lastActive)) return false;
     if (Date.now() - lastActive > SESSION_TIMEOUT_MS) {
       sessionStorage.removeItem(`${SESSION_STORAGE_KEY_PREFIX}${userId}`);
+      sessionStorage.removeItem(`capoasis_safelock_session_${userId}`);
       return false;
     }
     // Refresh activity timestamp
@@ -76,12 +77,13 @@ export function lockSession(userId: string): void {
   if (typeof window === "undefined" || !userId) return;
   try {
     sessionStorage.removeItem(`${SESSION_STORAGE_KEY_PREFIX}${userId}`);
+    sessionStorage.removeItem(`capoasis_safelock_session_${userId}`);
   } catch (e) {
     console.error("Failed to clear safelock session:", e);
   }
 }
 
-const LOCAL_STORAGE_KEY_PREFIX = "capoasis_safelock_";
+const LOCAL_STORAGE_KEY_PREFIX = "teamstuff_safelock_";
 
 /**
  * Fetch SafeLock configuration for a user.
@@ -111,7 +113,7 @@ export async function getSafeLockConfig(userId: string): Promise<SafeLockConfig 
 
   // Local storage fallback
   try {
-    const local = localStorage.getItem(LOCAL_STORAGE_KEY_PREFIX + userId);
+    const local = localStorage.getItem(LOCAL_STORAGE_KEY_PREFIX + userId) || localStorage.getItem(`capoasis_safelock_${userId}`);
     if (local) {
       return JSON.parse(local) as SafeLockConfig;
     }

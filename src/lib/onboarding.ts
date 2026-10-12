@@ -166,7 +166,7 @@ export const adminOnboardEmployee = createServerFn({ method: "POST" })
 
       const resolvedTenant = data.tenantDomain || comp?.tenant_domain || null;
       const { url: portalUrl, displayUrl: portalDisplayUrl } = resolveTenantPortalUrl(resolvedTenant);
-      const appName = companyName || comp?.name || "CapOasis HRMS";
+      const appName = companyName || comp?.name || "Teamstuff";
       const brandColor = comp?.brand_color || "#d97706";
 
       // 4. Send login credentials via email (Resend)

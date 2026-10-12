@@ -104,11 +104,11 @@ export const Route = createFileRoute("/tasks")({
     };
   },
   head: () => ({
-    title: "CapOasis | Tasks",
+    title: "Teamstuff | Tasks",
     meta: [
       {
         name: "description",
-        content: "Kanban Task Workspace for CapOasis.",
+        content: "Kanban Task Workspace for Teamstuff.",
       },
     ],
   }),

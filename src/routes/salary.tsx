@@ -33,7 +33,7 @@ import { SafeLockConfig, getSafeLockConfig } from "../lib/safelock";
 
 export const Route = createFileRoute("/salary")({
   head: () => ({
-    title: "CapOasis | Salary & Payslips",
+    title: "Teamstuff | Salary & Payslips",
     meta: [
       {
         name: "description",
@@ -1043,7 +1043,7 @@ function SalaryPage() {
                                   Authorized Signatory
                                 </div>
                                 <div className="payslip-footer-sign-for">
-                                  For {userInfo?.company || "CapOasis Inc."}
+                                  For {userInfo?.company || "Teamstuff Inc."}
                                 </div>
                               </div>
                             ) : (

@@ -5,7 +5,7 @@ import RequireWorkspaceRole from "../components/RequireWorkspaceRole";
 
 export const Route = createFileRoute("/admin-console")({
   head: () => ({
-    title: "CapOasis | Admin Settings",
+    title: "Teamstuff | Admin Settings",
     meta: [
       {
         name: "description",

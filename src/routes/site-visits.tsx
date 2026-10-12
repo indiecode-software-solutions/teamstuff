@@ -31,7 +31,7 @@ import VisitDetailsModal from "../components/VisitDetailsModal";
 
 export const Route = createFileRoute("/site-visits")({
   head: () => ({
-    title: "CapOasis | Field Visits",
+    title: "Teamstuff | Field Visits",
     meta: [
       {
         name: "description",

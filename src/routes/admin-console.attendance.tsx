@@ -15,7 +15,7 @@ import { supabase } from "../lib/supabase";
 
 export const Route = createFileRoute("/admin-console/attendance")({
   head: () => ({
-    title: "CapOasis | Company Attendance Logs",
+    title: "Teamstuff | Company Attendance Logs",
     meta: [{ name: "description", content: "Review and track company employee attendance logs." }],
   }),
   component: AdminAttendanceLogs,

@@ -1,4 +1,4 @@
-const CACHE_NAME = "capoasis-offline-v7";
+const CACHE_NAME = "teamstuff-offline-v8";
 const ASSETS_TO_CACHE = [
   "/login",
   "/no_internet.gif",

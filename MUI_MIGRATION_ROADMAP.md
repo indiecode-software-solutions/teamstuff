@@ -1,6 +1,6 @@
 # MUI to Tailwind & Radix UI Migration Roadmap
 
-This document outlines the systematic strategy to remove `@mui/material`, `@mui/icons-material`, and `@emotion/*` runtime dependencies from the CapOasis Intranet codebase in favor of zero-runtime **Tailwind CSS (v4)**, **Radix UI Primitives (`@radix-ui/react-*`)**, and **Lucide Icons (`lucide-react`)**.
+This document outlines the systematic strategy to remove `@mui/material`, `@mui/icons-material`, and `@emotion/*` runtime dependencies from the Teamstuff Intranet codebase in favor of zero-runtime **Tailwind CSS (v4)**, **Radix UI Primitives (`@radix-ui/react-*`)**, and **Lucide Icons (`lucide-react`)**.
 
 ---
 

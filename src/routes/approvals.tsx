@@ -76,7 +76,7 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "../com
 
 export const Route = createFileRoute("/approvals")({
   head: () => ({
-    title: "CapOasis | Approvals Center",
+    title: "Teamstuff | Approvals Center",
     meta: [
       {
         name: "description",

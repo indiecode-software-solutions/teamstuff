@@ -72,7 +72,7 @@ import { ProfileExitSection } from "../components/hr/ProfileExitSection";
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "CapOasis | My Profile" },
+      { title: "Teamstuff | My Profile" },
       { name: "description", content: "Executive employee profile overview." },
     ],
   }),

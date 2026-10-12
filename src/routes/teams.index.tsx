@@ -32,7 +32,7 @@ export const Route = createFileRoute("/teams/")({
   head: () => ({
     meta: [
       {
-        title: "CapOasis | Teams",
+        title: "Teamstuff | Teams",
       },
       {
         name: "description",

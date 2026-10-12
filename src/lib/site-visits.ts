@@ -109,7 +109,7 @@ export async function reverseGeocodeCoords(lat: number, lng: number): Promise<st
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1`,
       {
         headers: {
-          "User-Agent": "CapOasis-Intranet-SiteVisitTracker/1.0",
+          "User-Agent": "Teamstuff-SiteVisitTracker/1.0",
         },
         signal: controller.signal,
       }

@@ -1,7 +1,7 @@
 # App-Wide Semantic CSS Migration Log & Roadmap
 
 ## Overview
-This document tracks the systematic extraction of all inline utility classes into dedicated, semantic Vanilla CSS stylesheets across every route and component in CapOasis, adhering to:
+This document tracks the systematic extraction of all inline utility classes into dedicated, semantic Vanilla CSS stylesheets across every route and component in Teamstuff, adhering to:
 1. **Strict typography**: Font-weight $\le 600$ across all stylesheets.
 2. **Pure monochrome palette**: Carbon (`#09090b`), dark zinc (`#18181b`, `#27272a`), muted slate (`#71717a`), surface greys (`#f4f4f5`), and border neutrals (`#e4e4e7`, `#d4d4d8`).
 3. **Pure semantic classes**: Elimination of inline utility class strings in favor of meaningful, maintainable class names (`.attendance-hero-card`, `.dashboard-stat-tile`, etc.).

@@ -25,11 +25,11 @@ import { sanitizeProfilePhoto } from "../lib/profile-photo";
 
 export const Route = createFileRoute("/resources/team")({
   head: () => ({
-    title: "CapOasis | Team Directory",
+    title: "Teamstuff | Team Directory",
     meta: [
       {
         name: "description",
-        content: "Explore the team directory, connect with colleagues, and view organization contact profiles at CapOasis.",
+        content: "Explore the team directory, connect with colleagues, and view organization contact profiles at Teamstuff.",
       },
     ],
   }),

@@ -39,11 +39,11 @@ import { supabase } from "../lib/supabase";
 
 export const Route = createFileRoute("/resources/hr-policies")({
   head: () => ({
-    title: "CapOasis | HR Policies & Handbook",
+    title: "Teamstuff | HR Policies & Handbook",
     meta: [
       {
         name: "description",
-        content: "Official guidelines, leave policies, code of conduct, and employee compliance handbook at CapOasis.",
+        content: "Official guidelines, leave policies, code of conduct, and employee compliance handbook at Teamstuff.",
       },
     ],
   }),

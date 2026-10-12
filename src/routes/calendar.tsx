@@ -33,7 +33,7 @@ import { formatApprovalAmount } from "../lib/approvals";
 
 export const Route = createFileRoute("/calendar")({
   head: () => ({
-    title: "CapOasis | Calendar",
+    title: "Teamstuff | Calendar",
     meta: [
       {
         name: "description",

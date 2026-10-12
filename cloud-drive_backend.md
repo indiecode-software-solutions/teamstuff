@@ -1,6 +1,6 @@
-# Build a Production-Ready Multi-Tenant Cloud Drive for CapOasis Intranet
+# Build a Production-Ready Multi-Tenant Cloud Drive for Teamstuff Intranet
 
-We are upgrading the existing **Files** module of the CapOasis Intranet.
+We are upgrading the existing **Files** module of the Teamstuff Intranet.
 
 The current frontend already presents Files as a company cloud-storage experience with folders, recent files, storage usage, upload, sharing, etc. Keep the existing visual language and overall design direction, but now build the **actual backend architecture and functionality** behind it.
 
@@ -481,7 +481,7 @@ If the application already has teams/departments, integrate with them.
 Example:
 
 ```text
-Anyone in CapOasis
+Anyone in Teamstuff
 ```
 
 Permission levels:
@@ -783,7 +783,7 @@ Before considering the implementation complete, verify:
 
 # 25. Frontend UX
 
-Keep the existing CapOasis visual identity and current Files page direction.
+Keep the existing Teamstuff visual identity and current Files page direction.
 
 The Files page should feel like a **real cloud drive**, not an HR document list.
 
@@ -898,7 +898,7 @@ can be added later if the architecture supports them.
 
 # Final Requirement
 
-Before making implementation changes, inspect the existing CapOasis Intranet architecture and adapt this design to the actual codebase.
+Before making implementation changes, inspect the existing Teamstuff Intranet architecture and adapt this design to the actual codebase.
 
 Do not blindly create duplicate authentication, company, employee, or subscription systems if they already exist.
 

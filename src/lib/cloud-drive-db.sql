@@ -1,4 +1,4 @@
--- Multi-Tenant Cloud Drive Database Schema for CapOasis Intranet
+-- Multi-Tenant Cloud Drive Database Schema for Teamstuff Intranet
 
 -- 1. Folders table
 CREATE TABLE IF NOT EXISTS public.folders (

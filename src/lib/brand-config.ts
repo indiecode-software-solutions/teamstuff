@@ -1,4 +1,4 @@
-export type BrandMode = "capoasis";
+export type BrandMode = "teamstuff";
 
 export interface BrandConfig {
   brand: BrandMode;
@@ -17,18 +17,18 @@ export interface BrandConfig {
 
 export function getBrandConfig(): BrandConfig {
   return {
-    brand: "capoasis",
-    appName: "CapOasis Intranet",
-    shortName: "CapOasis",
+    brand: "teamstuff",
+    appName: "Teamstuff",
+    shortName: "Teamstuff",
     tagline: "Corporate Internal Operations & Intranet Portal",
-    companyName: "CapOasis",
-    favicon: "/capoasis_favicon.png",
-    appleTouchIcon: "/capoasis_favicon.png",
-    logo: "/capoasis_intranet.png",
-    logoIcon: "/capoasis_favicon.png",
+    companyName: "Teamstuff",
+    favicon: "/teamstuff_icon_logo.png",
+    appleTouchIcon: "/teamstuff_icon_logo.png",
+    logo: "/teamstuff_logo.png",
+    logoIcon: "/teamstuff_icon_logo.png",
     showMarketingLanding: true,
     showPricing: true,
-    metaDescription: "CapOasis Intranet — secure internal hub for team operations, attendance, tasks, and resources.",
+    metaDescription: "Teamstuff — secure internal hub for team operations, attendance, tasks, and resources.",
   };
 }
 

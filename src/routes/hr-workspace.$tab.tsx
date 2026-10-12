@@ -5,7 +5,7 @@ import type { HRTabKey } from "../components/hr/HRWorkspaceTabs";
 
 export const Route = createFileRoute("/hr-workspace/$tab")({
   head: () => ({
-    title: "CapOasis | HR Workspace",
+    title: "Teamstuff | HR Workspace",
     meta: [{ name: "description", content: "Human Resources Management Workspace." }],
   }),
   component: HRWorkspaceTabPage,

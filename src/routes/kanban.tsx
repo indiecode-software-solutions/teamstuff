@@ -137,7 +137,7 @@ export const Route = createFileRoute("/kanban")({
     };
   },
   head: () => ({
-    title: "CapOasis | Kanban Workspace",
+    title: "Teamstuff | Kanban Workspace",
     meta: [
       {
         name: "description",

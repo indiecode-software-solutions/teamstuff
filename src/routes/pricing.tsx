@@ -47,8 +47,8 @@ function BrandLogo() {
   return (
     <a href="/" className="pricing-brand-link">
       <img
-        src="/capoasis_intranet.png"
-        alt="CapOasis Intranet"
+        src="/teamstuff_logo.png"
+        alt="Teamstuff"
         className="pricing-brand-img"
       />
     </a>
@@ -212,72 +212,72 @@ function PricingPage() {
       feature: "Monthly price per user",
       traditional: "₹150 – ₹400 / employee",
       traditionalNote: "+ module tier add-ons",
-      capoasis: "₹59 / employee",
-      capoasisNote: "Flat all-inclusive rate",
+      teamstuff: "₹59 / employee",
+      teamstuffNote: "Flat all-inclusive rate",
       highlight: true,
     },
     {
       feature: "Setup & Onboarding Fees",
       traditional: "₹10,000 – ₹50,000",
       traditionalNote: "Mandatory implementation charges",
-      capoasis: "₹0 Free",
-      capoasisNote: "Zero setup fee",
+      teamstuff: "₹0 Free",
+      teamstuffNote: "Zero setup fee",
       highlight: false,
     },
     {
       feature: "Task Management & Sprint Kanban",
       traditional: "Not included",
       traditionalNote: "Requires Jira / Asana ($8/user)",
-      capoasis: "Included",
-      capoasisNote: "Built-in sprint boards & to-dos",
+      teamstuff: "Included",
+      teamstuffNote: "Built-in sprint boards & to-dos",
       highlight: false,
     },
     {
       feature: "Geofenced Attendance & Regularization",
       traditional: "Extra Add-On",
       traditionalNote: "Additional ₹40-60/user/mo",
-      capoasis: "Included",
-      capoasisNote: "GPS & WiFi verified logs",
+      teamstuff: "Included",
+      teamstuffNote: "GPS & WiFi verified logs",
       highlight: false,
     },
     {
       feature: "Automated Payroll & PDF Payslips",
       traditional: "Enterprise Tier only",
       traditionalNote: "Locked behind top tier plans",
-      capoasis: "Included",
-      capoasisNote: "Instant generation & download",
+      teamstuff: "Included",
+      teamstuffNote: "Instant generation & download",
       highlight: false,
     },
     {
       feature: "Corporate Handbook & Induction",
       traditional: "Not available",
       traditionalNote: "Requires Notion or external wiki",
-      capoasis: "Included",
-      capoasisNote: "HR policy handbooks & videos",
+      teamstuff: "Included",
+      teamstuffNote: "HR policy handbooks & videos",
       highlight: false,
     },
     {
       feature: "Company Cloud Drive & Storage",
       traditional: "Extra storage costs",
       traditionalNote: "Tiered gigabyte limitations",
-      capoasis: "Included",
-      capoasisNote: "Personal vault & team library",
+      teamstuff: "Included",
+      teamstuffNote: "Personal vault & team library",
       highlight: false,
     },
     {
       feature: "Internal Forum & Team Channels",
       traditional: "Not available",
       traditionalNote: "Requires Slack / MS Teams ($7/user)",
-      capoasis: "Included",
-      capoasisNote: "Team announcements & polls",
+      teamstuff: "Included",
+      teamstuffNote: "Team announcements & polls",
       highlight: false,
     },
     {
       feature: "Contracts & Commitment",
       traditional: "1 to 3 Year Lock-in",
       traditionalNote: "Strict early termination fees",
-      capoasis: "Monthly, Cancel Anytime",
-      capoasisNote: "Zero lock-in contract",
+      teamstuff: "Monthly, Cancel Anytime",
+      teamstuffNote: "Zero lock-in contract",
       highlight: false,
     },
   ];
@@ -380,7 +380,7 @@ function PricingPage() {
                       <tr>
                         <th style={{ width: "36%" }}>Features & Capabilities</th>
                         <th style={{ width: "30%" }}>Traditional HRMS</th>
-                        <th className="th-capoasis">CapOasis Intranet</th>
+                        <th className="th-teamstuff">Teamstuff</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -398,13 +398,13 @@ function PricingPage() {
                             <p className="pricing-trad-val">{row.traditional}</p>
                             <p className="pricing-trad-note">{row.traditionalNote}</p>
                           </td>
-                          <td className="pricing-td-capoasis">
-                            <div className="pricing-capoasis-val-box">
+                          <td className="pricing-td-teamstuff">
+                            <div className="pricing-teamstuff-val-box">
                               <CheckCircle2 size={16} color="#18181B" />
-                              <span className="pricing-capoasis-val">{row.capoasis}</span>
+                              <span className="pricing-teamstuff-val">{row.teamstuff}</span>
                             </div>
-                            <p className="pricing-capoasis-note">
-                              {row.capoasisNote}
+                            <p className="pricing-teamstuff-note">
+                              {row.teamstuffNote}
                             </p>
                           </td>
                         </tr>
@@ -446,8 +446,8 @@ function PricingPage() {
                           <p className="pricing-trad-note">+ mandatory setup fees</p>
                         </td>
 
-                        {/* Col 3: CapOasis Real-Time Total */}
-                        <td className="pricing-td-capoasis">
+                        {/* Col 3: Teamstuff Real-Time Total */}
+                        <td className="pricing-td-teamstuff">
                           <div className="pricing-total-box">
                             <span className="pricing-total-price">
                               ₹{monthlyTotal.toLocaleString("en-IN")}
@@ -637,7 +637,7 @@ function PricingPage() {
                 Frequently Asked Questions
               </h2>
               <p className="pricing-faq-subtitle">
-                Clear answers to common questions about CapOasis Intranet pricing.
+                Clear answers to common questions about Teamstuff pricing.
               </p>
             </div>
           </RevealOnScroll>
@@ -711,7 +711,7 @@ function PricingPage() {
         <div className="pricing-footer-content">
           <BrandLogo />
           <p className="pricing-footer-copy">
-            © 2026 CapOasis Intranet. All rights reserved.
+            © 2026 Teamstuff. All rights reserved.
           </p>
         </div>
       </footer>

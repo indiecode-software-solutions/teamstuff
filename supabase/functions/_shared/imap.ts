@@ -651,14 +651,14 @@ export async function sendViaHostingerSmtp(
 
   try {
     await readReply(); // banner
-    await cmd(`EHLO capoasis.local`, 250);
+    await cmd(`EHLO teamstuff.local`, 250);
     const authPlain = btoa(`\0${email}\0${password}`);
     await cmd(`AUTH PLAIN ${authPlain}`, 235);
     await cmd(`MAIL FROM:<${email}>`, 250);
     await cmd(`RCPT TO:<${to}>`, 250);
     await cmd("DATA", 354);
 
-    const boundary = `capoasis_${crypto.randomUUID().replace(/-/g, "")}`;
+    const boundary = `teamstuff_${crypto.randomUUID().replace(/-/g, "")}`;
     let mime =
       `From: ${email}\r\nTo: ${to}\r\nSubject: ${subject}\r\nMIME-Version: 1.0\r\n`;
     if (inReplyTo) mime += `In-Reply-To: ${inReplyTo}\r\n`;

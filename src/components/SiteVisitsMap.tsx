@@ -16,7 +16,7 @@ interface SiteVisitsMapProps {
 
 /**
  * Interactive visual map component rendered via OpenStreetMap standard embed iframe
- * with custom interactive side panel / HUD matching CapOasis warm aesthetic.
+ * with custom interactive side panel / HUD matching Teamstuff warm aesthetic.
  */
 export default function SiteVisitsMap({
   visits,

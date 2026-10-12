@@ -17,7 +17,7 @@ const url = await getSignedUrl(
   new GetObjectCommand({
     Bucket: "intranet-storage",
     Key: "capoasis-app.apk",
-    ResponseContentDisposition: 'attachment; filename="CapOasis.apk"',
+    ResponseContentDisposition: 'attachment; filename="Teamstuff.apk"',
   }),
   { expiresIn: 604800 } // 7 days max
 );

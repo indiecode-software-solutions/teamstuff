@@ -216,7 +216,7 @@ const instantBrandScript = `(function() {
 
     if (brand) {
       var s = (brand.shortName || brand.name || '').trim();
-      if (s && s.toLowerCase() !== 'capoasis') {
+      if (s && s.toLowerCase() !== 'teamstuff' && s.toLowerCase() !== 'capoasis') {
         document.title = s + ' Intranet';
       }
       var bg = brand.brandColor || '#18181B';
@@ -225,7 +225,7 @@ const instantBrandScript = `(function() {
         document.documentElement.style.setProperty('--brand-primary-lighter', brand.brandColor + '1A');
         document.documentElement.style.setProperty('--brand-primary-border', brand.brandColor + '40');
       }
-      var fav = brand.faviconUrl || (s && s.toLowerCase() !== 'capoasis' ? 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><rect width="64" height="64" rx="14" fill="' + bg + '"/><text x="50%" y="54%" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="34" font-weight="600" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">' + s.charAt(0).toUpperCase() + '</text></svg>') : null);
+      var fav = brand.faviconUrl || (s && s.toLowerCase() !== 'teamstuff' && s.toLowerCase() !== 'capoasis' ? 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><rect width="64" height="64" rx="14" fill="' + bg + '"/><text x="50%" y="54%" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="34" font-weight="600" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">' + s.charAt(0).toUpperCase() + '</text></svg>') : null);
       if (fav) {
         var l = document.querySelector("link[rel~='icon']");
         if (l) {

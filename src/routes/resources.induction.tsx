@@ -28,11 +28,11 @@ import { sanitizeProfilePhoto } from "../lib/profile-photo";
 
 export const Route = createFileRoute("/resources/induction")({
   head: () => ({
-    title: "CapOasis | Onboarding & Induction Journey",
+    title: "Teamstuff | Onboarding & Induction Journey",
     meta: [
       {
         name: "description",
-        content: "Complete your employee onboarding journey, company orientation, and training modules at CapOasis.",
+        content: "Complete your employee onboarding journey, company orientation, and training modules at Teamstuff.",
       },
     ],
   }),

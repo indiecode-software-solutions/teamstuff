@@ -6,7 +6,7 @@ import { Search, Download } from "lucide-react";
 
 export const Route = createFileRoute("/accountant-workspace/payroll")({
   head: () => ({
-    title: "CapOasis | Payroll Management",
+    title: "Teamstuff | Payroll Management",
     meta: [
       {
         name: "description",

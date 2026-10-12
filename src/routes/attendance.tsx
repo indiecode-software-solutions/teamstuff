@@ -39,7 +39,7 @@ import { getCurrentCoordinates } from "../lib/geolocation";
 
 export const Route = createFileRoute("/attendance")({
   head: () => ({
-    title: "CapOasis | Attendance",
+    title: "Teamstuff | Attendance",
     meta: [{ name: "description", content: "Track your daily attendance with GPS verification." }],
   }),
   component: AttendancePage,
@@ -660,7 +660,7 @@ function AttendancePage() {
               setIsOnline(navigator.onLine);
               if (navigator.onLine) initAttendance();
             }}
-            message="You are currently offline. CapOasis requires an active internet connection to load and log your attendance."
+            message="You are currently offline. Teamstuff requires an active internet connection to load and log your attendance."
           />
         ) : (
           <>

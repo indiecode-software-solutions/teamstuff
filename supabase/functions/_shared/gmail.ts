@@ -440,7 +440,7 @@ export async function sendGmailMessage(
   inReplyTo?: string,
   references?: string,
 ): Promise<void> {
-  const boundary = `capoasis_${crypto.randomUUID().replace(/-/g, "")}`;
+  const boundary = `teamstuff_${crypto.randomUUID().replace(/-/g, "")}`;
   const encoder = new TextEncoder();
 
   let mime =

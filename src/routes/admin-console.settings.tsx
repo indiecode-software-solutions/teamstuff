@@ -12,7 +12,7 @@ import {
 
 export const Route = createFileRoute("/admin-console/settings")({
   head: () => ({
-    title: "CapOasis | Admin Settings",
+    title: "Teamstuff | Admin Settings",
     meta: [{ name: "description", content: "System administration settings." }],
   }),
   component: AdminConsoleSettingsPage,

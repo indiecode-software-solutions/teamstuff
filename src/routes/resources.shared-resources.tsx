@@ -28,11 +28,11 @@ import { supabase } from "../lib/supabase";
 
 export const Route = createFileRoute("/resources/shared-resources")({
   head: () => ({
-    title: "CapOasis | Shared Resources & Credentials Vault",
+    title: "Teamstuff | Shared Resources & Credentials Vault",
     meta: [
       {
         name: "description",
-        content: "Access and manage company-wide credentials, tool accounts, and internal services at CapOasis.",
+        content: "Access and manage company-wide credentials, tool accounts, and internal services at Teamstuff.",
       },
     ],
   }),

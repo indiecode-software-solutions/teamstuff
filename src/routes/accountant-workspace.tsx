@@ -11,7 +11,7 @@ import {
 
 export const Route = createFileRoute("/accountant-workspace")({
   head: () => ({
-    title: "CapOasis | Finance Workspace",
+    title: "Teamstuff | Finance Workspace",
     meta: [{ name: "description", content: "Financial & Payroll Management Workspace." }],
   }),
   component: AccountantWorkspacePage,

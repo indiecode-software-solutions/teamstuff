@@ -15,7 +15,7 @@ import {
 
 export const Route = createFileRoute("/performance")({
   head: () => ({
-    title: "Performance & KRA Reports | CapOasis",
+    title: "Performance & KRA Reports | Teamstuff",
     meta: [
       { name: "description", content: "KRA Reports." },
       { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1" },

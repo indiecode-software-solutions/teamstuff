@@ -1,5 +1,5 @@
 -- ==============================================================================
--- CAPOASIS INTRANET: COMPLETE TEAMS & WORKSPACES SCHEMA
+-- Teamstuff INTRANET: COMPLETE TEAMS & WORKSPACES SCHEMA
 -- ==============================================================================
 
 -- 1. TEAMS TABLE

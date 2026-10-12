@@ -214,8 +214,8 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
       if (!data) return null;
       return {
         id: data.id,
-        name: data.name || "CapOasis",
-        shortName: data.short_name || data.name || "CapOasis",
+        name: data.name || "Teamstuff",
+        shortName: data.short_name || data.name || "Teamstuff",
         tenantDomain: data.tenant_domain || null,
         brandColor: data.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: data.logo_url || null,
@@ -249,8 +249,8 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
     if (comp) {
       return {
         id: comp.id,
-        name: comp.name || "CapOasis",
-        shortName: comp.short_name || comp.name || "CapOasis",
+        name: comp.name || "Teamstuff",
+        shortName: comp.short_name || comp.name || "Teamstuff",
         tenantDomain: comp.tenant_domain || null,
         brandColor: comp.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: comp.logo_url || null,
@@ -288,8 +288,8 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
     if (match) {
       return {
         id: match.id,
-        name: match.name || "CapOasis",
-        shortName: match.short_name || match.name || "CapOasis",
+        name: match.name || "Teamstuff",
+        shortName: match.short_name || match.name || "Teamstuff",
         tenantDomain: match.tenant_domain || null,
         brandColor: match.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: match.logo_url || null,
@@ -335,8 +335,8 @@ export async function fetchTenantBranding(tenantSlug: string): Promise<TenantBra
     if (data) {
       const brand: TenantBranding = {
         id: data.id,
-        name: data.name || "CapOasis",
-        shortName: data.short_name || data.name || "CapOasis",
+        name: data.name || "Teamstuff",
+        shortName: data.short_name || data.name || "Teamstuff",
         tenantDomain: data.tenant_domain || null,
         brandColor: data.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: data.logo_url || null,
@@ -369,7 +369,7 @@ export async function fetchTenantBranding(tenantSlug: string): Promise<TenantBra
   return null;
 }
 
-export const BRAND_COLOR_EVENT = "capoasis_brand_color_change";
+export const BRAND_COLOR_EVENT = "teamstuff_brand_color_change";
 
 /**
  * Synchronously determine active brand color from tenant cache or company cache.
@@ -415,7 +415,7 @@ export function generateLetterFaviconSvg(
   letter: string,
   brandColor?: string,
 ): string {
-  const char = (letter || "C").trim().charAt(0).toUpperCase();
+  const char = (letter || "T").trim().charAt(0).toUpperCase();
   const bg = brandColor?.trim() || "#18181B";
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
     <rect width="64" height="64" rx="14" fill="${bg}"/>
@@ -428,7 +428,7 @@ export function generateLetterFaviconSvg(
  * Dynamically updates document.title and <link rel="icon"> / <link rel="apple-touch-icon"> in the DOM.
  * - If custom faviconUrl is provided, uses that.
  * - If not provided for a company, generates a letter-based favicon (e.g. "S" for Salado).
- * - For unbranded / root domain: title is "CapOasis Intranet", favicon is "/capoasis_favicon.png".
+ * - For unbranded / root domain: title is "Teamstuff", favicon is "/teamstuff_icon_logo.png".
  */
 export function applyBrowserWhiteLabel(
   brand?: {
@@ -440,12 +440,12 @@ export function applyBrowserWhiteLabel(
 ) {
   if (typeof document === "undefined") return;
 
-  const defaultTitle = "CapOasis Intranet";
-  const defaultFavicon = "/capoasis_favicon.png";
+  const defaultTitle = "Teamstuff";
+  const defaultFavicon = "/teamstuff_icon_logo.png";
 
   const rawShortName = (brand?.shortName || brand?.name || "").trim();
   const isCustomCompany =
-    rawShortName.length > 0 && rawShortName.toLowerCase() !== "capoasis";
+    rawShortName.length > 0 && rawShortName.toLowerCase() !== "teamstuff" && rawShortName.toLowerCase() !== "capoasis";
 
   const title = isCustomCompany ? `${rawShortName} Intranet` : defaultTitle;
   

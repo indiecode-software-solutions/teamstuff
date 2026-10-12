@@ -29,11 +29,11 @@ import { supabase } from "../lib/supabase";
 
 export const Route = createFileRoute("/resources/memories")({
   head: () => ({
-    title: "CapOasis | Company Memories & Photo Gallery",
+    title: "Teamstuff | Company Memories & Photo Gallery",
     meta: [
       {
         name: "description",
-        content: "Showcasing company milestones, celebrations, offsites, and team memories at CapOasis.",
+        content: "Showcasing company milestones, celebrations, offsites, and team memories at Teamstuff.",
       },
     ],
   }),

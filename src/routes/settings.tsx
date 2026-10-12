@@ -73,7 +73,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({
-    title: "CapOasis | System Settings",
+    title: "Teamstuff | System Settings",
     meta: [
       { name: "description", content: "Manage enterprise configurations and attendance policies." },
     ],
@@ -247,7 +247,7 @@ export function SettingsPageContent({
   const [newLocRadius, setNewLocRadius] = useState("100");
 
   // Company Details
-  const [companyName, setCompanyName] = useState("CapOasis");
+  const [companyName, setCompanyName] = useState("Teamstuff");
   const [companyShortName, setCompanyShortName] = useState("");
   const [companyLogo, setCompanyLogo] = useState<string | null>(null);
   const [logoDisplay, setLogoDisplay] = useState<CompanyLogoDisplay>("logo_and_name");
@@ -357,7 +357,7 @@ export function SettingsPageContent({
           .eq("id", targetCompanyId)
           .maybeSingle();
         if (comp) {
-          setCompanyName(comp.name || "CapOasis");
+          setCompanyName(comp.name || "Teamstuff");
           setCompanyDomain(comp.tenant_domain || "yoovaventures.com");
           setWorkStartTime(comp.default_work_start_time || "09:30");
           setWorkEndTime(comp.default_work_end_time || "18:30");
@@ -449,7 +449,7 @@ export function SettingsPageContent({
           // Table is empty. Auto-create a default company tenant
           const { data: newCompany, error: compErr } = await supabase
             .from("companies")
-            .insert({ name: "CapOasis", tenant_domain: "yoovaventures.com" })
+            .insert({ name: "Teamstuff", tenant_domain: "yoovaventures.com" })
             .select()
             .single();
 
@@ -457,7 +457,7 @@ export function SettingsPageContent({
           if (compErr) {
             const { data: retryCompany, error: retryErr } = await supabase
               .from("companies")
-              .insert({ name: "CapOasis" })
+              .insert({ name: "Teamstuff" })
               .select()
               .single();
             if (retryErr)

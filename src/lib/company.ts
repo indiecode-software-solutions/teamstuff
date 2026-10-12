@@ -66,7 +66,7 @@ export function getCachedCompanyBranding(): CompanyBranding | null {
 
 /**
  * Load the signed-in user's company branding (name, short name, logo URL and
- * the sidebar display preference). Falls back to a neutral CapOasis brand.
+ * the sidebar display preference). Falls back to a neutral Teamstuff brand.
  */
 export async function getCompanyBranding(): Promise<CompanyBranding | null> {
   let targetCompanyId: string | null = null;
@@ -117,8 +117,8 @@ export async function getCompanyBranding(): Promise<CompanyBranding | null> {
 
     const branding: CompanyBranding | null = comp
       ? {
-          name: comp.name || "CapOasis",
-          shortName: comp.short_name || comp.name || "CapOasis",
+          name: comp.name || "Teamstuff",
+          shortName: comp.short_name || comp.name || "Teamstuff",
           logoUrl: comp.logo_url || null,
           logoDisplay: (comp.logo_display as CompanyLogoDisplay) || null,
           brandColor: comp.brand_color || "#059669",
@@ -148,8 +148,8 @@ export async function getCompanyBranding(): Promise<CompanyBranding | null> {
           .maybeSingle();
         if (fallbackComp) {
           const branding: CompanyBranding = {
-            name: fallbackComp.name || "CapOasis",
-            shortName: fallbackComp.short_name || fallbackComp.name || "CapOasis",
+            name: fallbackComp.name || "Teamstuff",
+            shortName: fallbackComp.short_name || fallbackComp.name || "Teamstuff",
             logoUrl: fallbackComp.logo_url || null,
             logoDisplay: (fallbackComp.logo_display as CompanyLogoDisplay) || null,
             brandColor: fallbackComp.brand_color || "#059669",

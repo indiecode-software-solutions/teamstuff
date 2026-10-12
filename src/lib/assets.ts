@@ -72,7 +72,7 @@ export interface AssetAssignmentHistory {
   } | null;
 }
 
-const LOCAL_STORAGE_KEY_PREFIX = "capoasis_assets_";
+const LOCAL_STORAGE_KEY_PREFIX = "teamstuff_assets_";
 
 /**
  * Fetch all assets for the company with fallback to localStorage
@@ -110,7 +110,7 @@ export async function getCompanyAssets(companyId: string): Promise<CompanyAsset[
 
   // Local storage fallback
   if (typeof window !== "undefined") {
-    const saved = localStorage.getItem(`${LOCAL_STORAGE_KEY_PREFIX}${companyId}`);
+    const saved = localStorage.getItem(`${LOCAL_STORAGE_KEY_PREFIX}${companyId}`) || localStorage.getItem(`capoasis_assets_${companyId}`);
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -525,7 +525,7 @@ export interface AssetRequest {
   assigned_asset?: CompanyAsset | null;
 }
 
-const LOCAL_STORAGE_REQUESTS_PREFIX = "capoasis_asset_requests_";
+const LOCAL_STORAGE_REQUESTS_PREFIX = "teamstuff_asset_requests_";
 
 export async function createAssetRequest(params: {
   company_id: string;

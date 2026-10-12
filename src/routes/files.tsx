@@ -80,7 +80,7 @@ import {
 
 export const Route = createFileRoute("/files")({
   head: () => ({
-    title: "CapOasis | Cloud Drive",
+    title: "Teamstuff | Cloud Drive",
     meta: [
       {
         name: "description",

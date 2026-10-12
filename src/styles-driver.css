@@ -5,7 +5,7 @@
   --driver-popover-font-family: "Cabinet Grotesk", "Inter", sans-serif;
 }
 
-.driver-popover.capoasis-tour-popover {
+.driver-popover.teamstuff-tour-popover {
   background-color: var(--driver-popover-bg) !important;
   color: var(--driver-popover-color) !important;
   border: 3px solid #000000 !important;
@@ -18,7 +18,7 @@
 }
 
 /* Title Styling */
-.driver-popover.capoasis-tour-popover .driver-popover-title {
+.driver-popover.teamstuff-tour-popover .driver-popover-title {
   font-size: 20px !important;
   font-weight: 600 !important;
   line-height: 1.25 !important;
@@ -29,7 +29,7 @@
 }
 
 /* Description Styling */
-.driver-popover.capoasis-tour-popover .driver-popover-description {
+.driver-popover.teamstuff-tour-popover .driver-popover-description {
   font-size: 14px !important;
   font-weight: 500 !important;
   line-height: 1.45 !important;
@@ -37,42 +37,42 @@
 }
 
 /* Arrow styling */
-.driver-popover.capoasis-tour-popover .driver-popover-arrow {
+.driver-popover.teamstuff-tour-popover .driver-popover-arrow {
   border-color: var(--driver-popover-bg) !important;
 }
-.driver-popover.capoasis-tour-popover .driver-popover-arrow-side-top {
+.driver-popover.teamstuff-tour-popover .driver-popover-arrow-side-top {
   border-bottom-color: var(--driver-popover-bg) !important;
 }
-.driver-popover.capoasis-tour-popover .driver-popover-arrow-side-bottom {
+.driver-popover.teamstuff-tour-popover .driver-popover-arrow-side-bottom {
   border-top-color: var(--driver-popover-bg) !important;
 }
-.driver-popover.capoasis-tour-popover .driver-popover-arrow-side-left {
+.driver-popover.teamstuff-tour-popover .driver-popover-arrow-side-left {
   border-right-color: var(--driver-popover-bg) !important;
 }
-.driver-popover.capoasis-tour-popover .driver-popover-arrow-side-right {
+.driver-popover.teamstuff-tour-popover .driver-popover-arrow-side-right {
   border-left-color: var(--driver-popover-bg) !important;
 }
 
 /* Close Button (top-right X) */
-.driver-popover.capoasis-tour-popover .driver-popover-close-btn {
+.driver-popover.teamstuff-tour-popover .driver-popover-close-btn {
   color: #FFFFFF !important;
   font-weight: 600 !important;
   opacity: 0.85;
 }
-.driver-popover.capoasis-tour-popover .driver-popover-close-btn:hover {
+.driver-popover.teamstuff-tour-popover .driver-popover-close-btn:hover {
   color: #000000 !important;
   opacity: 1 !important;
 }
 
 /* Progress text styling (e.g. Tour: 1 of 8) */
-.driver-popover.capoasis-tour-popover .driver-popover-progress-text {
+.driver-popover.teamstuff-tour-popover .driver-popover-progress-text {
   color: #FAF6EE !important;
   font-weight: 600 !important;
   font-size: 13px !important;
 }
 
 /* Buttons styling (Previous, Next, Done) */
-.driver-popover.capoasis-tour-popover .driver-popover-footer-btn {
+.driver-popover.teamstuff-tour-popover .driver-popover-footer-btn {
   background-color: #000000 !important;
   color: #ffffff !important;
   border: 2px solid #000000 !important;
@@ -85,7 +85,7 @@
   box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2) !important;
 }
 
-.driver-popover.capoasis-tour-popover .driver-popover-footer-btn:hover {
+.driver-popover.teamstuff-tour-popover .driver-popover-footer-btn:hover {
   background-color: #ffffff !important;
   color: #000000 !important;
   box-shadow: none !important;
@@ -93,12 +93,12 @@
 }
 
 /* Specific styling for Previous button to look secondary */
-.driver-popover.capoasis-tour-popover .driver-popover-prev-btn {
+.driver-popover.teamstuff-tour-popover .driver-popover-prev-btn {
   background-color: #423810 !important;
   color: #ffffff !important;
   border-color: #000000 !important;
 }
-.driver-popover.capoasis-tour-popover .driver-popover-prev-btn:hover {
+.driver-popover.teamstuff-tour-popover .driver-popover-prev-btn:hover {
   background-color: #ffffff !important;
   color: #000000 !important;
 }
@@ -109,13 +109,13 @@
 }
 
 /* Custom Title Wrapper & Play button styling */
-.driver-popover.capoasis-tour-popover .popover-title-wrapper {
+.driver-popover.teamstuff-tour-popover .popover-title-wrapper {
   display: block !important;
   width: 100% !important;
 }
 
 /* Position close button further left to avoid overlapping the speaker */
-.driver-popover.capoasis-tour-popover .driver-popover-close-btn {
+.driver-popover.teamstuff-tour-popover .driver-popover-close-btn {
   right: 68px !important;
   top: 14px !important;
   color: #FFFFFF !important;
@@ -123,7 +123,7 @@
   opacity: 0.85;
 }
 
-.driver-popover.capoasis-tour-popover #popover-play-btn {
+.driver-popover.teamstuff-tour-popover #popover-play-btn {
   position: absolute !important;
   top: -40px !important;
   right: -40px !important;
@@ -143,16 +143,16 @@
   z-index: 9999 !important;
 }
 
-.driver-popover.capoasis-tour-popover #popover-play-btn:hover {
+.driver-popover.teamstuff-tour-popover #popover-play-btn:hover {
   transform: scale(1.05) !important;
 }
 
-.driver-popover.capoasis-tour-popover #popover-play-btn:active {
+.driver-popover.teamstuff-tour-popover #popover-play-btn:active {
   transform: translate(1px, 1px) !important;
   box-shadow: 1px 1px 0px #000000 !important;
 }
 
-.driver-popover.capoasis-tour-popover #popover-play-btn .play-icon {
+.driver-popover.teamstuff-tour-popover #popover-play-btn .play-icon {
   font-size: 22px !important;
   color: #000000 !important;
   position: absolute !important;
@@ -162,12 +162,12 @@
   justify-content: center !important;
 }
 
-.driver-popover.capoasis-tour-popover #popover-play-btn .play-icon svg {
+.driver-popover.teamstuff-tour-popover #popover-play-btn .play-icon svg {
   stroke: #000000 !important;
 }
 
 /* SVG Progress Ring */
-.driver-popover.capoasis-tour-popover .progress-ring {
+.driver-popover.teamstuff-tour-popover .progress-ring {
   position: absolute !important;
   top: 0px !important;
   left: 0px !important;
@@ -175,13 +175,13 @@
   z-index: 1 !important;
 }
 
-.driver-popover.capoasis-tour-popover .progress-ring__circle {
+.driver-popover.teamstuff-tour-popover .progress-ring__circle {
   stroke: #000000 !important;
   transition: stroke-dashoffset 0.1s !important;
   transform-origin: 50% 50% !important;
 }
 
-.driver-popover.capoasis-tour-popover .progress-ring__track {
+.driver-popover.teamstuff-tour-popover .progress-ring__track {
   stroke: rgba(0, 0, 0, 0.1) !important;
 }
 

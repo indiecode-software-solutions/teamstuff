@@ -1,5 +1,5 @@
 /**
- * CapOasis Intranet - Pricing Page Stylesheet
+ * Teamstuff Intranet - Pricing Page Stylesheet
  * 100% Pure Vanilla CSS, Architectural Monotone Theme (Carbon, Charcoal & Zinc)
  * Minimal Border Radius: 6px (sm), 8px (md), 12px (lg), 16px (xl)
  * Strictly enforces font-weight <= 600 per AGENTS.md rules
@@ -322,7 +322,7 @@
   border-bottom: 1px solid #E4E4E7;
 }
 
-.pricing-table th.th-capoasis {
+.pricing-table th.th-teamstuff {
   font-size: 1.05rem;
   color: #09090B;
   background-color: #F4F4F5;
@@ -367,23 +367,23 @@
   margin: 2px 0 0 0;
 }
 
-.pricing-td-capoasis {
+.pricing-td-teamstuff {
   background-color: #FBFBFC;
 }
 
-.pricing-capoasis-val-box {
+.pricing-teamstuff-val-box {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.pricing-capoasis-val {
+.pricing-teamstuff-val {
   font-size: 0.95rem;
   font-weight: 600;
   color: #09090B;
 }
 
-.pricing-capoasis-note {
+.pricing-teamstuff-note {
   font-size: 0.78rem;
   color: #71717A;
   font-weight: 500;

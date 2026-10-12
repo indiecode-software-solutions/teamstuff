@@ -89,11 +89,11 @@ import {
 
 export const Route = createFileRoute("/lists")({
   head: () => ({
-    title: "CapOasis | TO-DO List",
+    title: "Teamstuff | TO-DO List",
     meta: [
       {
         name: "description",
-        content: "Organize tasks, projects, ideas, and checklists within CapOasis.",
+        content: "Organize tasks, projects, ideas, and checklists within Teamstuff.",
       },
     ],
   }),

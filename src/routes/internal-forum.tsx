@@ -60,7 +60,7 @@ export const Route = createFileRoute("/internal-forum")({
     return typeof post === "string" ? { post } : {};
   },
   head: () => ({
-    title: "CapOasis | Forum",
+    title: "Teamstuff | Forum",
     meta: [
       {
         name: "description",

@@ -89,7 +89,7 @@ import { getTeamIcon } from "./teams.index";
 
 export const Route = createFileRoute("/teams/$teamId")({
   head: () => ({
-    title: "CapOasis | Team Workspace",
+    title: "Teamstuff | Team Workspace",
     meta: [
       {
         name: "description",

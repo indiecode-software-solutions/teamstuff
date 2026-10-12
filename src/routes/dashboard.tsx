@@ -81,7 +81,7 @@ import { calculateIsLate } from "../lib/attendance-helpers";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
-    title: "CapOasis | Employee Dashboard",
+    title: "Teamstuff | Employee Dashboard",
     meta: [
       {
         name: "description",
@@ -295,7 +295,7 @@ function DashboardPage() {
       overlayOpacity: 0.65,
       allowClose: false,
       allowKeyboardControl: false,
-      popoverClass: "capoasis-tour-popover",
+      popoverClass: "teamstuff-tour-popover",
       showProgress: true,
       progressText: "Step: {{current}} of {{total}}",
       popoverOffset: 18,

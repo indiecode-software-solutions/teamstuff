@@ -42,11 +42,11 @@ import {
 
 export const Route = createFileRoute("/resources/assets")({
   head: () => ({
-    title: "CapOasis | My Assets & Requisitions",
+    title: "Teamstuff | My Assets & Requisitions",
     meta: [
       {
         name: "description",
-        content: "Track company hardware in your custody and submit equipment requisitions at CapOasis.",
+        content: "Track company hardware in your custody and submit equipment requisitions at Teamstuff.",
       },
     ],
   }),
