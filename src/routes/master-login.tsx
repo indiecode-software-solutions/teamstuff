@@ -3,11 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   Eye as Visibility,
   EyeOff as VisibilityOff,
-  ArrowRight,
   Loader2,
-  Mail,
-  Lock,
-  ShieldCheck,
   AlertCircle,
   CheckCircle2,
   X,
@@ -17,8 +13,8 @@ import { masterLogin } from "../lib/master";
 
 export const Route = createFileRoute("/master-login")({
   head: () => ({
-    title: "Master Console Login | Teamstuff",
-    meta: [{ name: "description", content: "Master Admin Console authentication." }],
+    title: "Console Login",
+    meta: [{ name: "description", content: "Master Admin Authentication." }],
   }),
   component: MasterLoginPage,
 });
@@ -38,10 +34,10 @@ function MasterLoginPage() {
     severity: "error",
   });
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async (e?: React.FormEvent | React.KeyboardEvent) => {
+    if (e) e.preventDefault();
     if (!email || !password) {
-      setToast({ open: true, message: "Please enter your credentials.", severity: "error" });
+      setToast({ open: true, message: "Please fill in all credentials.", severity: "error" });
       return;
     }
     setLoading(true);
@@ -67,118 +63,75 @@ function MasterLoginPage() {
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !loading) {
+      handleLogin(e);
+    }
+  };
+
   return (
     <div className="master-login-page">
-      <div className="master-login-card">
-        {/* Header with Security Badge and Branding */}
-        <div className="master-login-header">
-          <div className="master-login-badge">
-            <span className="master-login-badge-dot" />
-            <ShieldCheck size={13} />
-            <span>Platform Security</span>
-          </div>
-
-          <div className="master-login-brand">
-            <img
-              src="/teamstuff_logo.png"
-              alt="Teamstuff Intranet"
-              className="master-login-logo"
-            />
-          </div>
-
-          <div className="master-login-title-group">
-            <h1 className="master-login-title">Master Console</h1>
-            <p className="master-login-subtitle">
-              Enter root credentials to manage multi-tenant environments, storage & system accounts.
-            </p>
-          </div>
-        </div>
-
-        {/* Credentials Form */}
-        <form onSubmit={handleLogin} className="master-login-form">
-          <div className="master-login-field">
-            <label htmlFor="master-email" className="master-login-label">
-              Admin Email
-            </label>
-            <div className="master-login-input-wrap">
-              <span className="master-login-input-icon">
-                <Mail size={16} />
-              </span>
+      <div className="master-login-simple-container">
+        {/* Simple & Clean Form identical to Employee Login */}
+        <form onSubmit={handleLogin} onKeyDown={handleKeyDown} className="login-form">
+          <div className="login-field-group">
+            <label className="login-field-label">Email</label>
+            <div className="login-input-wrapper">
               <input
-                id="master-email"
                 type="email"
-                className="master-login-input"
-                placeholder="root@teamstuff.com"
+                required
+                autoFocus
+                placeholder="Enter email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                autoComplete="username"
-                autoFocus
-                required
+                onKeyDown={handleKeyDown}
+                className="login-input"
               />
             </div>
           </div>
 
-          <div className="master-login-field">
-            <label htmlFor="master-password" className="master-login-label">
-              Master Password
-            </label>
-            <div className="master-login-input-wrap">
-              <span className="master-login-input-icon">
-                <Lock size={16} />
-              </span>
+          <div className="login-field-group">
+            <label className="login-field-label">Password</label>
+            <div className="login-input-wrapper">
               <input
-                id="master-password"
                 type={showPassword ? "text" : "password"}
-                className="master-login-input"
-                placeholder="••••••••••••"
+                required
+                placeholder="Enter password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
-                required
+                onKeyDown={handleKeyDown}
+                className="login-input login-input-password"
               />
               <button
                 type="button"
-                className="master-login-eye-btn"
-                onClick={() => setShowPassword((v) => !v)}
+                onClick={() => setShowPassword((prev) => !prev)}
                 tabIndex={-1}
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="login-password-toggle"
+                title={showPassword ? "Hide password" : "Show password"}
               >
-                {showPassword ? <VisibilityOff size={16} /> : <Visibility size={16} />}
+                {showPassword ? <VisibilityOff size={18} /> : <Visibility size={18} />}
               </button>
             </div>
           </div>
 
           <button
             type="submit"
-            className="master-login-submit-btn"
             disabled={loading}
+            className="login-submit-btn"
           >
             {loading ? (
               <>
-                <Loader2 size={16} className="master-login-spinner" />
-                <span>Authenticating...</span>
+                <Loader2 size={18} className="animate-spin" />
+                <span>Signing In...</span>
               </>
             ) : (
-              <>
-                <span>Authenticate Session</span>
-                <ArrowRight size={16} />
-              </>
+              <span>Sign In</span>
             )}
           </button>
         </form>
-
-        {/* Footer & Audit Notice */}
-        <div className="master-login-footer">
-          <div className="master-login-security-tag">
-            <span>TLS 1.3 Encrypted • Audit Monitored</span>
-          </div>
-          <a href="/login" className="master-login-back-link">
-            ← Return to Employee Intranet
-          </a>
-        </div>
       </div>
 
-      {/* Floating Toast Notification */}
+      {/* Toast Notification */}
       {toast.open && (
         <div className={`master-login-toast ${toast.severity}`}>
           {toast.severity === "error" ? (
