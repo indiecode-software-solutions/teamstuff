@@ -1,0 +1,60 @@
+/**
+ * CapOasis - Core Application Stylesheet
+ * 100% Pure Vanilla CSS Architecture
+ */
+
+/* Core Design System Tokens & Base Reset */
+@import "./styles/tokens.css";
+@import "./styles/base.css";
+@import "./styles/utilities.css";
+
+/* Semantic UI Components & Layouts */
+@import "./styles/components.css";
+@import "./styles/layout.css";
+
+/* Feature Modules */
+@import "./styles/dashboard.css";
+@import "./styles/attendance.css";
+@import "./styles/salary.css";
+@import "./styles/tasks.css";
+@import "./styles/approvals.css";
+@import "./styles/lists.css";
+@import "./styles/files.css";
+@import "./styles/hr.css";
+@import "./styles/hub.css";
+@import "./styles/calendar.css";
+@import "./styles/performance.css";
+@import "./styles/site-visits.css";
+@import "./styles/master.css";
+@import "./styles/settings.css";
+@import "./styles/teams.css";
+@import "./styles/kanban.css";
+@import "./styles/profile.css";
+@import "./styles/forum.css";
+@import "./styles/ai-workplace.css";
+@import "./styles/ai-orb.css";
+@import "./styles/login.css";
+@import "./styles/onboarding.css";
+@import "./styles/landing.css";
+@import "./styles/pricing.css";
+
+/* Transitions & Micro-animations */
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.sidebar-fade-in {
+  animation: slideInFromLeft 0.75s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.sidebar-item-animate {
+  opacity: 0;
+  animation: slideInFromLeft 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

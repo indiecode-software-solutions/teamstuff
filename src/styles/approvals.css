@@ -1,0 +1,1433 @@
+/**
+ * CapOasis Design System - Approvals Explorer Architecture
+ * Minimal 2-Line Master Feed (Zero Clutter) + Inline Form
+ * 100% Pure Vanilla CSS with font-weights <= 600
+ */
+
+/* ==========================================================================
+   Root Layout Container (Edge-to-Edge Flush Layout)
+   ========================================================================== */
+.approvals-app-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  max-height: 100%;
+  background-color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Left Navigation Sidebar
+   ========================================================================== */
+.approvals-sidebar {
+  width: 264px;
+  height: 100%;
+  flex-shrink: 0;
+  background-color: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  user-select: none;
+  overflow-y: auto;
+  gap: 16px;
+}
+
+.approvals-new-btn-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.approvals-new-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background-color: #18181b;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #18181b;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.approvals-new-btn:hover {
+  background-color: #27272a;
+  border-color: #27272a;
+}
+
+/* New Request Dropdown Menu */
+.approvals-dropdown-content {
+  width: 280px;
+  border-radius: 10px;
+  padding: 6px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 4px 6px -2px rgba(15, 23, 42, 0.04);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.approvals-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 9px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  outline: none;
+  border: none;
+  background: transparent;
+  width: 100%;
+}
+
+.approvals-dropdown-item:hover,
+.approvals-dropdown-item:focus {
+  background-color: #f1f5f9;
+}
+
+.approvals-dropdown-item-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.approvals-dropdown-item-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
+
+.approvals-dropdown-item-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+.approvals-dropdown-item-badge {
+  font-size: 11px;
+  color: #64748b;
+  line-height: 1.2;
+}
+
+/* Category Segmented Tabs Bar */
+.approvals-tabs-bar {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px;
+  border-radius: 9px;
+  background-color: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.approvals-tabs-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.approvals-category-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 11px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #64748b;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.approvals-category-tab:hover {
+  color: #0f172a;
+  background-color: #e2e8f0;
+}
+
+.approvals-category-tab.active {
+  background-color: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.approvals-category-tab.active .approvals-tab-icon {
+  color: #0f172a;
+}
+
+.approvals-tab-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  transition: color 0.15s ease;
+}
+
+
+.approvals-nav-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1;
+}
+
+.approvals-nav-group-title {
+  font-size: 11.5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+  padding: 0 10px 6px;
+}
+
+.approvals-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.approvals-nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8.5px 12px;
+  border-radius: 8px;
+  color: #475569;
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  transition: all 0.15s ease;
+}
+
+.approvals-nav-item:hover {
+  background-color: #e5e7eb;
+  color: #0f172a;
+}
+
+.approvals-nav-item.active {
+  background-color: #d1d5db;
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.approvals-nav-item-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.approvals-nav-item-left span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.approvals-nav-badge {
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 1.5px 6.5px;
+  border-radius: 6px;
+  background-color: #f1f5f9;
+  color: #64748b;
+  flex-shrink: 0;
+  margin-left: 6px;
+}
+
+.approvals-nav-badge.pending {
+  background-color: #faf5eb;
+  color: #854d0e;
+  border: 1px solid #f3e8d2;
+}
+
+.approvals-nav-item.active .approvals-nav-badge {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.approvals-quota-section {
+  padding: 12px;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.approvals-quota-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 500;
+  color: #475569;
+}
+
+.approvals-quota-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: transparent;
+  border: none;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #2563eb;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s ease;
+}
+
+.approvals-quota-toggle-btn:hover {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.approvals-quota-pills {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.approvals-quota-pill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 7px 4px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  text-align: center;
+  min-width: 0;
+}
+
+.approvals-quota-pill-value {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.approvals-quota-pill-label {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Center Explorer Main Content (Minimal Header)
+   ========================================================================== */
+.approvals-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  background-color: #ffffff;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.approvals-topbar {
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  background-color: #ffffff;
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.approvals-search-box {
+  flex: 1;
+  max-width: 480px;
+  min-width: 180px;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.approvals-search-input {
+  width: 100%;
+  height: 38px;
+  padding: 0 32px 0 36px;
+  background-color: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 13.5px;
+  color: #18181b;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.approvals-search-input:focus {
+  background-color: #ffffff;
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.06);
+}
+
+.approvals-search-icon {
+  position: absolute;
+  left: 11px;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.approvals-search-clear-btn {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.approvals-search-clear-btn:hover {
+  color: #0f172a;
+}
+
+.approvals-topbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.approvals-filter-dropdown-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.approvals-filter-dropdown-btn:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.approvals-icon-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.approvals-icon-action-btn:hover {
+  background-color: #f8fafc;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+.approvals-dropdown-menu-content {
+  width: 180px;
+  border-radius: 10px;
+  padding: 5px;
+  background-color: #ffffff;
+  border: 1px solid #cbd5e1;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 4px 10px -2px rgba(15, 23, 42, 0.05);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.approvals-dropdown-menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+  outline: none;
+  transition: all 0.15s ease;
+}
+
+.approvals-dropdown-menu-item:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.approvals-dropdown-menu-item.active {
+  font-weight: 500;
+  color: #0f172a;
+  background-color: #f8fafc;
+}
+
+.approvals-content {
+  padding: 16px 20px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+
+.approvals-breadcrumbs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.approvals-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.approvals-breadcrumb-link {
+  color: #64748b;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.approvals-breadcrumb-link:hover {
+  color: #0f172a;
+  text-decoration: underline;
+}
+
+.approvals-breadcrumb-active {
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.approvals-sort-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: #475569;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 6px 12px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.approvals-sort-btn:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+/* ==========================================================================
+   Fluid 2-Line Minimal Master List (Zero Clutter)
+   ========================================================================== */
+.approvals-list-wrap {
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background-color: #ffffff;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+}
+
+.approvals-list-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background-color: #ffffff;
+  border-left: 3px solid transparent;
+  min-height: 58px;
+}
+
+.approvals-list-item:last-child {
+  border-bottom: none;
+}
+
+.approvals-list-item:hover {
+  background-color: #f8fafc;
+}
+
+.approvals-list-item.selected {
+  background-color: #f1f5f9;
+  border-left: 3px solid #0f172a;
+}
+
+.approvals-item-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f1f5f9;
+  color: #1e293b;
+  flex-shrink: 0;
+}
+
+.approvals-item-content {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.approvals-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.approvals-item-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.approvals-item-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 12.5px;
+  color: #64748b;
+  min-width: 0;
+}
+
+.approvals-item-meta-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.approvals-item-meta-dot {
+  color: #cbd5e1;
+  font-size: 10px;
+}
+
+.approvals-item-amount {
+  font-size: 12px;
+  font-weight: 500;
+  color: #0f172a;
+  background-color: #e2e8f0;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.approvals-item-date {
+  font-size: 11.5px;
+  color: #94a3b8;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-align: right;
+  margin-left: auto;
+}
+
+.approvals-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2.5px 7px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  border: 1px solid transparent;
+}
+
+.approvals-status-pill.pending {
+  background-color: #faf5eb;
+  color: #854d0e;
+  border-color: #f3e8d2;
+}
+
+.approvals-status-pill.approved {
+  background-color: #f0fdf4;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.approvals-status-pill.rejected {
+  background-color: #fef2f2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.approvals-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 20px;
+  gap: 10px;
+  color: #64748b;
+  text-align: center;
+}
+
+.approvals-empty-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+/* ==========================================================================
+   Inline Creation Form Workspace (3-Tier Fixed Header & Footer Layout)
+   ========================================================================== */
+.approvals-create-layout {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+.approvals-create-topbar {
+  flex-shrink: 0;
+}
+
+.approvals-create-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
+
+.approvals-create-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 720px;
+  width: 100%;
+}
+
+.approvals-form-card {
+  border: none;
+  background-color: transparent;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: none;
+  flex: 1;
+}
+
+.approvals-form-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.approvals-form-icon-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.approvals-form-header-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.approvals-form-title {
+  font-size: 17px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.approvals-form-subtitle {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.approvals-form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex: 1;
+}
+
+.approvals-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.approvals-form-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #334155;
+}
+
+.approvals-form-input,
+.approvals-form-select,
+.approvals-form-textarea {
+  width: 100%;
+  padding: 9.5px 12px;
+  border-radius: 7px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  color: #0f172a;
+  background-color: #ffffff;
+  outline: none;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.approvals-form-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 38px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23334155' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px 16px;
+  cursor: pointer;
+}
+
+.approvals-form-input[type="date"] {
+  cursor: pointer;
+}
+
+.approvals-form-input[type="date"]::-webkit-calendar-picker-indicator {
+  margin-right: 4px;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.15s ease;
+}
+
+.approvals-form-input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.approvals-form-input:focus,
+.approvals-form-select:focus,
+.approvals-form-textarea:focus {
+  border-color: #0f172a;
+  box-shadow: 0 0 0 2px rgba(15, 23, 42, 0.06);
+}
+
+.approvals-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Custom File Upload Dropzone */
+.approvals-file-dropzone {
+  border: 1.5px dashed #cbd5e1;
+  border-radius: 9px;
+  padding: 22px 16px;
+  text-align: center;
+  background-color: #f8fafc;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.approvals-file-dropzone:hover,
+.approvals-file-dropzone.dragging {
+  border-color: #0f172a;
+  background-color: #f1f5f9;
+}
+
+.approvals-file-dropzone-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.approvals-file-dropzone-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.approvals-file-dropzone-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.approvals-file-dropzone-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.approvals-file-dropzone-desc {
+  font-size: 11.5px;
+  color: #94a3b8;
+}
+
+.approvals-file-preview-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+}
+
+.approvals-file-preview-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #0f172a;
+  flex-shrink: 0;
+}
+
+.approvals-file-preview-meta {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.approvals-file-preview-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: #0f172a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.approvals-file-preview-tag {
+  font-size: 11.5px;
+  color: #10b981;
+  font-weight: 500;
+}
+
+.approvals-file-preview-remove {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.approvals-file-preview-remove:hover {
+  background-color: #fee2e2;
+  color: #ef4444;
+  border-color: #fecaca;
+}
+
+/* Weekday Grid for Schedule preference */
+.approvals-weekday-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.approvals-weekday-chip {
+  padding: 7px 14px;
+  border-radius: 7px;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  color: #475569;
+  transition: all 0.15s ease;
+}
+
+.approvals-weekday-chip:hover {
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+  color: #0f172a;
+}
+
+.approvals-weekday-chip.selected {
+  border-color: #18181b;
+  background-color: #18181b;
+  color: #ffffff;
+}
+
+/* Fixed True Bottom Actions Footer */
+.approvals-create-footer {
+  flex-shrink: 0;
+  padding: 12px 24px;
+  border-top: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.02);
+  z-index: 10;
+}
+
+.approvals-form-cancel {
+  padding: 9.5px 16px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.approvals-form-cancel:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+  color: #0f172a;
+}
+
+.approvals-form-submit {
+  padding: 9.5px 20px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #ffffff;
+  background-color: #18181b;
+  border: 1px solid #18181b;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.approvals-form-submit:hover {
+  background-color: #27272a;
+}
+
+.approvals-form-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Right Inspector & Guidelines Panel
+   ========================================================================== */
+.approvals-inspector {
+  width: 350px;
+  height: 100%;
+  flex-shrink: 0;
+  background-color: #ffffff;
+  border-left: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.approvals-inspector-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 20px 14px 20px;
+  border-bottom: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.approvals-inspector-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.approvals-inspector-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.approvals-inspector-close {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.approvals-inspector-close:hover {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #0f172a;
+}
+
+.approvals-inspector-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.approvals-inspector-label {
+  font-size: 11.5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+}
+
+.approvals-applicant-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.approvals-applicant-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  color: #334155;
+  font-size: 13.5px;
+  flex-shrink: 0;
+}
+
+.approvals-applicant-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.approvals-applicant-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.approvals-applicant-role {
+  font-size: 12px;
+  color: #64748b;
+}
+
+.approvals-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.approvals-info-box {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px 12px;
+  border-radius: 6px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.approvals-info-box-label {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.approvals-info-box-value {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #0f172a;
+}
+
+.approvals-reason-box {
+  padding: 11px 13px;
+  border-radius: 8px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  font-size: 13.5px;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.approvals-attachment-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border-radius: 6px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #0284c7;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.approvals-attachment-btn:hover {
+  background-color: #f0f9ff;
+  border-color: #bae6fd;
+}
+
+.approvals-attachment-btn-expired {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 13px;
+  border-radius: 6px;
+  background-color: #fffbeb;
+  border: 1px solid #fde68a;
+  color: #92400e;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: not-allowed;
+  user-select: none;
+}
+
+.approvals-attachment-expired-tag {
+  font-size: 11px;
+  font-weight: 500;
+  color: #b45309;
+  background-color: #fef3c7;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+
+.approvals-action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px 18px 20px;
+  border-top: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  flex-shrink: 0;
+  z-index: 2;
+}
+
+.approvals-btn-approve {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background-color: #15803d;
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.approvals-btn-approve:hover {
+  background-color: #166534;
+}
+
+.approvals-btn-reject {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #dc2626;
+  font-size: 13.5px;
+  font-weight: 500;
+  border: 1px solid #fca5a5;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.approvals-btn-reject:hover {
+  background-color: #fef2f2;
+  border-color: #f87171;
+}
+
+.approvals-btn-withdraw {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #dc2626;
+  font-size: 13.5px;
+  font-weight: 500;
+  border: 1px solid #fecaca;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.approvals-btn-withdraw:hover {
+  background-color: #fef2f2;
+  border-color: #f87171;
+  color: #b91c1c;
+}
+
+
+/* Guideline Card inside Right Panel during Creation */
+.approvals-guideline-card {
+  border-radius: 10px;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.approvals-guideline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 13px;
+  color: #475569;
+  line-height: 1.45;
+}
+
+.approvals-guideline-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   Responsive Adaptations
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .approvals-inspector {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 20;
+    box-shadow: -4px 0 16px rgba(0, 0, 0, 0.08);
+  }
+}
+
+@media (max-width: 768px) {
+  .approvals-sidebar {
+    width: 220px;
+  }
+}

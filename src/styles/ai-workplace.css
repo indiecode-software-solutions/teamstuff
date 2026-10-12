@@ -1,0 +1,748 @@
+/* ==========================================================================
+   CapOasis AI Workplace Suite (3-Column Enterprise AI Operating System)
+   ========================================================================== */
+
+.ai-workplace-container {
+  display: flex;
+  height: calc(100vh - var(--header-height, 56px));
+  width: 100%;
+  background-color: #ffffff;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ==========================================================================
+   1. Left Sub-Sidebar: Chat History & Session Manager
+   ========================================================================== */
+.ai-wp-history-sidebar {
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  height: 100%;
+  border-right: 1px solid var(--color-border, #e4e4e7);
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 18px 14px 14px 18px;
+  overflow-y: auto;
+  gap: 16px;
+}
+
+.ai-wp-history-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.ai-wp-history-sidebar::-webkit-scrollbar-thumb {
+  background: #e4e4e7;
+  border-radius: 4px;
+}
+
+.ai-wp-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ai-wp-history-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--color-text-primary, #09090b);
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.ai-wp-new-chat-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 9px 14px;
+  background-color: var(--color-surface-subtle, #f4f4f5);
+  color: var(--color-text-primary, #18181b);
+  border: 1px solid var(--color-border, #e4e4e7);
+  border-radius: var(--radius-lg, 12px);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease;
+  user-select: none;
+}
+
+.ai-wp-new-chat-btn:hover {
+  background-color: #e4e4e7;
+  color: #000000;
+}
+
+.ai-wp-history-groups {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex: 1;
+}
+
+.ai-wp-history-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ai-wp-history-group-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #71717a;
+  text-transform: capitalize;
+  margin-bottom: 2px;
+  padding-left: 6px;
+}
+
+.ai-wp-history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 7px 8px;
+  border-radius: var(--radius-md, 8px);
+  cursor: pointer;
+  transition: all 150ms ease;
+  position: relative;
+  background: transparent;
+  border: 1px solid transparent;
+  text-align: left;
+  width: 100%;
+}
+
+.ai-wp-history-item:hover {
+  background-color: var(--color-surface-hover, #f4f4f5);
+}
+
+.ai-wp-history-item.active {
+  background-color: var(--color-surface-subtle, #f4f4f5);
+  border-color: var(--color-border, #e4e4e7);
+}
+
+.ai-wp-history-item-left {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  overflow: hidden;
+  flex: 1;
+}
+
+.ai-wp-history-item-icon {
+  color: #71717a;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ai-wp-history-item.active .ai-wp-history-item-icon {
+  color: #18181b;
+}
+
+.ai-wp-history-item-texts {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  gap: 1px;
+}
+
+.ai-wp-history-item-title {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--color-text-primary, #18181b);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.ai-wp-history-item-snippet {
+  font-size: 11px;
+  color: #a1a1aa;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.ai-wp-history-item-actions {
+  opacity: 0;
+  transition: opacity 150ms ease;
+  display: flex;
+  align-items: center;
+}
+
+.ai-wp-history-item:hover .ai-wp-history-item-actions {
+  opacity: 1;
+}
+
+.ai-wp-item-menu-btn {
+  background: transparent;
+  border: none;
+  color: #71717a;
+  cursor: pointer;
+  padding: 2px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ai-wp-item-menu-btn:hover {
+  color: #09090b;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* ==========================================================================
+   2. Center Main Panel: Hero & Interactive Conversation Workspace
+   ========================================================================== */
+.ai-wp-main-panel {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  overflow-y: auto;
+  position: relative;
+}
+
+.ai-wp-main-panel::-webkit-scrollbar {
+  width: 5px;
+}
+
+.ai-wp-main-panel::-webkit-scrollbar-thumb {
+  background: #e4e4e7;
+  border-radius: 4px;
+}
+
+.ai-wp-content-wrapper {
+  max-width: 720px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 24px 60px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* Hero Section */
+.ai-wp-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ai-wp-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #71717a;
+  letter-spacing: -0.01em;
+}
+
+.ai-wp-hero-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--color-text-primary, #09090b);
+  letter-spacing: -0.025em;
+  margin: 0;
+  line-height: 1.25;
+}
+
+.ai-wp-hero-subtitle {
+  font-size: 13.5px;
+  color: #71717a;
+  max-width: 520px;
+  margin: 0;
+  line-height: 1.45;
+  font-weight: 400;
+}
+
+/* Prompt Input Box */
+.ai-wp-input-card {
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+  border: 1px solid var(--color-border, #e4e4e7);
+  border-radius: 16px;
+  padding: 14px 16px 10px 16px;
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+  transition: all 180ms ease;
+  position: relative;
+}
+
+.ai-wp-input-card:focus-within {
+  border-color: #18181b;
+  box-shadow: 0 6px 24px -4px rgba(0, 0, 0, 0.1);
+}
+
+.ai-wp-textarea {
+  width: 100%;
+  border: none;
+  background: transparent;
+  outline: none;
+  resize: none;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--color-text-primary, #09090b);
+  line-height: 1.5;
+  min-height: 52px;
+}
+
+.ai-wp-textarea::placeholder {
+  color: #a1a1aa;
+}
+
+.ai-wp-input-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid rgba(228, 228, 231, 0.5);
+  margin-top: 6px;
+}
+
+.ai-wp-input-controls-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-wp-attach-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--color-border, #e4e4e7);
+  background: #ffffff;
+  color: #71717a;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.ai-wp-attach-btn:hover {
+  background-color: #f4f4f5;
+  color: #09090b;
+}
+
+.ai-wp-context-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #3f3f46;
+  background-color: var(--color-surface-subtle, #f4f4f5);
+  border: 1px solid var(--color-border, #e4e4e7);
+  border-radius: 9999px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 150ms ease;
+  user-select: none;
+}
+
+.ai-wp-context-pill:hover {
+  background-color: #e4e4e7;
+  color: #09090b;
+}
+
+.ai-wp-input-controls-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ai-wp-mic-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: #71717a;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.ai-wp-mic-btn:hover {
+  background-color: #f4f4f5;
+  color: #09090b;
+}
+
+.ai-wp-send-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #18181b;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.ai-wp-send-submit-btn:hover:not(:disabled) {
+  background-color: #27272a;
+  transform: scale(1.05);
+}
+
+.ai-wp-send-submit-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Quick Prompts List */
+.ai-wp-prompts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ai-wp-prompt-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: #ffffff;
+  border: 1px solid var(--color-border, #e4e4e7);
+  border-radius: var(--radius-lg, 12px);
+  color: var(--color-text-secondary, #27272a);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 150ms ease;
+  text-align: left;
+}
+
+.ai-wp-prompt-card:hover {
+  background-color: var(--color-surface-hover, #f4f4f5);
+  border-color: #d4d4d8;
+  transform: translateX(2px);
+}
+
+.ai-wp-prompt-card-chevron {
+  color: #a1a1aa;
+  transition: transform 150ms ease, color 150ms ease;
+}
+
+.ai-wp-prompt-card:hover .ai-wp-prompt-card-chevron {
+  color: #18181b;
+  transform: translateX(2px);
+}
+
+/* ==========================================================================
+   Active Conversation Stream View
+   ========================================================================== */
+.ai-wp-messages-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  width: 100%;
+}
+
+.ai-wp-msg-row {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.ai-wp-msg-row.user {
+  justify-content: flex-end;
+}
+
+.ai-wp-msg-row.assistant {
+  justify-content: flex-start;
+}
+
+.ai-wp-msg-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ai-wp-msg-avatar.user {
+  background: #e4e4e7;
+  color: #27272a;
+}
+
+.ai-wp-msg-avatar.assistant {
+  background: #18181b;
+  color: #ffffff;
+}
+
+.ai-wp-msg-bubble-wrap {
+  display: flex;
+  flex-direction: column;
+  max-width: 85%;
+  gap: 4px;
+}
+
+.ai-wp-msg-bubble {
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  word-break: break-word;
+}
+
+.ai-wp-msg-bubble.user {
+  background-color: #18181b;
+  color: #ffffff;
+  border-bottom-right-radius: 3px;
+}
+
+.ai-wp-msg-bubble.assistant {
+  background-color: #ffffff;
+  color: var(--color-text-primary, #18181b);
+  border: 1px solid var(--color-border, #e4e4e7);
+  border-bottom-left-radius: 3px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.ai-wp-msg-text {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.ai-wp-msg-nav-card {
+  margin-top: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--color-surface-subtle, #f4f4f5);
+  border: 1px solid var(--color-border, #e4e4e7);
+  border-radius: var(--radius-md, 8px);
+  padding: 6px 12px;
+  color: var(--color-text-primary, #09090b);
+  font-size: 12px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 150ms ease;
+  align-self: flex-start;
+}
+
+.ai-wp-msg-nav-card:hover {
+  background-color: #e4e4e7;
+  color: #000000;
+}
+
+/* ==========================================================================
+   3. Right Panel: AI Tools, Connected Live Data & Trust Card
+   ========================================================================== */
+.ai-wp-tools-sidebar {
+  width: 290px;
+  min-width: 290px;
+  max-width: 290px;
+  height: 100%;
+  border-left: 1px solid var(--color-border, #e4e4e7);
+  background-color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 18px;
+  overflow-y: auto;
+  gap: 24px;
+}
+
+.ai-wp-tools-sidebar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.ai-wp-tools-sidebar::-webkit-scrollbar-thumb {
+  background: #e4e4e7;
+  border-radius: 4px;
+}
+
+.ai-wp-tools-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ai-wp-tools-header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ai-wp-tools-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ai-wp-tools-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-primary, #09090b);
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.ai-wp-tools-subtitle {
+  font-size: 11.5px;
+  color: #71717a;
+  margin: 0;
+}
+
+.ai-wp-manage-btn {
+  font-size: 11px;
+  font-weight: 500;
+  color: #18181b;
+  background: transparent;
+  border: 1px solid var(--color-border, #e4e4e7);
+  border-radius: var(--radius-sm, 6px);
+  padding: 2px 8px;
+  cursor: pointer;
+  transition: all 150ms ease;
+}
+
+.ai-wp-manage-btn:hover {
+  background: #f4f4f5;
+}
+
+/* 6-Card AI Tools Grid */
+.ai-wp-tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.ai-wp-tool-card {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background-color: #ffffff;
+  border: 1px solid var(--color-border, #e4e4e7);
+  border-radius: var(--radius-lg, 12px);
+  cursor: pointer;
+  transition: all 150ms ease;
+  text-align: left;
+  gap: 4px;
+}
+
+.ai-wp-tool-card:hover {
+  background-color: var(--color-surface-hover, #f4f4f5);
+  border-color: #d4d4d8;
+  transform: translateY(-1px);
+}
+
+.ai-wp-tool-icon {
+  color: #18181b;
+  margin-bottom: 2px;
+}
+
+.ai-wp-tool-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-text-primary, #09090b);
+  margin: 0;
+}
+
+.ai-wp-tool-desc {
+  font-size: 10.5px;
+  color: #71717a;
+  line-height: 1.35;
+  margin: 0;
+}
+
+/* Connected Data Sources List */
+.ai-wp-connected-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-wp-connected-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--color-text-secondary, #27272a);
+}
+
+.ai-wp-connected-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.ai-wp-connected-item-icon {
+  color: #71717a;
+}
+
+.ai-wp-connected-item-check {
+  color: #22c55e;
+}
+
+/* Trust / Data Governance Card */
+.ai-wp-trust-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border-radius: var(--radius-lg, 12px);
+  background-color: var(--color-surface-subtle, #f4f4f5);
+  border: 1px solid var(--color-border, #e4e4e7);
+  margin-top: auto;
+}
+
+.ai-wp-trust-icon {
+  color: #71717a;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.ai-wp-trust-texts {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ai-wp-trust-title {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--color-text-primary, #09090b);
+  margin: 0;
+}
+
+.ai-wp-trust-desc {
+  font-size: 10.5px;
+  color: #71717a;
+  line-height: 1.4;
+  margin: 0;
+}
+
+/* Responsive Styles */
+@media (max-width: 1120px) {
+  .ai-wp-tools-sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .ai-wp-history-sidebar {
+    display: none;
+  }
+  .ai-wp-content-wrapper {
+    padding: 24px 16px 40px 16px;
+  }
+  .ai-wp-hero-title {
+    font-size: 24px;
+  }
+}

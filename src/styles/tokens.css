@@ -1,0 +1,218 @@
+/**
+ * CapOasis Design System - Core CSS Custom Properties (Variables)
+ * Monotonous Black & White Theme (Clean, High-Contrast Carbon, Charcoal & Zinc)
+ * Strict rules:
+ * - Font weight never exceeds 600.
+ * - Standard border radius: 6px (sm), 8px (md), 12px (lg), 16px (xl).
+ */
+
+:root {
+  /* Typography Variables */
+  --font-sans: "Poppins", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  
+  --font-size-2xs: 0.625rem;   /* 10px */
+  --font-size-xs: 0.6875rem;   /* 11px */
+  --font-size-sm: 0.75rem;     /* 12px */
+  --font-size-base: 0.8125rem; /* 13px */
+  --font-size-md: 0.875rem;    /* 14px */
+  --font-size-lg: 1rem;        /* 16px */
+  --font-size-xl: 1.125rem;    /* 18px */
+  --font-size-2xl: 1.25rem;    /* 20px */
+  --font-size-3xl: 1.5rem;     /* 24px */
+
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600; /* MAX font weight allowed */
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+
+  /* Standard Minimal Border Radii */
+  --radius-xs: 4px;
+  --radius-sm: 6px;   /* Badges, tags, pill action buttons */
+  --radius-md: 8px;   /* Buttons, inputs, stat boxes, list items */
+  --radius-lg: 12px;  /* Cards, modals, major containers */
+  --radius-xl: 16px;  /* Max allowed outer curve */
+  --radius-full: 9999px;
+
+  /* Spacing Scale */
+  --space-0-5: 0.125rem; /* 2px */
+  --space-1: 0.25rem;    /* 4px */
+  --space-1-5: 0.375rem; /* 6px */
+  --space-2: 0.5rem;     /* 8px */
+  --space-2-5: 0.625rem; /* 10px */
+  --space-3: 0.75rem;    /* 12px */
+  --space-3-5: 0.875rem; /* 14px */
+  --space-4: 1rem;       /* 16px */
+  --space-5: 1.25rem;    /* 20px */
+  --space-6: 1.5rem;     /* 24px */
+  --space-8: 2rem;       /* 32px */
+  --space-10: 2.5rem;    /* 40px */
+  --space-12: 3rem;      /* 48px */
+
+  /* Layout Dimensions */
+  --sidebar-width: 224px;
+  --sidebar-width-compact: 84px;
+  --right-sidebar-width: 360px;
+  --header-height: 54px;
+
+  /* Color Palette - Monotone Neutrals (Light Mode) */
+  --color-white: #fff;
+  --color-bg-offwhite: #F3F4F4;
+  --color-bg-app: var(--color-bg-offwhite, #F3F4F4);
+  --color-bg-ghostwhite: #f8f8ff;
+  --color-bg-sidebar: var(--color-bg-offwhite, #F3F4F4);
+  --color-bg-header: var(--color-bg-offwhite, #F3F4F4);
+  --color-surface: #fff;
+  --color-surface-subtle: #f4f4f5;
+  --color-surface-hover: #f4f4f5;
+  --color-surface-muted: #e4e4e7;
+
+  --color-border: #e4e4e7;
+  --color-border-subtle: #f4f4f5;
+  --color-border-strong: #d4d4d8;
+
+  --color-text-primary: #09090b;
+  --color-text-secondary: #27272a;
+  --color-text-muted: #71717a;
+  --color-text-placeholder: #a1a1aa;
+
+  /* Brand Primary (Sleek Carbon Black) */
+  --color-primary: #18181b;
+  --color-primary-hover: #27272a;
+  --color-primary-dark: #09090b;
+  --color-primary-light: #f4f4f5;
+  --color-primary-subtle: #f4f4f5;
+  --color-primary-border: #e4e4e7;
+  --color-primary-text: #09090b;
+  --color-primary-contrast: #ffffff;
+  --color-primary-foreground: #ffffff;
+
+  /* Monotone Status & Category Tints (No Bright Accents) */
+  --color-success: #18181b;
+  --color-success-hover: #27272a;
+  --color-success-bg: #f4f4f5;
+  --color-success-border: #d4d4d8;
+  --color-success-text: #18181b;
+
+  --color-danger: #18181b;
+  --color-danger-hover: #27272a;
+  --color-danger-bg: #f4f4f5;
+  --color-danger-border: #d4d4d8;
+  --color-danger-text: #18181b;
+
+  --color-warning: #18181b;
+  --color-warning-bg: #f4f4f5;
+  --color-warning-border: #d4d4d8;
+  --color-warning-text: #18181b;
+
+  --color-info: #18181b;
+  --color-info-bg: #f4f4f5;
+  --color-info-border: #d4d4d8;
+  --color-info-text: #18181b;
+
+  --color-indigo-bg: #f4f4f5;
+  --color-indigo-border: #d4d4d8;
+  --color-indigo-text: #18181b;
+
+  --color-pink-bg: #f4f4f5;
+  --color-pink-border: #d4d4d8;
+  --color-pink-text: #18181b;
+
+  /* Shadows */
+  --shadow-2xs: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  --shadow-xs: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+  /* Unified Shimmer / Skeleton Animation Tokens */
+  --shimmer-gradient: linear-gradient(
+    90deg,
+    #e2e8f0 0%,
+    #f8fafc 35%,
+    #ffffff 50%,
+    #f8fafc 65%,
+    #e2e8f0 100%
+  );
+  --shimmer-duration: 1.5s;
+  --shimmer-timing: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dark Mode Tokens (Monotone Dark) */
+:root.dark,
+.dark {
+  --color-bg-app: #09090b;
+  --color-bg-sidebar: #09090b;
+  --color-surface: #121215;
+  --color-surface-subtle: #18181b;
+  --color-surface-hover: #27272a;
+  --color-surface-muted: #27272a;
+
+  --color-border: #27272a;
+  --color-border-subtle: #1f1f23;
+  --color-border-strong: #3f3f46;
+
+  --color-text-primary: #fafafa;
+  --color-text-secondary: #e4e4e7;
+  --color-text-muted: #a1a1aa;
+  --color-text-placeholder: #71717a;
+
+  --color-primary: #ffffff;
+  --color-primary-hover: #f4f4f5;
+  --color-primary-dark: #e4e4e7;
+  --color-primary-light: #27272a;
+  --color-primary-subtle: #18181b;
+  --color-primary-border: #3f3f46;
+  --color-primary-text: #ffffff;
+  --color-primary-contrast: #09090b;
+  --color-primary-foreground: #09090b;
+
+  --color-success: #ffffff;
+  --color-success-hover: #f4f4f5;
+  --color-success-bg: #18181b;
+  --color-success-border: #27272a;
+  --color-success-text: #fafafa;
+
+  --color-danger: #ffffff;
+  --color-danger-hover: #f4f4f5;
+  --color-danger-bg: #18181b;
+  --color-danger-border: #27272a;
+  --color-danger-text: #fafafa;
+
+  --color-warning: #ffffff;
+  --color-warning-bg: #18181b;
+  --color-warning-border: #27272a;
+  --color-warning-text: #fafafa;
+
+  --color-info: #ffffff;
+  --color-info-bg: #18181b;
+  --color-info-border: #27272a;
+  --color-info-text: #fafafa;
+
+  --color-indigo-bg: #18181b;
+  --color-indigo-border: #27272a;
+  --color-indigo-text: #fafafa;
+
+  --color-pink-bg: #18181b;
+  --color-pink-border: #27272a;
+  --color-pink-text: #fafafa;
+
+  /* Dark Theme Shimmer */
+  --shimmer-gradient: linear-gradient(
+    90deg,
+    #18181b 0%,
+    #27272a 35%,
+    #3f3f46 50%,
+    #27272a 65%,
+    #18181b 100%
+  );
+}

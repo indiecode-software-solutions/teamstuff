@@ -1,0 +1,6 @@
+- [x] Setup `src/lib/forum-schema.sql` with new database tables and policies
+- [x] Implement database migration runner to initialize the schema in Supabase
+- [x] Modify `salado-mobile-mockups-combined.html` (Mobile mockup)
+- [/] Modify `src/components/Layout.tsx` (Desktop Layout placement)
+- [ ] Modify `src/components/TeamActivityHeader.tsx` (Desktop React Component UI & inline expansion)nect feed, and integrate image posting and comments
+- [x] Verify build and test compilation

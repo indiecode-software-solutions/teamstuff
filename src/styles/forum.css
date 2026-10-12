@@ -1,0 +1,676 @@
+/**
+ * CapOasis Design System - Internal Forum Stylesheet
+ * Pixel-perfect match for Salado Corporate Social Wall Reference
+ * 100% Pure Vanilla CSS Architecture
+ * Typography Rule: Font weight <= 600 across all elements.
+ */
+
+/* ==========================================================================
+   Page Layout & Feed Container
+   ========================================================================== */
+.forum-feed-wrapper {
+  max-width: 680px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 16px 80px;
+  box-sizing: border-box;
+}
+
+/* ==========================================================================
+   Top Composer Card
+   ========================================================================== */
+.forum-composer-card {
+  background-color: #ffffff;
+  border-radius: 4px;
+  padding: 16px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.forum-composer-card:focus-within {
+  border-color: #d4d4d8;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.04);
+}
+
+.forum-composer-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.forum-composer-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.forum-composer-text-input {
+  flex: 1;
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 6px;
+  border: 1px solid #e4e4e7;
+  background-color: #f9fafb;
+  color: #18181b;
+  font-size: 13.5px;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.15s ease;
+}
+
+.forum-composer-text-input:focus {
+  background-color: #ffffff;
+  border-color: #18181b;
+}
+
+.forum-composer-text-input::placeholder {
+  color: #8b8e96;
+}
+
+/* Expanded Title & Body in Composer */
+.forum-composer-expanded-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.forum-composer-title-field {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #e4e4e7;
+  background-color: #ffffff;
+  color: #18181b;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.forum-composer-title-field:focus {
+  border-color: #18181b;
+}
+
+.forum-composer-body-field {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #e4e4e7;
+  background-color: #ffffff;
+  color: #18181b;
+  font-size: 13.5px;
+  font-family: var(--font-sans, sans-serif);
+  line-height: 1.55;
+  resize: vertical;
+  min-height: 60px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.forum-composer-body-field:focus {
+  border-color: #18181b;
+}
+
+.forum-composer-img-preview-box {
+  position: relative;
+  display: inline-flex;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e4e4e7;
+  max-width: 260px;
+  background-color: #f4f4f5;
+}
+
+.forum-composer-img-preview-box img {
+  width: 100%;
+  height: auto;
+  max-height: 140px;
+  object-fit: cover;
+  display: block;
+}
+
+.forum-composer-img-close-btn {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background-color: rgba(9, 9, 11, 0.8);
+  color: #ffffff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Composer Bottom Toolbar */
+.forum-composer-bottom-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 4px;
+  flex-wrap: wrap;
+}
+
+.forum-composer-tools-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.forum-composer-tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #52525b;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.forum-composer-tool-btn:hover {
+  background-color: #f4f4f5;
+  color: #18181b;
+}
+
+.forum-composer-post-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 34px;
+  padding: 0 20px;
+  border-radius: 8px;
+  border: none;
+  background-color: #23382c; /* Salado Deep Forest / Charcoal Accent */
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.forum-composer-post-submit-btn:hover:not(:disabled) {
+  background-color: #17261d;
+  transform: translateY(-1px);
+}
+
+.forum-composer-post-submit-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Feed Post Cards (Salado Reference UI)
+   ========================================================================== */
+.forum-feed-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.forum-feed-card {
+  background-color: #ffffff;
+  border-radius: 4px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+
+.forum-feed-card.highlighted {
+  border-color: #18181b;
+  box-shadow: 0 0 0 2px rgba(24, 24, 27, 0.15);
+}
+
+/* Card Header */
+.forum-feed-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.forum-feed-card-author-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.forum-feed-card-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.forum-feed-card-author-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.forum-feed-card-author-name {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #18181b;
+  line-height: 1.2;
+}
+
+.forum-feed-card-subline {
+  font-size: 12px;
+  color: #71717a;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.forum-feed-card-dot {
+  color: #a1a1aa;
+}
+
+.forum-feed-card-more-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #a1a1aa;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.forum-feed-card-more-btn:hover {
+  background-color: #f4f4f5;
+  color: #18181b;
+}
+
+/* Post Content & Title */
+.forum-feed-card-title {
+  font-size: 17px;
+  font-weight: 600;
+  color: #18181b;
+  line-height: 1.35;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.forum-feed-card-body {
+  font-size: 14px;
+  color: #3f3f46;
+  line-height: 1.55;
+  white-space: pre-line;
+  margin: 0;
+}
+
+/* Media Box */
+.forum-feed-card-media {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #f4f4f5;
+  background-color: #f9fafb;
+  max-height: 420px;
+  display: flex;
+  justify-content: center;
+}
+
+.forum-feed-card-media img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  display: block;
+}
+
+/* ==========================================================================
+   Modern Filled-Pill Poll Design (LinkedIn / X Style)
+   ========================================================================== */
+.forum-poll-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+  width: 100%;
+}
+
+.forum-poll-options-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.forum-poll-option-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 48px;
+  padding: 0 16px;
+  border-radius: 10px;
+  border: 1.5px solid #e4e4e7;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+.forum-poll-option-card:hover {
+  border-color: #23382c;
+  background-color: #f7faf8;
+}
+
+.forum-poll-option-card.selected {
+  border-color: #23382c;
+  background-color: #f0f7f3;
+}
+
+.forum-poll-option-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #18181b;
+  line-height: 1.3;
+}
+
+/* Radio Button Circle */
+.forum-poll-radio-outer {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.forum-poll-option-card:hover .forum-poll-radio-outer {
+  border-color: #23382c;
+}
+
+.forum-poll-option-card.selected .forum-poll-radio-outer {
+  border-color: #23382c;
+  background-color: #23382c;
+}
+
+.forum-poll-radio-inner {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ffffff;
+}
+
+/* Poll Results Pill (Modern Background-Fill Style) */
+.forum-poll-result-pill {
+  position: relative;
+  min-height: 48px;
+  border-radius: 10px;
+  border: 1px solid #e4e4e7;
+  background-color: #f4f4f5;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.forum-poll-result-pill.user-voted {
+  background-color: #edf5f0;
+}
+
+.forum-poll-result-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #e2e8f0;
+  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+}
+
+.forum-poll-result-pill.user-voted .forum-poll-result-fill {
+  background-color: #cde6d8;
+}
+
+.forum-poll-result-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0 16px;
+  gap: 12px;
+}
+
+.forum-poll-result-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.forum-poll-result-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #18181b;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.forum-poll-result-pct {
+  font-size: 14px;
+  font-weight: 600;
+  color: #18181b;
+  flex-shrink: 0;
+}
+
+/* Poll Footer & Submit Vote Button */
+.forum-poll-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 6px;
+  gap: 12px;
+}
+
+.forum-poll-stats-text {
+  font-size: 13px;
+  color: #71717a;
+  font-weight: 500;
+}
+
+.forum-poll-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 38px;
+  padding: 0 28px;
+  border-radius: 8px;
+  border: none;
+  background-color: #23382c;
+  color: #ffffff;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.forum-poll-submit-btn:hover:not(:disabled) {
+  background-color: #17261d;
+  transform: translateY(-1px);
+}
+
+.forum-poll-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   Card Actions Row (Upvote, Comments, Date)
+   ========================================================================== */
+.forum-feed-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 10px;
+  border-top: 1px solid #f4f4f5;
+}
+
+.forum-feed-card-date-left {
+  font-size: 12.5px;
+  color: #8b8e96;
+  font-weight: 500;
+  user-select: none;
+}
+
+.forum-feed-card-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.forum-feed-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  background-color: #fafafa;
+  color: #52525b;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 7px 14px;
+  min-height: 38px;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.forum-feed-action-btn:hover {
+  background-color: #f4f4f5;
+  color: #18181b;
+  border-color: #e4e4e7;
+}
+
+.forum-feed-action-btn:focus-visible {
+  outline: 2px solid #23382c;
+  outline-offset: 2px;
+}
+
+.forum-feed-action-btn.active-like {
+  color: #23382c;
+  background-color: #edf5f0;
+  border-color: #cde6d8;
+}
+
+
+
+/* Comments Drawer inside Card */
+.forum-feed-comments-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f4f4f5;
+}
+
+.forum-feed-comment-composer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.forum-feed-comment-input {
+  flex: 1;
+  height: 36px;
+  padding: 0 14px;
+  border-radius: 9999px;
+  border: 1px solid #e4e4e7;
+  background-color: #fafafa;
+  color: #18181b;
+  font-size: 13px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.forum-feed-comment-input:focus {
+  background-color: #ffffff;
+  border-color: #18181b;
+}
+
+.forum-feed-comment-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: none;
+  background-color: #18181b;
+  color: #ffffff;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.forum-feed-comment-send:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.forum-feed-comment-bubble {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.forum-feed-comment-box {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background-color: #fafafa;
+  border: 1px solid #e4e4e7;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.forum-feed-comment-author-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #18181b;
+}
+
+.forum-feed-comment-time {
+  font-size: 11px;
+  color: #71717a;
+}
+
+.forum-feed-comment-text {
+  font-size: 13px;
+  color: #3f3f46;
+  line-height: 1.5;
+  margin: 0;
+}

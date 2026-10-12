@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "128155455018",
+    "project_id": "intranet-39e25",
+    "storage_bucket": "intranet-39e25.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:128155455018:android:8c851adc802b5d084d3d53",
+        "android_client_info": {
+          "package_name": "com.corporate.intranet"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRvgmXhV9yTZNmw5mT6yTnwHFDWfl6EPI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

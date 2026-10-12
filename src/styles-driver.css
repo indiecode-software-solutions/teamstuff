@@ -1,0 +1,190 @@
+/* Custom Retro Neo-brutalist styling for driver.js popover matching driverjs.com design */
+:root {
+  --driver-popover-bg: #C4741F; /* Theme Orange */
+  --driver-popover-color: #FFFFFF; /* White Text */
+  --driver-popover-font-family: "Cabinet Grotesk", "Inter", sans-serif;
+}
+
+.driver-popover.capoasis-tour-popover {
+  background-color: var(--driver-popover-bg) !important;
+  color: var(--driver-popover-color) !important;
+  border: 3px solid #000000 !important;
+  border-radius: 12px !important;
+  box-shadow: 4px 4px 0px #000000 !important;
+  padding: 22px !important;
+  min-width: 360px !important;
+  max-width: 380px !important;
+  font-family: var(--driver-popover-font-family) !important;
+}
+
+/* Title Styling */
+.driver-popover.capoasis-tour-popover .driver-popover-title {
+  font-size: 20px !important;
+  font-weight: 600 !important;
+  line-height: 1.25 !important;
+  color: #FFFFFF !important;
+  margin-bottom: 8px !important;
+  text-transform: capitalize !important;
+  letter-spacing: -0.3px !important;
+}
+
+/* Description Styling */
+.driver-popover.capoasis-tour-popover .driver-popover-description {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  line-height: 1.45 !important;
+  color: #FAF6EE !important;
+}
+
+/* Arrow styling */
+.driver-popover.capoasis-tour-popover .driver-popover-arrow {
+  border-color: var(--driver-popover-bg) !important;
+}
+.driver-popover.capoasis-tour-popover .driver-popover-arrow-side-top {
+  border-bottom-color: var(--driver-popover-bg) !important;
+}
+.driver-popover.capoasis-tour-popover .driver-popover-arrow-side-bottom {
+  border-top-color: var(--driver-popover-bg) !important;
+}
+.driver-popover.capoasis-tour-popover .driver-popover-arrow-side-left {
+  border-right-color: var(--driver-popover-bg) !important;
+}
+.driver-popover.capoasis-tour-popover .driver-popover-arrow-side-right {
+  border-left-color: var(--driver-popover-bg) !important;
+}
+
+/* Close Button (top-right X) */
+.driver-popover.capoasis-tour-popover .driver-popover-close-btn {
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  opacity: 0.85;
+}
+.driver-popover.capoasis-tour-popover .driver-popover-close-btn:hover {
+  color: #000000 !important;
+  opacity: 1 !important;
+}
+
+/* Progress text styling (e.g. Tour: 1 of 8) */
+.driver-popover.capoasis-tour-popover .driver-popover-progress-text {
+  color: #FAF6EE !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+}
+
+/* Buttons styling (Previous, Next, Done) */
+.driver-popover.capoasis-tour-popover .driver-popover-footer-btn {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid #000000 !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  padding: 6px 14px !important;
+  transition: all 0.15s ease !important;
+  text-transform: none !important;
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.2) !important;
+}
+
+.driver-popover.capoasis-tour-popover .driver-popover-footer-btn:hover {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  box-shadow: none !important;
+  transform: translate(1px, 1px) !important;
+}
+
+/* Specific styling for Previous button to look secondary */
+.driver-popover.capoasis-tour-popover .driver-popover-prev-btn {
+  background-color: #423810 !important;
+  color: #ffffff !important;
+  border-color: #000000 !important;
+}
+.driver-popover.capoasis-tour-popover .driver-popover-prev-btn:hover {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+/* Active Highlight Elements styling */
+.driver-active-element {
+  transition: outline 0.2s ease !important;
+}
+
+/* Custom Title Wrapper & Play button styling */
+.driver-popover.capoasis-tour-popover .popover-title-wrapper {
+  display: block !important;
+  width: 100% !important;
+}
+
+/* Position close button further left to avoid overlapping the speaker */
+.driver-popover.capoasis-tour-popover .driver-popover-close-btn {
+  right: 68px !important;
+  top: 14px !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  opacity: 0.85;
+}
+
+.driver-popover.capoasis-tour-popover #popover-play-btn {
+  position: absolute !important;
+  top: -40px !important;
+  right: -40px !important;
+  width: 54px !important;
+  height: 54px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background-color: #ffd880 !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: none !important;
+  transition: all 0.1s ease !important;
+  padding: 0 !important;
+  flex-shrink: 0 !important;
+  z-index: 9999 !important;
+}
+
+.driver-popover.capoasis-tour-popover #popover-play-btn:hover {
+  transform: scale(1.05) !important;
+}
+
+.driver-popover.capoasis-tour-popover #popover-play-btn:active {
+  transform: translate(1px, 1px) !important;
+  box-shadow: 1px 1px 0px #000000 !important;
+}
+
+.driver-popover.capoasis-tour-popover #popover-play-btn .play-icon {
+  font-size: 22px !important;
+  color: #000000 !important;
+  position: absolute !important;
+  z-index: 2 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.driver-popover.capoasis-tour-popover #popover-play-btn .play-icon svg {
+  stroke: #000000 !important;
+}
+
+/* SVG Progress Ring */
+.driver-popover.capoasis-tour-popover .progress-ring {
+  position: absolute !important;
+  top: 0px !important;
+  left: 0px !important;
+  transform: rotate(-90deg) !important;
+  z-index: 1 !important;
+}
+
+.driver-popover.capoasis-tour-popover .progress-ring__circle {
+  stroke: #000000 !important;
+  transition: stroke-dashoffset 0.1s !important;
+  transform-origin: 50% 50% !important;
+}
+
+.driver-popover.capoasis-tour-popover .progress-ring__track {
+  stroke: rgba(0, 0, 0, 0.1) !important;
+}
+
+
+
+

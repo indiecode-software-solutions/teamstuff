@@ -1,0 +1,2061 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SaladO — Mobile App (Combined Design)</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tabler-icons/3.46.0/tabler-icons.min.css">
+  <style>
+    :root {
+      --bg: #FAF7EF;
+      --card: #FFFFFF;
+      --border: #EAE5D8;
+      --border-strong: #DCD5C3;
+      --text: #242420;
+      --text-2: #736F63;
+      --text-3: #A19C8C;
+      --orange: #DD8A3E;
+      --orange-dark: #C4741F;
+      --orange-bg: #FBEBD8;
+      --green: #6FA83C;
+      --green-bg: #EAF3DE;
+      --green-dark: #3B6D11;
+      --red: #D64545;
+      --red-bg: #FCEBEB;
+      --red-dark: #A32D2D;
+      --sidebar: #F3EFE4;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #EDEAE1;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+
+    h1.page-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #2A2A26;
+      text-align: center;
+    }
+
+    p.page-sub {
+      font-size: 14px;
+      color: #736F63;
+      text-align: center;
+      max-width: 520px;
+      margin-top: -12px;
+    }
+
+    .phone {
+      width: 390px;
+      height: 820px;
+      background: #0d0d0c;
+      border-radius: 52px;
+      padding: 14px;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.35), 0 2px 6px rgba(0, 0, 0, 0.2);
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      border-radius: 38px;
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 28px;
+      background: #0d0d0c;
+      border-radius: 0 0 18px 18px;
+      z-index: 50;
+    }
+
+    .statusbar {
+      height: 46px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding: 0 26px 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .app-body {
+      flex: 1;
+      overflow-y: auto;
+      padding-bottom: 88px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .app-body::-webkit-scrollbar {
+      display: none;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px 6px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--green);
+    }
+
+    .brand i {
+      font-size: 18px;
+    }
+
+    .greet {
+      font-size: 12px;
+      color: var(--text-2);
+      padding: 0 18px 10px;
+    }
+
+    .greet b {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: var(--text-2);
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #C9A6E8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      overflow: hidden;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 14px 18px 8px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin: 0 18px 12px;
+    }
+
+    .card-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .card-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .card-title i {
+      font-size: 17px;
+      color: var(--orange-dark);
+    }
+
+    .link {
+      font-size: 12px;
+      color: var(--orange-dark);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .stat {
+      border-radius: 12px;
+      padding: 10px 6px;
+      text-align: center;
+    }
+
+    .stat .n {
+      font-size: 19px;
+      font-weight: 700;
+    }
+
+    .stat .l {
+      font-size: 10px;
+      color: var(--text-2);
+      margin-top: 2px;
+    }
+
+    .stat.green {
+      background: var(--green-bg);
+    }
+
+    .stat.green .n {
+      color: var(--green-dark);
+    }
+
+    .stat.red {
+      background: var(--red-bg);
+    }
+
+    .stat.red .n {
+      color: var(--red-dark);
+    }
+
+    .stat.orange {
+      background: var(--orange-bg);
+    }
+
+    .stat.orange .n {
+      color: var(--orange-dark);
+    }
+
+    .btn {
+      flex: 1;
+      height: 42px;
+      border-radius: 12px;
+      border: none;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+
+    .btn.primary {
+      background: var(--orange-dark);
+      color: white;
+    }
+
+    .btn.ghost {
+      background: var(--card);
+      color: var(--text);
+      border: 0.5px solid var(--border-strong);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .stat4 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 0 18px 4px;
+    }
+
+    .stat4 .box {
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+    }
+
+    .stat4 .box .n {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .stat4 .box .l {
+      font-size: 11px;
+      color: var(--text-2);
+      margin-top: 2px;
+    }
+
+    /* Discussions (ChatGPT UI style) */
+    .chatgpt-thread {
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: 16px;
+      margin: 0 18px 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .thread-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    .thread-question {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      line-height: 1.4;
+    }
+
+    .thread-replies {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding-left: 8px;
+      border-left: 2px solid var(--border);
+    }
+
+    .reply-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-2);
+    }
+
+    .reply-item i {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-top: 2px;
+    }
+
+    .thread-stats {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 4px;
+      border-top: 0.5px solid var(--border);
+      padding-top: 10px;
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    .stat-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+    }
+
+    .stat-item:hover {
+      color: var(--orange-dark);
+    }
+
+    .badge-count {
+      background: var(--green-bg);
+      color: var(--green-dark);
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-size: 10px;
+    }
+
+    .badge-count.zero {
+      background: var(--border);
+      color: var(--text-3);
+    }
+
+    .discussion-input-bar {
+      display: flex;
+      align-items: center;
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: 24px;
+      padding: 6px 12px;
+      margin: 10px 18px;
+    }
+
+    .discussion-input-bar input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 13px;
+      background: transparent;
+      color: var(--text);
+    }
+
+    .discussion-input-bar input::placeholder {
+      color: var(--text-3);
+    }
+
+    .discussion-input-bar button {
+      background: var(--green);
+      color: white;
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 6px 18px 10px;
+    }
+
+    .tile {
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .tile .ic {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .tile .t {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .tile .d {
+      font-size: 11px;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+
+    .new-badge {
+      font-size: 9px;
+      font-weight: 700;
+      color: var(--red-dark);
+      background: var(--red-bg);
+      padding: 2px 6px;
+      border-radius: 20px;
+      align-self: flex-start;
+    }
+
+    .back-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 18px 6px;
+    }
+
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--card);
+      border: 0.5px solid var(--border-strong);
+      border-radius: 20px;
+      padding: 7px 12px;
+      cursor: pointer;
+    }
+
+    .hero-title {
+      font-size: 22px;
+      font-weight: 700;
+      padding: 10px 18px 2px;
+      color: var(--text);
+    }
+
+    .hero-title span {
+      color: var(--orange-dark);
+    }
+
+    .hero-sub {
+      font-size: 12px;
+      color: var(--text-2);
+      padding: 0 18px 12px;
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 6px;
+      padding: 2px 18px 12px;
+      overflow-x: auto;
+    }
+
+    .chip-row::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      flex-shrink: 0;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 7px 14px;
+      border-radius: 20px;
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      color: var(--text-2);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .chip.active {
+      background: var(--orange-dark);
+      color: white;
+      border-color: var(--orange-dark);
+    }
+
+    .field {
+      background: #F6F3EA;
+      border: 0.5px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--text-3);
+      margin: 0 18px 8px;
+    }
+
+    .compose {
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: 16px;
+      margin: 0 18px 14px;
+      padding: 14px;
+    }
+
+    .list-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 18px;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .list-row .li-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--orange-bg);
+      color: var(--orange-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .li-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .li-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .li-sub {
+      font-size: 11px;
+      color: var(--text-2);
+      margin-top: 1px;
+    }
+
+    .badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .badge.pending {
+      background: var(--orange-bg);
+      color: var(--orange-dark);
+    }
+
+    .badge.paid,
+    .badge.done {
+      background: var(--green-bg);
+      color: var(--green-dark);
+    }
+
+    .badge.missing {
+      background: var(--red-bg);
+      color: var(--red-dark);
+    }
+
+    .person {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 18px;
+      border-bottom: 0.5px solid var(--border);
+    }
+
+    .person .av {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #EADFCB;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: #8a7550;
+      flex-shrink: 0;
+    }
+
+    .person .nm {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .person .rl {
+      font-size: 11px;
+      color: var(--orange-dark);
+      font-weight: 600;
+    }
+
+    .profile-hero {
+      margin: 10px 18px 4px;
+      padding: 20px 16px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #FBEBD8, #F6F3EA);
+      text-align: center;
+    }
+
+    .profile-hero .av {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: #EADFCB;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+
+    .profile-hero .nm {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .profile-hero .rl {
+      font-size: 12px;
+      color: var(--text-2);
+      margin-top: 2px;
+    }
+
+    .tag-row {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-2);
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .tabs2 {
+      display: flex;
+      gap: 4px;
+      padding: 10px 18px;
+      overflow-x: auto;
+    }
+
+    .tabs2::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab2 {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 4px;
+      color: var(--text-2);
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-right: 16px;
+      cursor: pointer;
+    }
+
+    .tab2.active {
+      color: var(--orange-dark);
+      border-color: var(--orange-dark);
+    }
+
+    .field-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 12px;
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: 12px;
+      margin: 0 18px 8px;
+    }
+
+    .field-row i {
+      font-size: 15px;
+      color: var(--orange-dark);
+    }
+
+    .field-row .fl {
+      font-size: 10px;
+      color: var(--text-3);
+      text-transform: uppercase;
+    }
+
+    .field-row .fv {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .quota-bar {
+      height: 6px;
+      background: var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin: 8px 0;
+    }
+
+    .quota-bar i {
+      display: block;
+      height: 100%;
+      width: 4%;
+      background: var(--orange);
+    }
+
+    .folder-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      padding: 4px 18px 12px;
+    }
+
+    .folder {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .folder .fic {
+      width: 52px;
+      height: 44px;
+      border-radius: 8px;
+      background: #8FBFEF;
+      position: relative;
+    }
+
+    .folder .fic:before {
+      content: "";
+      position: absolute;
+      top: -6px;
+      left: 4px;
+      width: 20px;
+      height: 8px;
+      background: #8FBFEF;
+      border-radius: 4px 4px 0 0;
+    }
+
+    .folder .fn {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .bottom-nav {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: var(--card);
+      border-top: 0.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      z-index: 40;
+      border-radius: 0 0 38px 38px;
+    }
+
+    .nav-item {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      color: var(--text-3);
+    }
+
+    .nav-item i {
+      font-size: 24px;
+    }
+
+    .nav-item.active {
+      color: var(--green-dark);
+    }
+
+    /* Styled to green as in ChatGPT design */
+
+    /* What's everyone working on — header ticker */
+    .work-ticker {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      border-radius: 14px;
+      margin: 0 18px 12px;
+      padding: 10px 12px;
+      cursor: pointer;
+    }
+
+    .work-ticker .wt-ic {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: var(--green-bg);
+      color: var(--green-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .work-ticker .wt-track {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .work-ticker .wt-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-3);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .work-ticker .wt-item {
+      display: none;
+      font-size: 12.5px;
+      color: var(--text-2);
+      line-height: 1.4;
+    }
+
+    .work-ticker .wt-item b {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .work-ticker .wt-item .task {
+      color: var(--orange-dark);
+      font-weight: 600;
+    }
+
+    .work-ticker .wt-chev {
+      color: var(--text-3);
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    /* team activity sheet */
+    .activity-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 22px 0;
+    }
+
+    .activity-head h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .activity-head h3 i {
+      font-size: 17px;
+    }
+
+    .activity-input-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 12px 18px;
+      background: #F6F3EA;
+      border: 0.5px solid var(--border);
+      border-radius: 22px;
+      padding: 6px 8px 6px 14px;
+    }
+
+    .activity-input-bar input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 13px;
+      color: var(--text);
+    }
+
+    .activity-input-bar input::placeholder {
+      color: var(--text-3);
+    }
+
+    .activity-input-bar button {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: var(--green);
+      color: white;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .activity-seg {
+      padding: 4px 18px 0;
+    }
+
+    .activity-seg-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--text-3);
+      padding: 10px 4px 8px;
+    }
+
+    .activity-seg-title .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .dot.working {
+      background: var(--green);
+    }
+
+    .dot.free {
+      background: var(--text-3);
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 12px;
+      background: var(--card);
+      border: 0.5px solid var(--border);
+      margin-bottom: 8px;
+    }
+
+    .activity-item .av {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #EADFCB;
+      color: #8a7550;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .activity-item .ai-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .activity-item .nm {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .activity-item .tags {
+      display: flex;
+      gap: 4px;
+      margin-top: 3px;
+    }
+
+    .activity-tag {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 20px;
+      background: var(--orange-bg);
+      color: var(--orange-dark);
+    }
+
+    .activity-tag.green {
+      background: var(--green-bg);
+      color: var(--green-dark);
+    }
+
+    .activity-tag.gray {
+      background: var(--border);
+      color: var(--text-3);
+    }
+
+    .activity-task {
+      font-size: 11.5px;
+      color: var(--text-2);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .activity-task b {
+      color: var(--orange-dark);
+      font-weight: 600;
+    }
+
+    .activity-free {
+      font-size: 11.5px;
+      color: var(--text-3);
+      font-style: italic;
+      margin-top: 3px;
+    }
+
+    .activity-empty {
+      font-size: 12px;
+      color: var(--text-3);
+      text-align: center;
+      padding: 14px 0;
+    }
+
+    /* more sheet */
+    .sheet-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(20, 18, 14, 0.4);
+      z-index: 60;
+      display: none;
+      align-items: flex-end;
+      border-radius: 38px;
+      overflow: hidden;
+    }
+
+    .sheet-overlay.show {
+      display: flex;
+    }
+
+    .sheet {
+      width: 100%;
+      background: var(--card);
+      border-radius: 22px 22px 0 0;
+      padding: 10px 0 20px;
+      max-height: 70%;
+      overflow-y: auto;
+    }
+
+    .sheet-handle {
+      width: 38px;
+      height: 4px;
+      background: var(--border-strong);
+      border-radius: 4px;
+      margin: 6px auto 12px;
+    }
+
+    .sheet-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 13px 22px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .sheet-item i {
+      font-size: 19px;
+      color: var(--orange-dark);
+      width: 20px;
+    }
+
+    .sheet-item.logout {
+      color: #D64545;
+    }
+
+    .sheet-item.logout i {
+      color: #D64545;
+    }
+
+    /* screen switching */
+    .screen {
+      display: none;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    .hint {
+      max-width: 390px;
+      text-align: center;
+      font-size: 12px;
+      color: #8a8578;
+      margin-top: -10px;
+    }
+  </style>
+</head>
+
+<body>
+
+
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="phone-screen">
+
+      <!-- ============ DASHBOARD ============ -->
+      <div class="screen active" id="screen-dashboard">
+
+        <div class="topbar">
+          <div class="brand"><i class="ti ti-leaf"></i>SaladO</div>
+          <div class="top-actions">
+            <div class="icon-btn"><i class="ti ti-bell"></i></div>
+            <div class="avatar" onclick="showScreen('profile')">🙂</div>
+          </div>
+        </div>
+        <div class="greet">Good morning, <b>Pranav</b> 👋</div>
+
+        <div class="work-ticker" onclick="openActivity()">
+          <div class="wt-ic"><i class="ti ti-users"></i></div>
+          <div class="wt-track">
+            <div id="wtItems"></div>
+          </div>
+          <i class="ti ti-chevron-right wt-chev"></i>
+        </div>
+
+        <div class="app-body">
+          <!-- Attendance Card (Claude Style) -->
+          <div class="card">
+            <div class="card-row">
+              <div class="card-title"><i class="ti ti-users"></i>Attendance</div>
+              <span class="link" onclick="showScreen('attendance')">View</span>
+            </div>
+            <div class="stat-grid">
+              <div class="stat green">
+                <div class="n">1</div>
+                <div class="l">Present</div>
+              </div>
+              <div class="stat red">
+                <div class="n">0</div>
+                <div class="l">Absent</div>
+              </div>
+              <div class="stat orange">
+                <div class="n">5</div>
+                <div class="l">Late</div>
+              </div>
+            </div>
+            <div class="btn-row">
+              <button class="btn primary" onclick="showScreen('attendance')"><i class="ti ti-clock"></i>Clock
+                In</button>
+              <button class="btn ghost" onclick="showScreen('attendance')"><i class="ti ti-history"></i>History</button>
+            </div>
+          </div>
+
+          <!-- Priority Tasks Placeholder -->
+          <div class="card" style="text-align: center; padding: 24px 16px;">
+            <div class="card-row" style="margin-bottom: 12px;">
+              <div class="card-title"><i class="ti ti-alert-circle"></i>Priority Tasks</div>
+              <span class="link" onclick="showScreen('tasks')">New Task</span>
+            </div>
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; margin: 12px 0;">
+              <i class="ti ti-checkbox" style="font-size: 32px; color: var(--green);"></i>
+              <div style="font-size: 13px; font-weight: 600; color: var(--text);">No priority tasks.</div>
+              <div style="font-size: 11px; color: var(--text-2);">You're all caught up!</div>
+            </div>
+          </div>
+
+          <!-- Tasks Overview Card (Claude Style) -->
+          <div class="card">
+            <div class="card-row">
+              <div class="card-title"><i class="ti ti-chart-bar"></i>Tasks Overview</div>
+              <span class="link" onclick="showScreen('tasks')">View All</span>
+            </div>
+            <div class="stat-grid">
+              <div class="stat orange">
+                <div class="n">3</div>
+                <div class="l">Total</div>
+              </div>
+              <div class="stat green">
+                <div class="n">0</div>
+                <div class="l">In Progress</div>
+              </div>
+              <div class="stat red">
+                <div class="n">0</div>
+                <div class="l">Pending</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><i class="ti ti-cake"></i>Birthdays</div>
+            <div style="display: flex; justify-content: center; align-items: center; padding: 10px 0;">
+              <img src="public/no_birthdays.png" alt="No birthdays in the next 30 days."
+                style="width: 100%; max-height: 140px; object-fit: contain;" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ WORKSPACES (Claude's Corporate Hub Structure) ============ -->
+      <div class="screen" id="screen-hub">
+
+        <div class="topbar">
+          <div class="brand" style="color:var(--text);"><i class="ti ti-building"
+              style="color:var(--green);"></i>Workspaces</div>
+          <div class="avatar" onclick="showScreen('profile')">🙂</div>
+        </div>
+        <div class="app-body">
+          <div class="section-title">Company Info</div>
+          <div class="grid2">
+            <div class="tile" onclick="showScreen('forum')">
+              <span class="new-badge">New</span>
+              <div class="ic" style="background:#E6F1FB; color:#185FA5;"><i class="ti ti-messages"></i></div>
+              <div class="t">Internal Forum</div>
+              <div class="d">Connect and discuss details.</div>
+            </div>
+            <div class="tile" onclick="showScreen('hr')">
+              <span class="new-badge">New</span>
+              <div class="ic" style="background:var(--orange-bg); color:var(--orange-dark);"><i
+                  class="ti ti-shield-check"></i></div>
+              <div class="t">HR Policies</div>
+              <div class="d">Guidelines &amp; policy rules.</div>
+            </div>
+            <div class="tile" onclick="showScreen('resources')">
+              <span class="new-badge">New</span>
+              <div class="ic" style="background:var(--green-bg); color:var(--green-dark);"><i class="ti ti-key"></i>
+              </div>
+              <div class="t">Shared Resources</div>
+              <div class="d">Shared files &amp; links.</div>
+            </div>
+            <div class="tile" onclick="showScreen('induction')">
+              <span class="new-badge">New</span>
+              <div class="ic" style="background:#EEEDFE; color:#3C3489;"><i class="ti ti-book-2"></i></div>
+              <div class="t">Induction &amp; Training</div>
+              <div class="d">Onboarding &amp; checklists.</div>
+            </div>
+          </div>
+          <div class="section-title">Culture</div>
+          <div class="grid2">
+            <div class="tile" onclick="showScreen('team')">
+              <span class="new-badge">New</span>
+              <div class="ic" style="background:#E1F5EE; color:#0F6E56;"><i class="ti ti-address-book"></i></div>
+              <div class="t">Team Directory</div>
+              <div class="d">Meet your colleagues.</div>
+            </div>
+            <div class="tile" onclick="showScreen('memories')">
+              <span class="new-badge">New</span>
+              <div class="ic" style="background:var(--red-bg); color:var(--red-dark);"><i class="ti ti-photo"></i></div>
+              <div class="t">Memories</div>
+              <div class="d">Events &amp; celebrations.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ DISCUSSIONS (Dedicated Tab, ChatGPT style UI) ============ -->
+      <div class="screen" id="screen-discussions">
+
+        <div class="topbar">
+          <div class="brand" style="color:var(--text);"><i class="ti ti-message-circle"
+              style="color:var(--green-dark);"></i>Discussions</div>
+          <div class="top-actions">
+            <div class="icon-btn"><i class="ti ti-search"></i></div>
+          </div>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="chip-row">
+          <span class="chip active">All</span>
+          <span class="chip">Following</span>
+          <span class="chip">Unanswered</span>
+        </div>
+
+        <div class="app-body">
+
+          <!-- Thread 1 -->
+          <div class="chatgpt-thread">
+            <div class="thread-meta">
+              <span>Posted by Anonymous</span>
+              <span>2m ago</span>
+            </div>
+            <div class="thread-question">
+              Is internet working today?
+            </div>
+            <div class="thread-replies">
+              <div class="reply-item">
+                <i class="ti ti-corner-down-right"></i>
+                <span>Works fine on my system</span>
+              </div>
+              <div class="reply-item">
+                <i class="ti ti-corner-down-right"></i>
+                <span>No mine is also not working</span>
+              </div>
+              <div class="reply-item">
+                <i class="ti ti-corner-down-right"></i>
+                <span>How.. dont know</span>
+              </div>
+            </div>
+            <div class="thread-stats">
+              <div class="stat-group">
+                <div class="stat-item"><i class="ti ti-thumb-up"></i> 12</div>
+                <div class="stat-item"><i class="ti ti-message-circle"></i> 3 replies</div>
+              </div>
+              <div class="badge-count">3</div>
+            </div>
+          </div>
+
+          <!-- Thread 2 -->
+          <div class="chatgpt-thread">
+            <div class="thread-meta">
+              <span>Posted by General</span>
+              <span>15m ago</span>
+            </div>
+            <div class="thread-question">
+              Can we please get coffee for the Machine ?
+            </div>
+            <div class="thread-replies">
+              <div class="reply-item">
+                <i class="ti ti-corner-down-right"></i>
+                <span>Agreed</span>
+              </div>
+            </div>
+            <div class="thread-stats">
+              <div class="stat-group">
+                <div class="stat-item"><i class="ti ti-thumb-up"></i> 18</div>
+                <div class="stat-item"><i class="ti ti-message-circle"></i> 1 replies</div>
+              </div>
+              <div class="badge-count">1</div>
+            </div>
+          </div>
+
+          <!-- Thread 3 -->
+          <div class="chatgpt-thread">
+            <div class="thread-meta">
+              <span>Posted by Tech</span>
+              <span>1h ago</span>
+            </div>
+            <div class="thread-question">
+              Would be great to have more employee activities
+            </div>
+            <div class="thread-replies">
+              <div class="reply-item">
+                <i class="ti ti-corner-down-right"></i>
+                <span>Like ? suggest some</span>
+              </div>
+            </div>
+            <div class="thread-stats">
+              <div class="stat-group">
+                <div class="stat-item"><i class="ti ti-thumb-up"></i> 7</div>
+                <div class="stat-item"><i class="ti ti-message-circle"></i> 1 replies</div>
+              </div>
+              <div class="badge-count">1</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- ChatGPT Style Quick Comment Bar -->
+        <div class="discussion-input-bar">
+          <input type="text" placeholder="Say it anonymously...">
+          <button><i class="ti ti-send"></i></button>
+        </div>
+      </div>
+
+      <!-- ============ TASKS (With ChatGPT Style UI Filtering) ============ -->
+      <div class="screen" id="screen-tasks">
+
+        <div class="topbar">
+          <div class="brand" style="color:var(--text);"><i class="ti ti-list-check"
+              style="color:var(--orange-dark);"></i>Tasks</div>
+          <div class="icon-btn" style="background:var(--orange-dark); color:white; border:none;"><i
+              class="ti ti-plus"></i></div>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="chip-row">
+          <span class="chip active">All</span>
+          <span class="chip">My Tasks</span>
+          <span class="chip">Created by me</span>
+        </div>
+
+        <div class="app-body">
+          <div class="section-title">In Progress</div>
+          <div class="list-row">
+            <div class="li-icon" style="background: var(--green-bg); color: var(--green-dark);"><i
+                class="ti ti-loader"></i></div>
+            <div class="li-main">
+              <div class="li-title" style="color: var(--green-dark);">Update onboarding documents</div>
+              <div class="li-sub">Due: 20 Aug 2026</div>
+            </div>
+            <span class="badge pending">In Progress</span>
+          </div>
+
+          <div class="section-title">Pending</div>
+          <div class="list-row">
+            <div class="li-icon"><i class="ti ti-alert-triangle"></i></div>
+            <div class="li-main">
+              <div class="li-title">Prepare monthly report</div>
+              <div class="li-sub">Due: 22 Aug 2026</div>
+            </div>
+            <span class="badge pending">Pending</span>
+          </div>
+
+          <div class="section-title">Completed</div>
+          <div class="list-row">
+            <div class="li-icon" style="background: var(--green-bg); color: var(--green-dark);"><i
+                class="ti ti-checkbox"></i></div>
+            <div class="li-main">
+              <div class="li-title">Fix dashboard UI issue</div>
+              <div class="li-sub">Completed on 18 Aug 2026</div>
+            </div>
+            <span class="badge done">Completed</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ INTERNAL FORUM ============ -->
+      <div class="screen" id="screen-forum">
+
+        <div class="back-row"><button class="back-btn" onclick="showScreen('hub')"><i
+              class="ti ti-arrow-left"></i>Workspaces</button></div>
+        <div class="hero-title">Internal forum</div>
+        <div class="hero-sub">Discuss, announce, and collaborate with your teammates.</div>
+        <div class="app-body">
+          <div class="compose">
+            <div class="field">Thread title / headline…</div>
+            <div class="field" style="margin-bottom:0;">What would you like to discuss?</div>
+          </div>
+          <div class="chip-row">
+            <span class="chip active">All</span><span class="chip">Announcements</span><span
+              class="chip">General</span><span class="chip">Tech</span><span class="chip">HR</span>
+          </div>
+          <div class="card">
+            <div class="person" style="padding:0 0 10px; border:none;">
+              <div class="av">PP</div>
+              <div>
+                <div class="nm">Pranav Patil <span style="color:var(--text-3); font-weight:400;">· CTO</span></div>
+                <div class="li-sub">16 Aug · HR</div>
+              </div>
+            </div>
+            <div class="li-title" style="margin-bottom:4px;">Monthly feedback reminder</div>
+            <div class="li-sub">A quick reminder for everyone to share feedback and suggestions regarding workplace
+              processes.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ HR POLICIES ============ -->
+      <div class="screen" id="screen-hr">
+
+        <div class="back-row"><button class="back-btn" onclick="showScreen('hub')"><i
+              class="ti ti-arrow-left"></i>Workspaces</button></div>
+        <div class="hero-title">HR <span>policies</span></div>
+        <div class="app-body">
+          <div class="chip-row">
+            <span class="chip active">All</span><span class="chip">Leaves</span><span class="chip">Conduct</span><span
+              class="chip">Benefits</span><span class="chip">Security</span>
+          </div>
+          <div class="card">
+            <span class="badge pending" style="margin-bottom:8px; display:inline-block;">Leaves</span>
+            <div class="li-title" style="font-size:15px; margin-bottom:4px;">Employee leave policy</div>
+            <div class="li-sub">Guidelines for applying, approving, and managing employee leaves.</div>
+            <div
+              style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-3); margin-top:12px; border-top:0.5px solid var(--border); padding-top:10px;">
+              <span><i class="ti ti-calendar"></i> Aug 17, 2026</span><span><i class="ti ti-clock"></i> 2 min
+                read</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SHARED RESOURCES ============ -->
+      <div class="screen" id="screen-resources">
+
+        <div class="back-row"><button class="back-btn" onclick="showScreen('hub')"><i
+              class="ti ti-arrow-left"></i>Workspaces</button>
+          <button class="back-btn"
+            style="margin-left:auto; background:var(--orange-dark); color:white; border-color:var(--orange-dark);"><i
+              class="ti ti-plus"></i>Add</button>
+        </div>
+        <div class="hero-title">Shared <span>resources</span></div>
+        <div class="app-body">
+          <div class="field" style="background:var(--card); margin:0 18px 12px;">Search resources…</div>
+          <div class="card">
+            <div class="card-row">
+              <div class="card-title"><i class="ti ti-square-rounded-letter-g" style="color:#185FA5;"></i>Gamma PRO
+              </div>
+              <i class="ti ti-trash" style="color:var(--red);"></i>
+            </div>
+            <div class="field-row" style="margin:0 0 8px;"><i class="ti ti-mail"></i>
+              <div>
+                <div class="fl">Username</div>
+                <div class="fv">kamrohra@gmail.com</div>
+              </div>
+            </div>
+            <div class="field-row" style="margin:0;"><i class="ti ti-key"></i>
+              <div>
+                <div class="fl">Password</div>
+                <div class="fv">••••••••</div>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+              <span class="li-sub"><i class="ti ti-users"></i> Shared by you</span>
+              <span class="link">Manage access</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ INDUCTION ============ -->
+      <div class="screen" id="screen-induction">
+
+        <div class="back-row"><button class="back-btn" onclick="showScreen('hub')"><i
+              class="ti ti-arrow-left"></i>Workspaces</button></div>
+        <div class="app-body">
+          <div class="card">
+            <div class="card-row">
+              <div class="card-title">Your journey</div><span class="li-sub">0%</span>
+            </div>
+            <div class="quota-bar"><i style="width:0%;"></i></div>
+            <div class="li-sub">Induction &amp; training progress</div>
+          </div>
+          <div class="card">
+            <span class="badge pending" style="margin-bottom:10px; display:inline-block;">Required</span>
+            <div class="li-title" style="font-size:16px; margin-bottom:10px;">Welcome to Salado</div>
+            <div
+              style="width:100%; height:150px; border-radius:12px; background:linear-gradient(135deg,#e8dcc8,#c9b990); margin-bottom:12px;">
+            </div>
+            <div class="btn-row" style="margin-top:0;">
+              <button class="btn ghost"><i class="ti ti-arrow-left"></i>Previous</button>
+              <button class="btn primary">Finish <i class="ti ti-chevrons-right"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ TEAM DIRECTORY ============ -->
+      <div class="screen" id="screen-team">
+
+        <div class="back-row"><button class="back-btn" onclick="showScreen('hub')"><i
+              class="ti ti-arrow-left"></i>Workspaces</button></div>
+        <div class="hero-title">Team <span>directory</span></div>
+        <div class="app-body">
+          <div class="field" style="background:var(--card); margin:0 18px 4px;">Search by name or role…</div>
+          <div class="person">
+            <div class="av">AS</div>
+            <div>
+              <div class="nm">Asim Shah</div>
+              <div class="rl">CEO</div>
+            </div>
+          </div>
+          <div class="person">
+            <div class="av" style="background:#F0DDEE; color:#8a4f85;">BP</div>
+            <div>
+              <div class="nm">Bhagyashree Pandey</div>
+              <div class="rl">Content creator</div>
+            </div>
+          </div>
+          <div class="person">
+            <div class="av" style="background:#F5D8C9; color:#a35a2e;">IK</div>
+            <div>
+              <div class="nm">Ifat Kokni</div>
+              <div class="rl">HR</div>
+            </div>
+          </div>
+          <div class="person">
+            <div class="av">KS</div>
+            <div>
+              <div class="nm">Kaif Sayyed</div>
+              <div class="rl">Employee</div>
+            </div>
+          </div>
+          <div class="person">
+            <div class="av">KB</div>
+            <div>
+              <div class="nm">Kajal Bhakelkar</div>
+              <div class="rl">Accountant</div>
+            </div>
+          </div>
+          <div class="person">
+            <div class="av">KR</div>
+            <div>
+              <div class="nm">Kamlesh Rohra</div>
+              <div class="rl">Founder</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ MEMORIES ============ -->
+      <div class="screen" id="screen-memories">
+
+        <div class="back-row"><button class="back-btn" onclick="showScreen('hub')"><i
+              class="ti ti-arrow-left"></i>Workspaces</button></div>
+        <div class="hero-title">Company <span>memories</span></div>
+        <div class="app-body">
+          <div class="card">
+            <div class="li-title" style="font-size:15px; margin-bottom:8px;">Highlight moments</div>
+            <div
+              style="width:100%; height:170px; border-radius:12px; background:linear-gradient(135deg,#3a4a3a,#6b7a5f); margin-bottom:12px;">
+            </div>
+            <div class="li-title" style="font-size:14px;">Memories and counting</div>
+            <div class="li-sub" style="margin-top:4px;">Every milestone, celebration, and daily win — our culture is
+              built by the people who live it.</div>
+            <div class="btn-row">
+              <button class="btn primary">View wall</button>
+              <button class="btn ghost">Filter</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ FILES ============ -->
+      <div class="screen" id="screen-files">
+
+        <div class="topbar">
+          <div class="brand" style="color:var(--text);"><i class="ti ti-folder"
+              style="color:var(--orange-dark);"></i>Files</div>
+          <div class="icon-btn"><i class="ti ti-folder-plus"></i></div>
+        </div>
+        <div class="app-body">
+          <div class="tabs2">
+            <span class="tab2 active">My drive</span><span class="tab2">Shared</span><span class="tab2">Company</span>
+          </div>
+          <div class="card">
+            <div class="card-title" style="margin-bottom:8px;"><i class="ti ti-cloud"></i>Storage</div>
+            <div class="li-sub">4.4 MB used of 0.38 GB</div>
+            <div class="quota-bar"><i style="width:4%;"></i></div>
+          </div>
+          <div class="folder-grid">
+            <div class="folder">
+              <div class="fic"></div>
+              <div class="fn">My drive</div>
+            </div>
+            <div class="folder">
+              <div class="fic" style="background:#F0997B;"></div>
+              <div class="fn">Hellabold</div>
+            </div>
+            <div class="folder">
+              <div class="fic" style="background:#97C459;"></div>
+              <div class="fn">Company lib</div>
+            </div>
+          </div>
+          <div class="list-row">
+            <div class="li-icon"><i class="ti ti-photo"></i></div>
+            <div class="li-main">
+              <div class="li-title">salado_logo.webp</div>
+              <div class="li-sub">0.0 MB · 18/08/2026</div>
+            </div>
+            <i class="ti ti-share" style="color:var(--text-3);"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ APPROVALS ============ -->
+      <div class="screen" id="screen-approvals">
+
+        <div class="topbar">
+          <div class="brand" style="color:var(--text);"><i class="ti ti-checkbox"
+              style="color:var(--orange-dark);"></i>Approvals</div>
+          <div class="icon-btn" style="background:var(--orange-dark); color:white; border:none;"><i
+              class="ti ti-plus"></i></div>
+        </div>
+        <div class="app-body">
+          <div class="tabs2">
+            <span class="tab2 active">Request history</span><span class="tab2">Approved by me</span>
+          </div>
+          <div class="list-row">
+            <div class="li-icon"><i class="ti ti-clock"></i></div>
+            <div class="li-main">
+              <div class="li-title">Attendance regularization</div>
+              <div class="li-sub">Clock-out at 18:01 · 17 Aug</div>
+            </div>
+            <span class="badge pending">Pending</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ ATTENDANCE ============ -->
+      <div class="screen" id="screen-attendance">
+
+        <div class="topbar">
+          <div class="brand" style="color:var(--text);"><i class="ti ti-clock"
+              style="color:var(--orange-dark);"></i>Attendance</div>
+          <div class="avatar" onclick="showScreen('profile')">🙂</div>
+        </div>
+        <div class="app-body">
+          <div class="card" style="background:linear-gradient(135deg,#6FA83C,#3B6D11); border:none;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+              <div>
+                <div style="font-size:11px; color:#DDF0C4;">Today's status</div>
+                <div style="font-size:20px; font-weight:700; color:white; margin-top:2px;">Working</div>
+              </div>
+              <div style="text-align:right;">
+                <div style="font-size:11px; color:#DDF0C4;">Total hours</div>
+                <div style="font-size:16px; font-weight:700; color:white;">00:00:04</div>
+              </div>
+            </div>
+            <button class="btn" style="background:white; color:var(--red-dark); margin-top:14px; width:100%;"><i
+                class="ti ti-map-pin"></i>Clock out</button>
+          </div>
+          <div class="section-title">Attendance history</div>
+          <div class="list-row">
+            <div class="li-main">
+              <div class="li-title">Tue, 18 Aug</div>
+              <div class="li-sub">03:16 pm → 09:42 pm · 06:26:15</div>
+            </div><span class="badge done">Completed</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ SALARY ============ -->
+      <div class="screen" id="screen-salary">
+
+        <div class="topbar">
+          <div class="brand" style="color:var(--text);"><i class="ti ti-cash"
+              style="color:var(--orange-dark);"></i>Salary &amp; payslips</div>
+        </div>
+        <div class="app-body">
+          <div class="card">
+            <div class="card-row">
+              <div class="li-title" style="font-size:15px;">August 2026</div><span class="badge paid">Paid</span>
+            </div>
+            <div
+              style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-2); margin-bottom:4px;">
+              <span>Pay date</span><span>30 Aug 2026</span>
+            </div>
+            <div
+              style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-2); margin-bottom:4px;">
+              <span>Gross pay</span><span style="color:var(--text); font-weight:600;">₹12,000.00</span>
+            </div>
+            <div
+              style="display:flex; justify-content:space-between; font-size:12px; color:var(--text-2); margin-bottom:4px;">
+              <span>Deductions</span><span style="color:var(--red-dark); font-weight:600;">-₹700.00</span>
+            </div>
+            <div
+              style="display:flex; justify-content:space-between; font-size:13px; margin-top:8px; border-top:0.5px solid var(--border); padding-top:8px;">
+              <span style="font-weight:600;">Net pay</span><span
+                style="color:var(--green-dark); font-weight:700;">₹11,300.00</span>
+            </div>
+            <div class="btn-row">
+              <button class="btn ghost"><i class="ti ti-eye"></i>View Payslip</button>
+              <button class="btn primary"><i class="ti ti-download"></i>Download</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ============ PROFILE ============ -->
+      <div class="screen" id="screen-profile">
+
+        <div class="app-body" style="padding-top:6px;">
+          <div class="profile-hero">
+            <div class="av">🙂</div>
+            <div class="nm">Pranav Patil</div>
+            <div class="rl">CTO · Tech</div>
+            <div class="tag-row">
+              <span class="tag"><i class="ti ti-id"></i> EMP014</span>
+              <span class="tag"><i class="ti ti-map-pin"></i> Onsite</span>
+              <span class="tag"><i class="ti ti-briefcase"></i> Full-time</span>
+            </div>
+          </div>
+          <div class="tabs2">
+            <span class="tab2 active">Personal</span><span class="tab2">Work</span><span
+              class="tab2">Financial</span><span class="tab2">Address</span>
+          </div>
+          <div class="field-row"><i class="ti ti-mail"></i>
+            <div>
+              <div class="fl">Official email</div>
+              <div class="fv">pranav.p@capoasis.com</div>
+            </div>
+          </div>
+          <div class="field-row"><i class="ti ti-phone"></i>
+            <div>
+              <div class="fl">Phone number</div>
+              <div class="fv">9765367501</div>
+            </div>
+          </div>
+          <div class="btn-row" style="margin:12px 18px 0;">
+            <button class="btn ghost"><i class="ti ti-edit"></i>Edit Profile</button>
+            <button class="btn" style="background:var(--red-bg); color:var(--red-dark);"><i
+                class="ti ti-logout"></i>Logout</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="bottom-nav" id="bottomNav">
+        <div class="nav-item active" data-target="dashboard" onclick="showScreen('dashboard')"><i
+            class="ti ti-home"></i></div>
+        <div class="nav-item" data-target="hub" onclick="showScreen('hub')"><i class="ti ti-building"></i></div>
+        <div class="nav-item" data-target="discussions" onclick="showScreen('discussions')"><i
+            class="ti ti-messages"></i></div>
+        <div class="nav-item" data-target="tasks" onclick="showScreen('tasks')"><i class="ti ti-list-check"></i></div>
+        <div class="nav-item" data-target="more" onclick="openMore()"><i class="ti ti-dots"></i></div>
+      </div>
+
+      <!-- TEAM ACTIVITY SHEET -->
+      <div class="sheet-overlay" id="activitySheet" onclick="closeActivityBg(event)">
+        <div class="sheet" style="max-height: 88%;">
+          <div class="sheet-handle"></div>
+          <div class="activity-head">
+            <h3><i class="ti ti-users" style="color:var(--green-dark);"></i>Team activity</h3>
+            <span class="link" onclick="closeActivity()">Done</span>
+          </div>
+          <div class="activity-input-bar">
+            <input type="text" id="activityStatusInput" placeholder="What are you working on right now?">
+            <button onclick="submitActivityStatus()"><i class="ti ti-arrow-right"></i></button>
+          </div>
+          <div class="activity-seg">
+            <div class="activity-seg-title"><span class="dot working"></span>Active &amp; Working</div>
+            <div id="activityWorking"></div>
+          </div>
+          <div class="activity-seg">
+            <div class="activity-seg-title"><span class="dot free"></span>Free for the Day</div>
+            <div id="activityFree"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MORE SHEET -->
+      <div class="sheet-overlay" id="moreSheet" onclick="closeMoreBg(event)">
+        <div class="sheet">
+          <div class="sheet-handle"></div>
+          <div class="sheet-item" onclick="showScreen('profile')"><i class="ti ti-user"></i>Profile</div>
+          <div class="sheet-item" onclick="showScreen('files')"><i class="ti ti-folder"></i>Files</div>
+          <div class="sheet-item" onclick="showScreen('approvals')"><i class="ti ti-checkbox"></i>Approvals</div>
+          <div class="sheet-item" onclick="showScreen('attendance')"><i class="ti ti-clock"></i>Attendance</div>
+          <div class="sheet-item" onclick="showScreen('salary')"><i class="ti ti-cash"></i>Salary &amp; Payslips</div>
+          <div class="sheet-item"><i class="ti ti-settings"></i>Settings</div>
+          <div class="sheet-item logout"><i class="ti ti-logout"></i>Logout</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <script>
+    const mainTabs = ['dashboard', 'hub', 'discussions', 'tasks'];
+
+    function showScreen(name) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-' + name).classList.add('active');
+      closeMore();
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+      const target = mainTabs.includes(name) ? name : (['profile', 'files', 'approvals', 'attendance', 'salary'].includes(name) ? 'more' : null);
+      if (target) {
+        const el = document.querySelector('.nav-item[data-target="' + target + '"]');
+        if (el) el.classList.add('active');
+      }
+    }
+    function openMore() { document.getElementById('moreSheet').classList.add('show'); }
+    function closeMore() { document.getElementById('moreSheet').classList.remove('show'); }
+    function closeMoreBg(e) { if (e.target.id === 'moreSheet') closeMore(); }
+
+    /* ================= TEAM ACTIVITY (what's everyone working on) ================= */
+    const activityData = [
+      { name: 'Pranav Patil', branch: 'Main Office', present: true, status: 'Reviewing mobile app mockups' },
+      { name: 'Asim Shah', branch: 'Main Office', present: true, status: 'Preparing investor deck' },
+      { name: 'Kamlesh Rohra', branch: 'Main Office', present: true, status: 'Client calls' },
+      { name: 'Bhagyashree Pandey', branch: 'Remote', present: true, status: null },
+      { name: 'Ifat Kokni', branch: 'Main Office', present: true, status: null },
+      { name: 'Kaif Sayyed', branch: 'Main Office', present: false, status: null },
+      { name: 'Kajal Bhakelkar', branch: 'Main Office', present: true, status: null }
+    ];
+    const SELF = 'Pranav Patil';
+    let wtIndex = 0, wtTimer = null;
+
+    function escHtml(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+    function initials(name) { return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase(); }
+
+    function renderTicker() {
+      const wrap = document.getElementById('wtItems');
+      if (!wrap) return;
+      const working = activityData.filter(i => i.status);
+      if (working.length === 0) {
+        wrap.innerHTML = '<div class="wt-item" style="display:flex;"><i class="ti ti-face-id" style="margin-right:6px; color:var(--green);"></i>Everyone is free today</div>';
+        return;
+      }
+      wrap.innerHTML = working.map((item, idx) => `
+      <div class="wt-item" style="display:${idx === 0 ? 'block' : 'none'}; width:100%;">
+        <div style="display:flex; align-items:center; gap:4px; font-size:12px; opacity:0.8;">
+          <b>${escHtml(item.name.split(' ')[0])}</b>
+          <span>is working on</span>
+        </div>
+        <div class="task" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; font-size:13px; font-weight:600; margin-top:2px;">
+          ${escHtml(item.status)}
+        </div>
+      </div>`).join('');
+      clearInterval(wtTimer);
+      if (working.length > 1) {
+        const items = wrap.querySelectorAll('.wt-item');
+        wtTimer = setInterval(() => {
+          items[wtIndex].style.display = 'none';
+          wtIndex = (wtIndex + 1) % items.length;
+          items[wtIndex].style.display = 'block';
+        }, 3000);
+      }
+    }
+
+    function renderActivity() {
+      const workingEl = document.getElementById('activityWorking');
+      const freeEl = document.getElementById('activityFree');
+      if (!workingEl || !freeEl) return;
+      const working = activityData.filter(i => i.status);
+      const free = activityData.filter(i => !i.status);
+
+      const itemHtml = (item) => `
+      <div class="activity-item">
+        <div class="av" style="background:${item.name === SELF ? 'var(--orange-bg)' : '#EADFCB'}; color:${item.name === SELF ? 'var(--orange-dark)' : '#8a7550'};">${initials(item.name)}</div>
+        <div class="ai-main">
+          <div class="nm">${escHtml(item.name)}${item.name === SELF ? ' <span style="color:var(--text-3); font-weight:400;">· you</span>' : ''}</div>
+          ${item.status
+          ? '<div class="activity-task">Current task: <b>' + escHtml(item.status) + '</b></div>'
+          : '<div class="activity-free">No active tasks</div>'}
+        </div>
+      </div>`;
+
+      workingEl.innerHTML = working.length ? working.map(itemHtml).join('') : '<div class="activity-empty">No one is working right now.</div>';
+      freeEl.innerHTML = free.length ? free.map(itemHtml).join('') : '<div class="activity-empty">Everyone is busy!</div>';
+    }
+
+    function openActivity() {
+      document.getElementById('activitySheet').classList.add('show');
+      renderActivity();
+      setTimeout(() => {
+        const input = document.getElementById('activityStatusInput');
+        if (input) input.focus();
+      }, 150);
+    }
+    function closeActivity() { document.getElementById('activitySheet').classList.remove('show'); }
+    function closeActivityBg(e) { if (e.target.id === 'activitySheet') closeActivity(); }
+
+    function submitActivityStatus() {
+      const input = document.getElementById('activityStatusInput');
+      const text = input.value.trim();
+      if (!text) return;
+      const me = activityData.find(i => i.name === SELF);
+      if (me) me.status = text;
+      input.value = '';
+      renderActivity();
+      renderTicker();
+      const done = document.querySelector('#activitySheet .link');
+      if (done) done.textContent = 'Updated ✓';
+      setTimeout(() => { if (done) done.textContent = 'Done'; }, 1500);
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && document.getElementById('activitySheet').classList.contains('show') && e.target.id === 'activityStatusInput') {
+        submitActivityStatus();
+      }
+    });
+
+    renderTicker();
+  </script>
+</body>
+
+</html>

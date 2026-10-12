@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/mail-google-callback",
+      "destination": "https://hpbqxtlbvfsylgisxlth.supabase.co/functions/v1/mail-google-callback"
+    }
+  ]
+}
