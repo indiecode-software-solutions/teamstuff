@@ -53,36 +53,77 @@
 .onboard-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.onboard-step-indicator {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #71717a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
 }
 
 .onboard-header-title {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-text-primary, #18181b);
+  color: var(--color-text-primary, #09090b);
   letter-spacing: -0.02em;
   margin: 0;
 }
 
-.onboard-signout-btn {
+:root.dark .onboard-header-title {
+  color: #fafafa;
+}
+
+.onboard-signout-link {
   background: none;
-  border: 1px solid var(--color-border, #e4e4e7);
-  border-radius: 4px;
-  padding: 0.375rem 0.75rem;
+  border: none;
+  padding: 0;
   font-size: 0.8125rem;
   font-weight: 500;
-  color: var(--color-text-muted, #71717a);
+  color: #71717a;
   cursor: pointer;
-  transition: all var(--transition-fast, 0.15s ease);
+  transition: color 0.15s ease;
+  white-space: nowrap;
 }
 
-.onboard-signout-btn:hover {
-  color: #ef4444;
-  border-color: #fca5a5;
-  background-color: #fef2f2;
+.onboard-signout-link:hover {
+  color: #09090b;
+  text-decoration: underline;
 }
 
-/* Stepper Progress Indicator */
+:root.dark .onboard-signout-link:hover {
+  color: #fafafa;
+}
+
+/* Slim Hairline Progress Track */
+.onboard-progress-track {
+  width: 100%;
+  height: 2px;
+  background-color: #e4e4e7;
+  overflow: hidden;
+  margin: 0.75rem 0 1.5rem 0;
+}
+
+:root.dark .onboard-progress-track {
+  background-color: #27272a;
+}
+
+.onboard-progress-fill {
+  height: 100%;
+  background-color: #09090b;
+  transition: width 0.25s ease;
+}
+
+:root.dark .onboard-progress-fill {
+  background-color: #fafafa;
+}
+
+/* Stepper Progress Indicator (Fallback) */
 .onboard-stepper {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
@@ -103,18 +144,80 @@
 
 /* Step Content Titles */
 .onboard-step-title {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 600;
-  color: var(--color-text-primary, #18181b);
+  color: var(--color-text-primary, #09090b);
   margin: 0 0 0.25rem;
   letter-spacing: -0.015em;
 }
 
+:root.dark .onboard-step-title {
+  color: #fafafa;
+}
+
 .onboard-step-desc {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--color-text-muted, #71717a);
   margin: 0 0 1.25rem;
-  line-height: 1.5;
+  line-height: 1.4;
+}
+
+/* Consolidated Phone Input */
+.onboard-phone-input-wrap {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border, #e4e4e7);
+  border-radius: 4px;
+  background: #ffffff;
+  overflow: hidden;
+  height: 40px;
+  transition: border-color 0.15s ease;
+}
+
+:root.dark .onboard-phone-input-wrap {
+  background: #09090b;
+  border-color: #27272a;
+}
+
+.onboard-phone-input-wrap:focus-within {
+  border-color: #09090b;
+}
+
+:root.dark .onboard-phone-input-wrap:focus-within {
+  border-color: #fafafa;
+}
+
+.onboard-phone-prefix {
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  background: #fbfbfb;
+  border-right: 1px solid var(--color-border, #e4e4e7);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #71717a;
+  height: 100%;
+  user-select: none;
+}
+
+:root.dark .onboard-phone-prefix {
+  background: #18181b;
+  border-right-color: #27272a;
+}
+
+.onboard-phone-native-input {
+  flex: 1;
+  height: 100%;
+  border: none;
+  outline: none;
+  padding: 0 0.75rem;
+  font-size: 0.875rem;
+  color: var(--color-text-primary, #09090b);
+  background: transparent;
+}
+
+:root.dark .onboard-phone-native-input {
+  color: #fafafa;
 }
 
 /* Form Controls & Inputs */
@@ -372,6 +475,93 @@
 }
 
 /* Profile Photo Dropzone & Bio (Step 6) */
+.onboard-photo-compact {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border, #e4e4e7);
+  border-radius: 4px;
+  background: #fbfbfb;
+  margin-bottom: 1.25rem;
+}
+
+:root.dark .onboard-photo-compact {
+  background: #18181b;
+  border-color: #27272a;
+}
+
+.onboard-photo-thumb-wrap {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #e4e4e7;
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+:root.dark .onboard-photo-thumb-wrap {
+  border-color: #27272a;
+  background: #09090b;
+}
+
+.onboard-photo-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.onboard-photo-empty {
+  width: 72px;
+  height: 72px;
+  border-radius: 4px;
+  border: 1px dashed #d4d4d8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  color: #71717a;
+  flex-shrink: 0;
+}
+
+:root.dark .onboard-photo-empty {
+  background: #09090b;
+  border-color: #3f3f46;
+  color: #a1a1aa;
+}
+
+.onboard-photo-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.onboard-photo-info-title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #09090b;
+  margin: 0;
+}
+
+:root.dark .onboard-photo-info-title {
+  color: #fafafa;
+}
+
+.onboard-photo-info-desc {
+  font-size: 0.75rem;
+  color: #71717a;
+  margin: 0;
+}
+
+.onboard-photo-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.375rem;
+}
+
 .onboard-photo-dropzone {
   border: 1px dashed var(--color-border, #d4d4d8);
   border-radius: 4px;

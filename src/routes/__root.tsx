@@ -874,9 +874,22 @@ function RootComponent() {
         <div className="onboard-wizard-card">
           {/* Header */}
           <div className="onboard-header">
-            <h1 className="onboard-header-title">
-              Employee Onboarding
-            </h1>
+            <div>
+              <span className="onboard-step-indicator">Step {onboardStep} of 6</span>
+              <h1 className="onboard-header-title">
+                {onboardStep === 1
+                  ? "Personal Profile"
+                  : onboardStep === 2
+                  ? "Address Details"
+                  : onboardStep === 3
+                  ? "Emergency Contact"
+                  : onboardStep === 4
+                  ? "Financial Information"
+                  : onboardStep === 5
+                  ? "Identity & KYC Documents"
+                  : "Profile Photo & Bio"}
+              </h1>
+            </div>
             <button
               type="button"
               onClick={async () => {
@@ -887,97 +900,52 @@ function RootComponent() {
                 setCheckingStatus(false);
                 navigate({ to: "/login" });
               }}
-              className="onboard-signout-btn"
+              className="onboard-signout-link"
             >
               Sign Out
             </button>
           </div>
 
-          {/* Stepper Progress Indicator */}
-          <div className="onboard-stepper">
-            {[1, 2, 3, 4, 5, 6].map((step) => (
-              <div
-                key={step}
-                className={cn(
-                  "onboard-step-bar",
-                  step <= onboardStep && "active"
-                )}
-              />
-            ))}
+          {/* Hairline Progress Track */}
+          <div className="onboard-progress-track">
+            <div
+              className="onboard-progress-fill"
+              style={{ width: `${(onboardStep / 6) * 100}%` }}
+            />
           </div>
 
           <div>
             {onboardStep === 1 && (
               <>
-                <h2 className="onboard-step-title">
-                  Personal Profile
-                </h2>
-                <p className="onboard-step-desc">
-                  Please verify your primary phone number, date of birth, and identity details.
-                </p>
-
-                {/* Phone Number with 10 Digits */}
+                {/* Contact Number */}
                 <div className="onboard-form-group">
                   <label className="onboard-label">
-                    Personal Contact Number
+                    <span>Contact Number *</span>
                   </label>
-                  <div className="onboard-phone-digits">
-                    {Array.from({ length: 10 }).map((_, idx) => (
-                      <input
-                        key={idx}
-                        id={`phone-digit-${idx}`}
-                        type="text"
-                        maxLength={1}
-                        value={phoneDigits[idx] || ""}
-                        onKeyDown={(e) => {
-                          if (e.key === "Backspace" && !phoneDigits[idx] && idx > 0) {
-                            const prevInput = document.getElementById(`phone-digit-${idx - 1}`);
-                            prevInput?.focus();
-                          }
-                        }}
-                        onChange={(e) => {
-                          const val = e.target.value.replace(/[^0-9]/g, "");
-                          const newDigits = [...phoneDigits];
-                          newDigits[idx] = val;
-                          setPhoneDigits(newDigits);
-
-                          if (val && idx < 9) {
-                            const nextInput = document.getElementById(`phone-digit-${idx + 1}`);
-                            nextInput?.focus();
-                          }
-                        }}
-                        onPaste={(e) => {
-                          e.preventDefault();
-                          const pasteData = e.clipboardData
-                            .getData("text")
-                            .replace(/[^0-9]/g, "")
-                            .slice(0, 10);
-                          if (pasteData) {
-                            const newDigits = [...phoneDigits];
-                            for (let i = 0; i < pasteData.length; i++) {
-                              newDigits[i] = pasteData[i] || "";
-                            }
-                            setPhoneDigits(newDigits);
-                            const targetIdx = Math.min(pasteData.length, 9);
-                            const targetInput = document.getElementById(
-                              `phone-digit-${targetIdx}`,
-                            );
-                            targetInput?.focus();
-                          }
-                        }}
-                        className="onboard-phone-digit-input"
-                      />
-                    ))}
+                  <div className="onboard-phone-input-wrap">
+                    <span className="onboard-phone-prefix">+91</span>
+                    <input
+                      type="tel"
+                      placeholder="10-digit mobile number"
+                      maxLength={10}
+                      value={phoneDigits.join("")}
+                      onChange={(e) => {
+                        const digits = e.target.value.replace(/[^0-9]/g, "").slice(0, 10).split("");
+                        const arr = Array(10).fill("");
+                        digits.forEach((d, i) => { arr[i] = d; });
+                        setPhoneDigits(arr);
+                      }}
+                      className="onboard-phone-native-input"
+                    />
                   </div>
                 </div>
 
-                {/* DOB with Dropdowns (Day, Month, Year) */}
+                {/* Date of Birth */}
                 <div className="onboard-form-group">
                   <label className="onboard-label">
-                    Date of Birth
+                    <span>Date of Birth *</span>
                   </label>
                   <div className="onboard-row-3">
-                    {/* Day Select */}
                     <select
                       value={dobDay}
                       onChange={(e) => setDobDay(e.target.value)}
@@ -993,7 +961,6 @@ function RootComponent() {
                       })}
                     </select>
 
-                    {/* Month Select */}
                     <select
                       value={dobMonth}
                       onChange={(e) => setDobMonth(e.target.value)}
@@ -1019,7 +986,6 @@ function RootComponent() {
                       ))}
                     </select>
 
-                    {/* Year Select */}
                     <select
                       value={dobYear}
                       onChange={(e) => setDobYear(e.target.value)}
@@ -1037,9 +1003,10 @@ function RootComponent() {
                   </div>
                 </div>
 
+                {/* Gender */}
                 <div className="onboard-form-group">
                   <label className="onboard-label">
-                    Gender
+                    <span>Gender *</span>
                   </label>
                   <select
                     value={gender}
@@ -1056,19 +1023,13 @@ function RootComponent() {
 
             {onboardStep === 2 && (
               <>
-                <h2 className="onboard-step-title">
-                  Address Details
-                </h2>
-                <p className="onboard-step-desc">
-                  Your current residential address for official company correspondence and payroll.
-                </p>
                 <div className="onboard-form-group">
                   <label className="onboard-label">
-                    Address Line 1
+                    <span>Street Address *</span>
                   </label>
                   <input
                     type="text"
-                    placeholder="Street address, building, apartment"
+                    placeholder="Flat / Building, Street"
                     value={addr1}
                     onChange={(e) => setAddr1(e.target.value)}
                     className="onboard-input"
@@ -1076,11 +1037,11 @@ function RootComponent() {
                 </div>
                 <div className="onboard-form-group">
                   <label className="onboard-label">
-                    Address Line 2 (Optional)
+                    <span>Address Line 2 (Optional)</span>
                   </label>
                   <input
                     type="text"
-                    placeholder="Area, landmark, suite"
+                    placeholder="Apartment, suite, landmark"
                     value={addr2}
                     onChange={(e) => setAddr2(e.target.value)}
                     className="onboard-input"
@@ -1089,11 +1050,11 @@ function RootComponent() {
                 <div className="onboard-row-2">
                   <div className="onboard-form-group">
                     <label className="onboard-label">
-                      Postal Code
+                      <span>Postal / PIN Code *</span>
                     </label>
                     <input
                       type="text"
-                      placeholder="PIN / ZIP code"
+                      placeholder="PIN Code"
                       value={postal}
                       onChange={(e) => handlePostalCodeChange(e.target.value, country)}
                       className="onboard-input"
@@ -1101,7 +1062,7 @@ function RootComponent() {
                   </div>
                   <div className="onboard-form-group">
                     <label className="onboard-label">
-                      City
+                      <span>City *</span>
                     </label>
                     <input
                       type="text"
@@ -1115,11 +1076,11 @@ function RootComponent() {
                 <div className="onboard-row-2">
                   <div className="onboard-form-group">
                     <label className="onboard-label">
-                      State
+                      <span>State *</span>
                     </label>
                     <input
                       type="text"
-                      placeholder="State / Province"
+                      placeholder="State"
                       value={postalLoading ? "Loading..." : state}
                       onChange={(e) => setState(e.target.value)}
                       className="onboard-input"
@@ -1127,7 +1088,7 @@ function RootComponent() {
                   </div>
                   <div className="onboard-form-group">
                     <label className="onboard-label">
-                      Country
+                      <span>Country *</span>
                     </label>
                     <input
                       type="text"
@@ -1146,15 +1107,9 @@ function RootComponent() {
 
             {onboardStep === 3 && (
               <>
-                <h2 className="onboard-step-title">
-                  Emergency Contact
-                </h2>
-                <p className="onboard-step-desc">
-                  Designate a family member or primary contact in case of an urgent workplace event.
-                </p>
                 <div className="onboard-form-group">
                   <label className="onboard-label">
-                    Contact Person Name
+                    <span>Contact Person Name *</span>
                   </label>
                   <input
                     type="text"
@@ -1164,67 +1119,30 @@ function RootComponent() {
                     className="onboard-input"
                   />
                 </div>
-                {/* Emergency Contact Phone with 10 Digits */}
                 <div className="onboard-form-group">
                   <label className="onboard-label">
-                    Contact Person Phone
+                    <span>Contact Person Phone *</span>
                   </label>
-                  <div className="onboard-phone-digits">
-                    {Array.from({ length: 10 }).map((_, idx) => (
-                      <input
-                        key={idx}
-                        id={`emergency-phone-digit-${idx}`}
-                        type="text"
-                        maxLength={1}
-                        value={emergencyPhoneDigits[idx] || ""}
-                        onKeyDown={(e) => {
-                          if (e.key === "Backspace" && !emergencyPhoneDigits[idx] && idx > 0) {
-                            const prevInput = document.getElementById(
-                              `emergency-phone-digit-${idx - 1}`,
-                            );
-                            prevInput?.focus();
-                          }
-                        }}
-                        onChange={(e) => {
-                          const val = e.target.value.replace(/[^0-9]/g, "");
-                          const newDigits = [...emergencyPhoneDigits];
-                          newDigits[idx] = val;
-                          setEmergencyPhoneDigits(newDigits);
-
-                          if (val && idx < 9) {
-                            const nextInput = document.getElementById(
-                              `emergency-phone-digit-${idx + 1}`,
-                            );
-                            nextInput?.focus();
-                          }
-                        }}
-                        onPaste={(e) => {
-                          e.preventDefault();
-                          const pasteData = e.clipboardData
-                            .getData("text")
-                            .replace(/[^0-9]/g, "")
-                            .slice(0, 10);
-                          if (pasteData) {
-                            const newDigits = [...emergencyPhoneDigits];
-                            for (let i = 0; i < pasteData.length; i++) {
-                              newDigits[i] = pasteData[i] || "";
-                            }
-                            setEmergencyPhoneDigits(newDigits);
-                            const targetIdx = Math.min(pasteData.length, 9);
-                            const targetInput = document.getElementById(
-                              `emergency-phone-digit-${targetIdx}`,
-                            );
-                            targetInput?.focus();
-                          }
-                        }}
-                        className="onboard-phone-digit-input"
-                      />
-                    ))}
+                  <div className="onboard-phone-input-wrap">
+                    <span className="onboard-phone-prefix">+91</span>
+                    <input
+                      type="tel"
+                      placeholder="10-digit mobile number"
+                      maxLength={10}
+                      value={emergencyPhoneDigits.join("")}
+                      onChange={(e) => {
+                        const digits = e.target.value.replace(/[^0-9]/g, "").slice(0, 10).split("");
+                        const arr = Array(10).fill("");
+                        digits.forEach((d, i) => { arr[i] = d; });
+                        setEmergencyPhoneDigits(arr);
+                      }}
+                      className="onboard-phone-native-input"
+                    />
                   </div>
                 </div>
                 <div className="onboard-form-group">
                   <label className="onboard-label">
-                    Relationship to Employee
+                    <span>Relationship *</span>
                   </label>
                   <select
                     value={emergencyRelation}
@@ -1244,20 +1162,13 @@ function RootComponent() {
 
             {onboardStep === 4 && (
               <>
-                <h2 className="onboard-step-title">
-                  Financial Details
-                </h2>
-                <p className="onboard-step-desc">
-                  Add your bank and tax information for salary processing. You can also skip
-                  this and fill it out later from your Profile settings.
-                </p>
                 <div className="onboard-form-group">
                   <label className="onboard-label">
-                    Bank Name
+                    <span>Bank Name</span>
                   </label>
                   <input
                     type="text"
-                    placeholder="e.g. HDFC Bank, Chase, Barclays"
+                    placeholder="e.g. HDFC Bank, ICICI, SBI"
                     value={bank}
                     onChange={(e) => setBank(e.target.value)}
                     className="onboard-input"
@@ -1265,11 +1176,11 @@ function RootComponent() {
                 </div>
                 <div className="onboard-form-group">
                   <label className="onboard-label">
-                    Account Number
+                    <span>Account Number</span>
                   </label>
                   <input
                     type="text"
-                    placeholder="Bank account number / IBAN"
+                    placeholder="Account number or IBAN"
                     value={account}
                     onChange={(e) => setAccount(e.target.value)}
                     className="onboard-input"
@@ -1277,7 +1188,7 @@ function RootComponent() {
                 </div>
                 <div className="onboard-form-group">
                   <label className="onboard-label">
-                    PAN / Tax ID
+                    <span>PAN / Tax ID</span>
                   </label>
                   <input
                     type="text"
@@ -1292,35 +1203,23 @@ function RootComponent() {
 
             {onboardStep === 5 && (
               <>
-                <div className="onboard-doc-header-row">
-                  <h2 className="onboard-step-title">
-                    KYC & Personal Documents
-                  </h2>
-                  <span className="onboard-badge-skippable">
-                    Skippable
-                  </span>
-                </div>
-                <p className="onboard-step-desc">
-                  Upload copies of your identification documents (PDF, Word, or images). You can also complete this later from your Profile.
-                </p>
-
                 {onboardDocsLoading ? (
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "1.5rem", justifyContent: "center", color: "var(--color-text-muted)" }}>
-                    <Loader2 size={18} className="animate-spin" />
-                    <span>Loading required documents...</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "1.5rem", justifyContent: "center", color: "#71717a" }}>
+                    <Loader2 size={16} className="animate-spin" />
+                    <span style={{ fontSize: "0.8125rem" }}>Loading document requirements...</span>
                   </div>
                 ) : onboardDocRequirements.length === 0 ? (
-                  <div style={{ textAlign: "center", padding: "2rem", border: "1px dashed var(--color-border)", borderRadius: "var(--radius-lg)", color: "var(--color-text-muted)" }}>
-                    <FileCheck size={32} style={{ margin: "0 auto 8px", opacity: 0.6 }} />
-                    <p style={{ fontWeight: 600, color: "var(--color-text-primary)", margin: "0 0 4px" }}>
-                      No company document requirements configured.
+                  <div style={{ textAlign: "center", padding: "2rem", border: "1px dashed #e4e4e7", borderRadius: 4, color: "#71717a" }}>
+                    <FileCheck size={28} style={{ margin: "0 auto 8px", opacity: 0.6 }} />
+                    <p style={{ fontWeight: 600, color: "#09090b", margin: "0 0 4px", fontSize: "0.875rem" }}>
+                      No documents required
                     </p>
-                    <p style={{ fontSize: "13px", margin: 0 }}>
-                      You can safely proceed to the next step!
+                    <p style={{ fontSize: "0.75rem", margin: 0 }}>
+                      You can proceed to the final step.
                     </p>
                   </div>
                 ) : (
-                  <div>
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                     {onboardDocRequirements.map((req) => {
                       const filesList = onboardDocFiles[req.id] || [];
                       const hasFiles = filesList.length > 0;
@@ -1328,10 +1227,15 @@ function RootComponent() {
                       return (
                         <div
                           key={req.id}
-                          className={cn(
-                            "onboard-doc-card",
-                            hasFiles && "has-files"
-                          )}
+                          style={{
+                            border: "1px solid #e4e4e7",
+                            borderRadius: 4,
+                            padding: "0.875rem 1rem",
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "0.5rem",
+                            background: "#ffffff",
+                          }}
                         >
                           <input
                             id={`onboard-file-${req.id}`}
@@ -1371,99 +1275,68 @@ function RootComponent() {
                             }}
                           />
 
-                          <div className="onboard-doc-header">
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <div>
-                              <div className="onboard-doc-title-row">
-                                <span className="onboard-doc-title">
-                                  {req.title}
-                                </span>
-                                <span
-                                  className={
-                                    req.is_mandatory ? "onboard-badge-mandatory" : "onboard-badge-optional"
-                                  }
-                                >
-                                  {req.is_mandatory ? "• Mandatory" : "• Optional"}
-                                </span>
-                              </div>
-                              {req.description && (
-                                <p className="onboard-doc-desc">
-                                  {req.description}
-                                </p>
-                              )}
+                              <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#09090b" }}>
+                                {req.title}
+                              </span>
+                              <span style={{ fontSize: "0.6875rem", color: req.is_mandatory ? "#71717a" : "#a1a1aa", marginLeft: "0.5rem" }}>
+                                {req.is_mandatory ? "(Required)" : "(Optional)"}
+                              </span>
                             </div>
+                            <button
+                              type="button"
+                              disabled={onboardDocUploadingId === req.id}
+                              onClick={() => {
+                                const el = document.getElementById(`onboard-file-${req.id}`) as HTMLInputElement;
+                                el?.click();
+                              }}
+                              className="onboard-btn-secondary"
+                              style={{ height: 28, padding: "0 0.625rem", fontSize: "0.75rem" }}
+                            >
+                              {onboardDocUploadingId === req.id ? (
+                                <Loader2 size={12} className="animate-spin" />
+                              ) : (
+                                <Upload size={12} />
+                              )}
+                              <span>Upload</span>
+                            </button>
                           </div>
 
                           {/* Uploaded files list */}
-                          <div>
-                            {hasFiles ? (
-                              <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                                {filesList.map((file, fileIdx) => (
-                                  <div
-                                    key={fileIdx}
-                                    className="onboard-file-item"
-                                  >
-                                    <div className="onboard-file-item-left">
-                                      <CheckCircle2 size={16} style={{ color: "#10b981", flexShrink: 0 }} />
-                                      <span className="onboard-file-item-name">
-                                        {file.fileName}
-                                      </span>
-                                      <span style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>
-                                        ({(file.sizeBytes / 1024).toFixed(0)} KB)
-                                      </span>
-                                    </div>
-                                    <button
-                                      type="button"
-                                      onClick={() => {
-                                        setOnboardDocFiles((prev) => {
-                                          const updated = (prev[req.id] || []).filter((_, idx) => idx !== fileIdx);
-                                          return { ...prev, [req.id]: updated };
-                                        });
-                                      }}
-                                      className="onboard-file-remove-btn"
-                                    >
-                                      Remove
-                                    </button>
+                          {hasFiles && (
+                            <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem", marginTop: "0.25rem" }}>
+                              {filesList.map((file, fileIdx) => (
+                                <div
+                                  key={fileIdx}
+                                  className="onboard-file-item"
+                                  style={{ padding: "0.375rem 0.625rem" }}
+                                >
+                                  <div className="onboard-file-item-left">
+                                    <CheckCircle2 size={13} style={{ color: "#09090b", flexShrink: 0 }} />
+                                    <span className="onboard-file-item-name" style={{ fontSize: "0.75rem" }}>
+                                      {file.fileName}
+                                    </span>
+                                    <span style={{ fontSize: "0.6875rem", color: "#71717a" }}>
+                                      ({(file.sizeBytes / 1024).toFixed(0)} KB)
+                                    </span>
                                   </div>
-                                ))}
-
-                                <div style={{ marginTop: "4px" }}>
                                   <button
                                     type="button"
                                     onClick={() => {
-                                      const el = document.getElementById(`onboard-file-${req.id}`) as HTMLInputElement;
-                                      el?.click();
+                                      setOnboardDocFiles((prev) => {
+                                        const updated = (prev[req.id] || []).filter((_, idx) => idx !== fileIdx);
+                                        return { ...prev, [req.id]: updated };
+                                      });
                                     }}
-                                    className="onboard-doc-upload-btn"
+                                    className="onboard-file-remove-btn"
                                   >
-                                    <Upload size={13} />
-                                    <span>+ Add Back side / additional file</span>
+                                    Remove
                                   </button>
                                 </div>
-                              </div>
-                            ) : (
-                              <button
-                                type="button"
-                                disabled={onboardDocUploadingId === req.id}
-                                onClick={() => {
-                                  const el = document.getElementById(`onboard-file-${req.id}`) as HTMLInputElement;
-                                  el?.click();
-                                }}
-                                className="onboard-doc-upload-btn"
-                              >
-                                {onboardDocUploadingId === req.id ? (
-                                  <>
-                                    <Loader2 size={14} className="animate-spin" />
-                                    <span>Reading files...</span>
-                                  </>
-                                ) : (
-                                  <>
-                                    <Upload size={14} />
-                                    <span>Upload Document (PDF, Word, or Photos)</span>
-                                  </>
-                                )}
-                              </button>
-                            )}
-                          </div>
+                              ))}
+                            </div>
+                          )}
                         </div>
                       );
                     })}
@@ -1474,14 +1347,6 @@ function RootComponent() {
 
             {onboardStep === 6 && (
               <>
-                <h2 className="onboard-step-title">
-                  Profile Photo & Bio
-                </h2>
-                <p className="onboard-step-desc">
-                  Add a professional photo and short introduction so your teammates can recognize you.
-                </p>
-
-                {/* Clean Upload Dropzone */}
                 <input
                   ref={onboardingPhotoInputRef}
                   type="file"
@@ -1490,78 +1355,63 @@ function RootComponent() {
                   onChange={handleOnboardingPhotoSelect}
                 />
 
-                <div
-                  className="onboard-photo-dropzone"
-                  onClick={() => !uploadedPhotoBase64 && onboardingPhotoInputRef.current?.click()}
-                >
+                <div className="onboard-photo-compact">
                   {uploadedPhotoBase64 ? (
-                    <div className="onboard-photo-preview-wrap">
+                    <div className="onboard-photo-thumb-wrap">
                       <img
                         src={uploadedPhotoBase64}
                         alt="Profile preview"
-                        className="onboard-photo-preview-img"
+                        className="onboard-photo-thumb-img"
                       />
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setUploadedPhotoBase64(null);
-                        }}
-                        title="Remove photo"
-                        className="onboard-photo-remove-btn"
-                      >
-                        <CloseIcon size={13} />
-                      </button>
                     </div>
                   ) : (
-                    <div className="onboard-photo-icon-btn">
-                      <UploadPhotoIcon size={30} strokeWidth={1.5} />
+                    <div className="onboard-photo-empty">
+                      <UploadPhotoIcon size={24} strokeWidth={1.5} />
                     </div>
                   )}
 
-                  <div>
-                    <p style={{ fontWeight: 600, color: "var(--color-text-primary)", margin: "0 0 2px" }}>
-                      {uploadedPhotoBase64 ? "Photo uploaded" : "Upload your picture"}
+                  <div className="onboard-photo-info">
+                    <p className="onboard-photo-info-title">
+                      {uploadedPhotoBase64 ? "Profile picture selected" : "Upload your profile picture"}
                     </p>
-                    <p style={{ fontSize: "12px", color: "var(--color-text-muted)", margin: 0 }}>
-                      Supports JPG, PNG, or WebP (max 5 MB)
+                    <p className="onboard-photo-info-desc">
+                      JPG, PNG, or WebP up to 5 MB
                     </p>
+                    <div className="onboard-photo-actions">
+                      <button
+                        type="button"
+                        onClick={() => onboardingPhotoInputRef.current?.click()}
+                        className="onboard-btn-secondary"
+                        style={{ height: 30, padding: "0 0.75rem", fontSize: "0.75rem" }}
+                      >
+                        {uploadedPhotoBase64 ? "Change Image" : "Choose File"}
+                      </button>
+                      {uploadedPhotoBase64 && (
+                        <button
+                          type="button"
+                          onClick={() => setUploadedPhotoBase64(null)}
+                          className="onboard-btn-secondary"
+                          style={{ height: 30, padding: "0 0.75rem", fontSize: "0.75rem", color: "#dc2626" }}
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
                   </div>
-
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onboardingPhotoInputRef.current?.click();
-                    }}
-                    className="onboard-btn-secondary"
-                    style={{ height: "36px", fontSize: "12px" }}
-                  >
-                    {uploadedPhotoBase64 ? "Change photo" : "Select from device"}
-                  </button>
                 </div>
 
-                {/* Compulsory Bio / Description Section */}
+                {/* About You / Bio */}
                 <div className="onboard-form-group">
                   <div className="onboard-label">
-                    <span>About You / Description *</span>
-                    <span
-                      style={{
-                        fontSize: "12px",
-                        fontWeight: 600,
-                        color: onboardBio.trim().length >= 10 ? "#10b981" : "#ef4444",
-                      }}
-                    >
-                      {onboardBio.trim().length >= 10 ? "✓ Ready" : "Required (min. 10 chars)"}
+                    <span>About You *</span>
+                    <span style={{ fontSize: "0.6875rem", color: "#71717a" }}>
+                      Min. 10 characters ({onboardBio.trim().length}/10)
                     </span>
                   </div>
-                  <p style={{ fontSize: "12px", color: "var(--color-text-muted)", margin: "0 0 6px" }}>
-                    Introduce yourself to the company! This will appear on your card in the Meet the Family induction section and team directory.
-                  </p>
                   <textarea
                     rows={3}
                     required
-                    placeholder="e.g. Passionate about product operations, love weekend filter coffee and tennis. Looking forward to collaborating with everyone!"
+                    placeholder="Short introduction for your company team directory..."
                     value={onboardBio}
                     onChange={(e) => setOnboardBio(e.target.value)}
                     className="onboard-textarea"
@@ -1580,7 +1430,7 @@ function RootComponent() {
                 Back
               </button>
               {onboardStep < 6 ? (
-                <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+                <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
                   {(onboardStep === 4 || onboardStep === 5) && (
                     <button
                       type="button"
@@ -1600,7 +1450,7 @@ function RootComponent() {
                     onClick={() => setOnboardStep((p) => p + 1)}
                     className="onboard-btn-primary"
                   >
-                    Next Step
+                    Continue
                   </button>
                 </div>
               ) : (
@@ -1610,7 +1460,7 @@ function RootComponent() {
                   onClick={handleOnboardingSubmit}
                   className="onboard-btn-primary"
                 >
-                  Save & Enter Intranet
+                  Complete Onboarding
                 </button>
               )}
             </div>
