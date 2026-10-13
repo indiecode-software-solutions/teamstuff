@@ -377,6 +377,7 @@ function RootComponent() {
     >
   >({});
   const [onboardDocUploadingId, setOnboardDocUploadingId] = React.useState<string | null>(null);
+  const [onboardDocsLoading, setOnboardDocsLoading] = React.useState<boolean>(false);
 
   // Login Notification Popup for Pending KYC Docs
   const [pendingDocAlert, setPendingDocAlert] = React.useState<{
@@ -491,8 +492,15 @@ function RootComponent() {
         setProfileStatus(data.onboarding_status);
         if (data.company_id) {
           if (data.onboarding_status === "Pending") {
-            const reqs = await getCompanyDocumentRequirements(data.company_id);
-            setOnboardDocRequirements(reqs || []);
+            setOnboardDocsLoading(true);
+            try {
+              const reqs = await getCompanyDocumentRequirements(data.company_id);
+              setOnboardDocRequirements(reqs || []);
+            } catch (docErr) {
+              console.error("Failed to load document requirements:", docErr);
+            } finally {
+              setOnboardDocsLoading(false);
+            }
           } else if (data.onboarding_status === "Completed") {
             // Check if user has pending mandatory documents
             const isDismissed = sessionStorage.getItem("doc_submission_reminder_dismissed") === "true";
@@ -1382,6 +1390,7 @@ function RootComponent() {
                                     reader.onload = () => resolve(reader.result as string);
                                     reader.readAsDataURL(f);
                                   });
+                                  const pureB64 = b64.includes(",") ? b64.split(",")[1]! : b64;
                                   setOnboardDocFiles((prev) => ({
                                     ...prev,
                                     [req.id]: [
@@ -1389,6 +1398,7 @@ function RootComponent() {
                                       {
                                         fileName: f.name,
                                         fileBase64: b64,
+                                        base64Data: pureB64,
                                         mimeType: f.type,
                                         sizeBytes: f.size,
                                       },
