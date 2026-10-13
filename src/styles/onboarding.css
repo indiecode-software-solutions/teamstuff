@@ -57,9 +57,12 @@
 }
 
 .onboard-sidebar-logo {
-  height: 24px;
+  max-height: 28px;
+  max-width: 100px;
   width: auto;
+  height: auto;
   object-fit: contain;
+  flex-shrink: 0;
 }
 
 .onboard-sidebar-title {

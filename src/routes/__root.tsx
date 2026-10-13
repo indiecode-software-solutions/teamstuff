@@ -55,11 +55,13 @@ import {
   getCachedTenantBranding,
   fetchTenantBranding,
   fetchTenantBrandingServerFn,
+  type TenantBranding,
 } from "../lib/tenant-brand";
 import {
   getCompanyBranding,
   getCachedCompanyBranding,
   subscribeCompanyBranding,
+  type CompanyBranding,
 } from "../lib/company";
 import {
   Dialog,
@@ -281,6 +283,11 @@ function RootComponent() {
   const isPublicView = isPublicPath(location.pathname, location.search);
 
   const [brandColor, setBrandColor] = React.useState<string>(() => getActiveBrandColor());
+  const [branding, setBranding] = React.useState<TenantBranding | CompanyBranding | null>(() => {
+    if (typeof window === "undefined") return null;
+    const tenantSlug = getTenantFromHost();
+    return tenantSlug ? getCachedTenantBranding(tenantSlug) : getCachedCompanyBranding();
+  });
 
   React.useEffect(() => {
     applyBrandThemeCss(brandColor);
@@ -523,11 +530,15 @@ function RootComponent() {
     if (!initialBrand) {
       initialBrand = getCachedCompanyBranding();
     }
+    if (initialBrand) {
+      setBranding(initialBrand);
+    }
     applyBrowserWhiteLabel(initialBrand);
 
     if (tenantSlug) {
       fetchTenantBranding(tenantSlug).then((tb) => {
         if (tb) {
+          setBranding(tb);
           applyBrowserWhiteLabel(tb);
           applyBrandThemeCss(tb.brandColor);
         }
@@ -535,6 +546,7 @@ function RootComponent() {
     } else {
       getCompanyBranding().then((cb) => {
         if (cb) {
+          setBranding(cb);
           applyBrowserWhiteLabel(cb);
           if (cb.brandColor) applyBrandThemeCss(cb.brandColor);
         }
@@ -544,6 +556,7 @@ function RootComponent() {
     const unsubscribeBranding = subscribeCompanyBranding(() => {
       const cb = getCachedCompanyBranding();
       if (cb) {
+        setBranding(cb);
         applyBrowserWhiteLabel(cb);
         if (cb.brandColor) applyBrandThemeCss(cb.brandColor);
       }
@@ -904,9 +917,23 @@ function RootComponent() {
         <aside className="onboard-sidebar">
           <div>
             <div className="onboard-sidebar-brand">
-              <img src="/teamstuff_icon_logo.png" alt="Teamstuff" className="onboard-sidebar-logo" />
+              {branding?.logoUrl ? (
+                <img
+                  src={branding.logoUrl}
+                  alt={`${branding.shortName || branding.name || "Company"} logo`}
+                  className="onboard-sidebar-logo"
+                />
+              ) : (
+                <img
+                  src="/teamstuff_icon_logo.png"
+                  alt="Teamstuff"
+                  className="onboard-sidebar-logo"
+                />
+              )}
               <div>
-                <h2 className="onboard-sidebar-title">Teamstuff</h2>
+                <h2 className="onboard-sidebar-title">
+                  {branding?.shortName || branding?.name || "Teamstuff"}
+                </h2>
                 <p className="onboard-sidebar-tag">Employee Onboarding</p>
               </div>
             </div>
@@ -977,7 +1004,9 @@ function RootComponent() {
           {/* Top Breadcrumb & Progress Bar */}
           <header className="onboard-top-bar">
             <div className="onboard-top-breadcrumbs">
-              <span className="onboard-crumb-root">Onboarding</span>
+              <span className="onboard-crumb-root">
+                {branding?.shortName || branding?.name || "Onboarding"}
+              </span>
               <span className="onboard-crumb-sep">/</span>
               <span className="onboard-crumb-current">{currentStepConfig.label}</span>
             </div>
