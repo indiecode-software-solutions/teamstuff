@@ -30,6 +30,11 @@ import {
   LogOut,
   ArrowLeft,
   ArrowRight,
+  Minus,
+  Plus,
+  RotateCw,
+  RefreshCw,
+  X,
 } from "lucide-react";
 import { getCompanyTrainingSections } from "../lib/induction";
 import {
@@ -359,6 +364,7 @@ function RootComponent() {
     zoom: number;
     x: number;
     y: number;
+    rotation: number;
   } | null>(null);
   const [onboardImgDims, setOnboardImgDims] = React.useState<{ w: number; h: number } | null>(null);
   const onboardDragRef = React.useRef<{ px: number; py: number; bx: number; by: number } | null>(null);
@@ -710,11 +716,18 @@ function RootComponent() {
     };
   }, [sessionUser, navigate]);
 
-  const clampOnboardOffset = (x: number, y: number, zoom: number) => {
+  const clampOnboardOffset = (x: number, y: number, zoom: number, rotation: number = 0) => {
     if (!onboardImgDims) return { x, y };
-    const scale = Math.max(ONBOARD_ADJUST_BOX / onboardImgDims.w, ONBOARD_ADJUST_BOX / onboardImgDims.h) * zoom;
-    const maxX = Math.max(0, (onboardImgDims.w * scale - ONBOARD_ADJUST_BOX) / 2);
-    const maxY = Math.max(0, (onboardImgDims.h * scale - ONBOARD_ADJUST_BOX) / 2);
+    const rot = ((rotation % 360) + 360) % 360;
+    const isSwapped = rot === 90 || rot === 270;
+    const effW = isSwapped ? onboardImgDims.h : onboardImgDims.w;
+    const effH = isSwapped ? onboardImgDims.w : onboardImgDims.h;
+    const fitScale = Math.min(ONBOARD_ADJUST_BOX / effW, ONBOARD_ADJUST_BOX / effH);
+    const scale = fitScale * zoom;
+    const currentW = effW * scale;
+    const currentH = effH * scale;
+    const maxX = Math.max(0, (currentW - ONBOARD_ADJUST_BOX) / 2) + 40;
+    const maxY = Math.max(0, (currentH - ONBOARD_ADJUST_BOX) / 2) + 40;
     return {
       x: Math.min(maxX, Math.max(-maxX, x)),
       y: Math.min(maxY, Math.max(-maxY, y)),
@@ -748,6 +761,7 @@ function RootComponent() {
           zoom: 1,
           x: 0,
           y: 0,
+          rotation: 0,
         });
       };
       img.onerror = () => {
@@ -757,6 +771,7 @@ function RootComponent() {
           zoom: 1,
           x: 0,
           y: 0,
+          rotation: 0,
         });
       };
       img.src = dataUrl;
@@ -766,7 +781,7 @@ function RootComponent() {
   const applyOnboardAdjustedPhoto = async () => {
     if (!pendingOnboardPhoto || !onboardImgDims) return;
     try {
-      // Render the visible square crop to a 512×512 JPEG
+      // Render the visible square crop to a 512×512 JPEG with 1:1 preview parity
       const base64Data = await new Promise<string>((resolve, reject) => {
         const img = new Image();
         img.onload = () => {
@@ -775,17 +790,32 @@ function RootComponent() {
           canvas.height = 512;
           const ctx = canvas.getContext("2d");
           if (!ctx) return reject(new Error("Canvas is not supported in this browser."));
-          const scale =
-            Math.max(ONBOARD_ADJUST_BOX / onboardImgDims.w, ONBOARD_ADJUST_BOX / onboardImgDims.h) *
-            pendingOnboardPhoto.zoom;
-          const drawW = onboardImgDims.w * scale;
-          const drawH = onboardImgDims.h * scale;
-          const left = ONBOARD_ADJUST_BOX / 2 + pendingOnboardPhoto.x - drawW / 2;
-          const top = ONBOARD_ADJUST_BOX / 2 + pendingOnboardPhoto.y - drawH / 2;
-          const out = 512 / ONBOARD_ADJUST_BOX;
+
+          const rot = ((pendingOnboardPhoto.rotation % 360) + 360) % 360;
+          const isSwapped = rot === 90 || rot === 270;
+          const effW = isSwapped ? onboardImgDims.h : onboardImgDims.w;
+          const effH = isSwapped ? onboardImgDims.w : onboardImgDims.h;
+          const fitScale = Math.min(ONBOARD_ADJUST_BOX / effW, ONBOARD_ADJUST_BOX / effH);
+          const ratio = 512 / ONBOARD_ADJUST_BOX;
+
+          // Fill clean matte background
           ctx.fillStyle = "#ffffff";
           ctx.fillRect(0, 0, 512, 512);
-          ctx.drawImage(img, left * out, top * out, drawW * out, drawH * out);
+
+          ctx.save();
+          // Move to center of canvas + user drag offset scaled by ratio
+          ctx.translate(256 + pendingOnboardPhoto.x * ratio, 256 + pendingOnboardPhoto.y * ratio);
+          if (rot !== 0) {
+            ctx.rotate((rot * Math.PI) / 180);
+          }
+          ctx.scale(pendingOnboardPhoto.zoom, pendingOnboardPhoto.zoom);
+
+          // Draw image centered at (0, 0)
+          const drawW = onboardImgDims.w * fitScale * ratio;
+          const drawH = onboardImgDims.h * fitScale * ratio;
+          ctx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+          ctx.restore();
+
           resolve(canvas.toDataURL("image/jpeg", 0.92));
         };
         img.onerror = () => reject(new Error("Could not process the selected image."));
@@ -1611,88 +1641,179 @@ function RootComponent() {
         </div>
       </main>
 
-        {/* Photo Adjust Modal (Zoom & Reposition) */}
+        {/* Photo Adjust Modal (Fit by default, Smooth Zoom & Reposition) */}
         <Dialog open={Boolean(pendingOnboardPhoto)} onOpenChange={(open) => !open && setPendingOnboardPhoto(null)}>
-          <DialogContent style={{ maxWidth: 360, padding: "1.5rem" }}>
-            <DialogHeader>
-              <DialogTitle style={{ fontSize: 16, fontWeight: 600 }}>
-                Adjust Your Photo
-              </DialogTitle>
-            </DialogHeader>
-            {pendingOnboardPhoto && (
-              <div className="onboard-crop-content">
-                <div
-                  className="onboard-crop-box"
-                  onPointerDown={(e) => {
-                    (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
-                    onboardDragRef.current = {
-                      px: e.clientX,
-                      py: e.clientY,
-                      bx: pendingOnboardPhoto.x,
-                      by: pendingOnboardPhoto.y,
-                    };
-                  }}
-                  onPointerMove={(e) => {
-                    const d = onboardDragRef.current;
-                    if (!d) return;
-                    const c = clampOnboardOffset(
-                      d.bx + (e.clientX - d.px),
-                      d.by + (e.clientY - d.py),
-                      pendingOnboardPhoto.zoom,
-                    );
-                    setPendingOnboardPhoto({ ...pendingOnboardPhoto, ...c });
-                  }}
-                  onPointerUp={() => (onboardDragRef.current = null)}
-                  onPointerCancel={() => (onboardDragRef.current = null)}
-                >
-                  <img
-                    src={pendingOnboardPhoto.src}
-                    alt="Preview"
-                    draggable={false}
-                    onLoad={(e) => {
-                      const el = e.currentTarget;
-                      setOnboardImgDims({ w: el.naturalWidth, h: el.naturalHeight });
-                    }}
-                    style={{
-                      position: "absolute",
-                      left: "50%",
-                      top: "50%",
-                      transform: `translate(calc(-50% + ${pendingOnboardPhoto.x}px), calc(-50% + ${pendingOnboardPhoto.y}px)) scale(${pendingOnboardPhoto.zoom})`,
-                      minWidth: "100%",
-                      minHeight: "100%",
-                      objectFit: "cover",
-                      pointerEvents: "none",
-                    }}
-                  />
-                </div>
-
-                <div className="onboard-zoom-slider-wrap">
-                  <span>Zoom</span>
-                  <input
-                    type="range"
-                    min={1}
-                    max={3}
-                    step={0.05}
-                    value={pendingOnboardPhoto.zoom}
-                    onChange={(e) => {
-                      const zoom = parseFloat(e.target.value);
-                      const c = clampOnboardOffset(pendingOnboardPhoto.x, pendingOnboardPhoto.y, zoom);
-                      setPendingOnboardPhoto({ ...pendingOnboardPhoto, zoom, ...c });
-                    }}
-                    style={{ flex: 1, accentColor: "var(--color-brand, #18181b)" }}
-                  />
-                </div>
-                <p style={{ fontSize: 12, color: "var(--color-text-muted)", margin: 0, textAlign: "center" }}>
-                  Drag to reposition — photo will be cropped to a square.
+          <DialogContent
+            hideCornerClose={true}
+            style={{ maxWidth: 360, padding: "1.25rem 1.5rem", borderRadius: 4, border: "1px solid #e4e4e7" }}
+          >
+            <div className="onboard-modal-header-row">
+              <div>
+                <h3 className="onboard-modal-title">Adjust Photo</h3>
+                <p style={{ fontSize: "0.6875rem", color: "#71717a", margin: "2px 0 0 0" }}>
+                  Fit to frame &middot; Drag to reposition
                 </p>
               </div>
-            )}
-            <DialogFooter style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+              <button
+                type="button"
+                onClick={() => setPendingOnboardPhoto(null)}
+                className="onboard-modal-close-btn"
+                title="Close"
+              >
+                <X size={15} />
+              </button>
+            </div>
+
+            {pendingOnboardPhoto && onboardImgDims && (() => {
+              const rot = ((pendingOnboardPhoto.rotation % 360) + 360) % 360;
+              const isSwapped = rot === 90 || rot === 270;
+              const effW = isSwapped ? onboardImgDims.h : onboardImgDims.w;
+              const effH = isSwapped ? onboardImgDims.w : onboardImgDims.h;
+              const fitScale = Math.min(ONBOARD_ADJUST_BOX / effW, ONBOARD_ADJUST_BOX / effH);
+
+              return (
+                <div className="onboard-crop-content">
+                  <div
+                    className="onboard-crop-box"
+                    onWheel={(e) => {
+                      e.preventDefault();
+                      const delta = e.deltaY < 0 ? 0.08 : -0.08;
+                      const newZoom = Math.min(3.5, Math.max(1, +(pendingOnboardPhoto.zoom + delta).toFixed(2)));
+                      const c = clampOnboardOffset(pendingOnboardPhoto.x, pendingOnboardPhoto.y, newZoom, pendingOnboardPhoto.rotation);
+                      setPendingOnboardPhoto({ ...pendingOnboardPhoto, zoom: newZoom, ...c });
+                    }}
+                    onPointerDown={(e) => {
+                      (e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId);
+                      onboardDragRef.current = {
+                        px: e.clientX,
+                        py: e.clientY,
+                        bx: pendingOnboardPhoto.x,
+                        by: pendingOnboardPhoto.y,
+                      };
+                    }}
+                    onPointerMove={(e) => {
+                      const d = onboardDragRef.current;
+                      if (!d) return;
+                      const c = clampOnboardOffset(
+                        d.bx + (e.clientX - d.px),
+                        d.by + (e.clientY - d.py),
+                        pendingOnboardPhoto.zoom,
+                        pendingOnboardPhoto.rotation,
+                      );
+                      setPendingOnboardPhoto({ ...pendingOnboardPhoto, ...c });
+                    }}
+                    onPointerUp={() => (onboardDragRef.current = null)}
+                    onPointerCancel={() => (onboardDragRef.current = null)}
+                  >
+                    <img
+                      src={pendingOnboardPhoto.src}
+                      alt="Crop preview"
+                      draggable={false}
+                      style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        width: `${onboardImgDims.w * fitScale}px`,
+                        height: `${onboardImgDims.h * fitScale}px`,
+                        transform: `translate(calc(-50% + ${pendingOnboardPhoto.x}px), calc(-50% + ${pendingOnboardPhoto.y}px)) scale(${pendingOnboardPhoto.zoom}) rotate(${pendingOnboardPhoto.rotation}deg)`,
+                        transformOrigin: "center center",
+                        pointerEvents: "none",
+                        maxWidth: "none",
+                        maxHeight: "none",
+                      }}
+                    />
+                  </div>
+
+                  {/* Controls */}
+                  <div className="onboard-crop-controls">
+                    <div className="onboard-crop-slider-row">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newZoom = Math.max(1, +(pendingOnboardPhoto.zoom - 0.1).toFixed(2));
+                          const c = clampOnboardOffset(pendingOnboardPhoto.x, pendingOnboardPhoto.y, newZoom, pendingOnboardPhoto.rotation);
+                          setPendingOnboardPhoto({ ...pendingOnboardPhoto, zoom: newZoom, ...c });
+                        }}
+                        className="onboard-crop-btn-icon"
+                        title="Zoom out"
+                      >
+                        <Minus size={13} />
+                      </button>
+                      <input
+                        type="range"
+                        min={1}
+                        max={3.5}
+                        step={0.05}
+                        value={pendingOnboardPhoto.zoom}
+                        onChange={(e) => {
+                          const zoom = parseFloat(e.target.value);
+                          const c = clampOnboardOffset(pendingOnboardPhoto.x, pendingOnboardPhoto.y, zoom, pendingOnboardPhoto.rotation);
+                          setPendingOnboardPhoto({ ...pendingOnboardPhoto, zoom, ...c });
+                        }}
+                        className="onboard-crop-slider"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newZoom = Math.min(3.5, +(pendingOnboardPhoto.zoom + 0.1).toFixed(2));
+                          const c = clampOnboardOffset(pendingOnboardPhoto.x, pendingOnboardPhoto.y, newZoom, pendingOnboardPhoto.rotation);
+                          setPendingOnboardPhoto({ ...pendingOnboardPhoto, zoom: newZoom, ...c });
+                        }}
+                        className="onboard-crop-btn-icon"
+                        title="Zoom in"
+                      >
+                        <Plus size={13} />
+                      </button>
+                    </div>
+
+                    <div className="onboard-crop-toolbar">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newRot = (pendingOnboardPhoto.rotation + 90) % 360;
+                          const c = clampOnboardOffset(pendingOnboardPhoto.x, pendingOnboardPhoto.y, pendingOnboardPhoto.zoom, newRot);
+                          setPendingOnboardPhoto({ ...pendingOnboardPhoto, rotation: newRot, ...c });
+                        }}
+                        className="onboard-crop-tool-btn"
+                        title="Rotate 90 degrees"
+                      >
+                        <RotateCw size={12} />
+                        <span>Rotate</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setPendingOnboardPhoto({
+                            ...pendingOnboardPhoto,
+                            zoom: 1,
+                            x: 0,
+                            y: 0,
+                            rotation: 0,
+                          });
+                        }}
+                        className="onboard-crop-tool-btn"
+                        title="Reset to default fit"
+                      >
+                        <RefreshCw size={11} />
+                        <span>Reset</span>
+                      </button>
+                    </div>
+
+                    <p className="onboard-crop-hint">
+                      Drag image to reposition &middot; Scroll to zoom
+                    </p>
+                  </div>
+                </div>
+              );
+            })()}
+
+            <DialogFooter style={{ display: "flex", justifyContent: "flex-end", gap: "0.5rem", marginTop: "0.375rem" }}>
               <button
                 type="button"
                 onClick={() => setPendingOnboardPhoto(null)}
                 className="onboard-btn-secondary"
-                style={{ height: 36, fontSize: 13 }}
+                style={{ height: 34, padding: "0 0.875rem", fontSize: 13 }}
               >
                 Cancel
               </button>
@@ -1700,7 +1821,7 @@ function RootComponent() {
                 type="button"
                 onClick={applyOnboardAdjustedPhoto}
                 className="onboard-btn-primary"
-                style={{ height: 36, fontSize: 13 }}
+                style={{ height: 34, padding: "0 1rem", fontSize: 13 }}
               >
                 Save Crop
               </button>

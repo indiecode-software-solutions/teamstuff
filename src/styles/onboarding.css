@@ -1078,8 +1078,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  padding: 1rem 0;
+  gap: 0.875rem;
+  padding: 0.75rem 0 0.25rem;
 }
 
 .onboard-crop-box {
@@ -1088,23 +1088,197 @@
   height: 280px;
   border-radius: 4px;
   overflow: hidden;
-  background: #18181b;
+  background-color: #09090b;
   cursor: grab;
   user-select: none;
-  border: 2px solid var(--color-border, #e4e4e7);
+  border: 1px solid #e4e4e7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+:root.dark .onboard-crop-box {
+  border-color: #27272a;
+  background-color: #000000;
 }
 
 .onboard-crop-box:active {
   cursor: grabbing;
 }
 
-.onboard-zoom-slider-wrap {
+.onboard-crop-controls {
   width: 280px;
   display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.onboard-crop-slider-row {
+  display: flex;
   align-items: center;
-  gap: 0.75rem;
-  font-size: 0.8125rem;
-  color: var(--color-text-muted, #71717a);
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.onboard-crop-slider {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: #e4e4e7;
+  border-radius: 9999px;
+  outline: none;
+  cursor: pointer;
+}
+
+:root.dark .onboard-crop-slider {
+  background: #27272a;
+}
+
+.onboard-crop-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #09090b;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+:root.dark .onboard-crop-slider::-webkit-slider-thumb {
+  background: #ffffff;
+}
+
+.onboard-crop-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+}
+
+.onboard-crop-btn-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  border: 1px solid #e4e4e7;
+  background: #ffffff;
+  color: #52525b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+:root.dark .onboard-crop-btn-icon {
+  background: #18181b;
+  border-color: #27272a;
+  color: #a1a1aa;
+}
+
+.onboard-crop-btn-icon:hover {
+  color: #09090b;
+  border-color: #d4d4d8;
+  background: #f4f4f5;
+}
+
+:root.dark .onboard-crop-btn-icon:hover {
+  color: #ffffff;
+  border-color: #3f3f46;
+  background: #27272a;
+}
+
+.onboard-crop-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.onboard-crop-tool-btn {
+  height: 26px;
+  padding: 0 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #e4e4e7;
+  background: #ffffff;
+  color: #52525b;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+:root.dark .onboard-crop-tool-btn {
+  background: #18181b;
+  border-color: #27272a;
+  color: #a1a1aa;
+}
+
+.onboard-crop-tool-btn:hover {
+  color: #09090b;
+  background: #f4f4f5;
+  border-color: #d4d4d8;
+}
+
+:root.dark .onboard-crop-tool-btn:hover {
+  color: #ffffff;
+  background: #27272a;
+}
+
+.onboard-crop-hint {
+  font-size: 0.75rem;
+  color: #71717a;
+  margin: 0;
+  text-align: center;
+  line-height: 1.35;
+}
+
+.onboard-modal-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.onboard-modal-title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #09090b;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+:root.dark .onboard-modal-title {
+  color: #fafafa;
+}
+
+.onboard-modal-close-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: #71717a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.onboard-modal-close-btn:hover {
+  color: #09090b;
+  background: #f4f4f5;
+}
+
+:root.dark .onboard-modal-close-btn:hover {
+  color: #fafafa;
+  background: #27272a;
 }
 
 /* 2. Induction Flow Overlay (Orientation Topics Viewer) */
