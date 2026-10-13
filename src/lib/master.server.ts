@@ -68,11 +68,10 @@ function constantTimeEqual(a: Uint8Array, b: Uint8Array): boolean {
  */
 export async function verifyPassword(password: string, stored: string): Promise<boolean> {
   if (stored.startsWith("pbkdf2:")) {
-    const sep1 = stored.indexOf(":", "pbkdf2:".length);
-    const sep2 = stored.indexOf(":", sep1 + 1);
-    if (sep1 < 0 || sep2 < 0) return false;
-    const saltHex = stored.slice(sep1 + 1, sep2);
-    const hashHex = stored.slice(sep2 + 1);
+    const parts = stored.split(":");
+    if (parts.length !== 3) return false;
+    const [, saltHex, hashHex] = parts;
+    if (!saltHex || !hashHex) return false;
     const candidate = await pbkdf2(password, fromHex(saltHex));
     return constantTimeEqual(candidate, fromHex(hashHex));
   }
