@@ -118,6 +118,9 @@ function MasterPage() {
   const [errorMsg, setErrorMsg] = useState("");
 
   // Sidebar navigation view state
+  const [activeSection, setActiveSection] = useState<"tenants" | "onboarding" | "analytics" | "admins">(
+    "tenants",
+  );
   const [activeNavTab, setActiveNavTab] = useState<"all" | "active" | "suspended" | "enterprise">(
     "all",
   );
@@ -658,112 +661,98 @@ function MasterPage() {
 
   if (checking) {
     return (
-      <div >
-        <Loader2 size={24}  />
+      <div className="master-shell" style={{ alignItems: "center", justifyContent: "center" }}>
+        <Loader2 size={24} className="animate-spin" />
       </div>
     );
   }
 
   // Sidebar content component
   const sidebarContent = (
-    <div >
-      {/* Sidebar Header */}
-      <div >
-        <div>
-          <div >
-            <span >
-              SaaS Console
-            </span>
-            <span >
-              Master
-            </span>
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", justifyContent: "space-between" }}>
+      <div>
+        {/* Sidebar Header */}
+        <div className="master-sidebar-header">
+          <div className="master-sidebar-brand">
+            <img src="/teamstuff_icon_logo.png" alt="Teamstuff" className="master-sidebar-logo" />
+            <div>
+              <h2 className="master-sidebar-title">Teamstuff</h2>
+              <p className="master-sidebar-tag">Master Console</p>
+            </div>
           </div>
-          <p >
-            Infrastructure & Tenants
-          </p>
+        </div>
+
+        {/* Navigation Sections */}
+        <div className="master-sidebar-nav">
+          <p className="master-nav-section-title">Processes</p>
+
+          <button
+            type="button"
+            onClick={() => {
+              setActiveSection("tenants");
+              setMobileDrawerOpen(false);
+            }}
+            className={`master-nav-item ${activeSection === "tenants" ? "active" : ""}`}
+          >
+            <div className="master-nav-item-content">
+              <Business size={15} />
+              <span>Tenants Directory</span>
+            </div>
+            <span className="master-nav-count">
+              {companies.length}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setForm({ ...emptyForm });
+              setFormMode("create");
+              setActiveSection("onboarding");
+              setMobileDrawerOpen(false);
+            }}
+            className={`master-nav-item ${activeSection === "onboarding" ? "active" : ""}`}
+          >
+            <div className="master-nav-item-content">
+              <PlusIcon size={15} />
+              <span>Onboard Tenant</span>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setActiveSection("analytics");
+              setMobileDrawerOpen(false);
+            }}
+            className={`master-nav-item ${activeSection === "analytics" ? "active" : ""}`}
+          >
+            <div className="master-nav-item-content">
+              <StorageIcon size={15} />
+              <span>Infrastructure</span>
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setActiveSection("admins");
+              setMobileDrawerOpen(false);
+            }}
+            className={`master-nav-item ${activeSection === "admins" ? "active" : ""}`}
+          >
+            <div className="master-nav-item-content">
+              <Key size={15} />
+              <span>Platform Access</span>
+            </div>
+          </button>
         </div>
       </div>
 
-      {/* Navigation Groups */}
-      <div >
-        <span >
-          Management
-        </span>
-
-        <button
-          type="button"
-          onClick={() => {
-            setActiveNavTab("all");
-            setMobileDrawerOpen(false);
-          }}
-          className={`${ activeNavTab === "all" ? "" : "" }`}
-        >
-          <div >
-            <Business size={16} />
-            <span>All Companies</span>
-          </div>
-          <span >
-            {stats?.companies ?? companies.length}
-          </span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            setActiveNavTab("active");
-            setMobileDrawerOpen(false);
-          }}
-          className={`${ activeNavTab === "active" ? "" : "" }`}
-        >
-          <div >
-            <CircleCheck size={16} />
-            <span>Active Tenants</span>
-          </div>
-          {stats && (
-            <span >
-              {stats.activeCompanies}
-            </span>
-          )}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            setActiveNavTab("suspended");
-            setMobileDrawerOpen(false);
-          }}
-          className={`${ activeNavTab === "suspended" ? "" : "" }`}
-        >
-          <div >
-            <CircleAlert size={16} />
-            <span>Suspended</span>
-          </div>
-          {stats && (
-            <span >
-              {stats.suspendedCompanies}
-            </span>
-          )}
-        </button>
-
-        <button
-          type="button"
-          onClick={() => {
-            setActiveNavTab("enterprise");
-            setMobileDrawerOpen(false);
-          }}
-          className={`${ activeNavTab === "enterprise" ? "" : "" }`}
-        >
-          <div >
-            <Layers size={16} />
-            <span>Enterprise Plan</span>
-          </div>
-        </button>
-      </div>
-
       {/* Sidebar Footer / Super Admin Profile */}
-      <div >
-        <div >
-          <div >
+      <div className="master-sidebar-footer">
+        <div className="master-user-info">
+          <div className="master-user-avatar">
             {adminName
               ? adminName
                   .split(" ")
@@ -773,11 +762,11 @@ function MasterPage() {
                   .toUpperCase()
               : "SA"}
           </div>
-          <div >
-            <p >
+          <div>
+            <p className="master-user-name">
               {adminName || "Super Admin"}
             </p>
-            <p >Master Access</p>
+            <p className="master-user-role">Master Access</p>
           </div>
         </div>
 
@@ -785,754 +774,717 @@ function MasterPage() {
           type="button"
           onClick={handleLogout}
           title="Sign out of Console"
-          
+          className="master-logout-btn"
         >
-          <Logout size={16} />
+          <Logout size={14} />
         </button>
       </div>
     </div>
   );
 
   return (
-    <div >
+    <div className="master-shell">
       {/* Desktop Sidebar */}
-      <aside >
+      <aside className="master-sidebar">
         {sidebarContent}
       </aside>
 
       {/* Mobile Drawer */}
       {mobileDrawerOpen && (
-        <div >
+        <div className="master-modal-overlay" onClick={() => setMobileDrawerOpen(false)}>
           <div
-            
-            onClick={() => setMobileDrawerOpen(false)}
-          />
-          <div >
+            className="master-sidebar"
+            style={{ position: "fixed", left: 0, top: 0, bottom: 0, zIndex: 101 }}
+            onClick={(e) => e.stopPropagation()}
+          >
             {sidebarContent}
           </div>
         </div>
       )}
 
       {/* Main Viewport */}
-      <main >
-        {/* Top Header Bar */}
-        <header >
-          <div >
-            <button
-              type="button"
-              onClick={() => setMobileDrawerOpen(true)}
-              
-            >
-              <MenuIcon size={20} />
-            </button>
-            <div>
-              <h1 >
-                {activeNavTab === "all"
-                  ? "Companies Directory"
-                  : activeNavTab === "active"
-                  ? "Active Tenants"
-                  : activeNavTab === "suspended"
-                  ? "Suspended Companies"
-                  : "Enterprise Plans"}
-              </h1>
-              <p >
-                {filteredCompanies.length} tenant{filteredCompanies.length === 1 ? "" : "s"} listed in current view
-              </p>
+      <main className="master-main">
+        <div className="master-content-container">
+          {/* Top Header Bar */}
+          <header className="master-header">
+            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+              <button
+                type="button"
+                onClick={() => setMobileDrawerOpen(true)}
+                className="master-icon-btn"
+                style={{ display: "none" }}
+              >
+                <MenuIcon size={16} />
+              </button>
+              <div>
+                <h1 className="master-header-title">
+                  {activeSection === "tenants"
+                    ? (activeNavTab === "all"
+                        ? "Companies Directory"
+                        : activeNavTab === "active"
+                        ? "Active Tenants"
+                        : activeNavTab === "suspended"
+                        ? "Suspended Companies"
+                        : "Enterprise Plans")
+                    : activeSection === "onboarding"
+                    ? "Onboard New Tenant"
+                    : activeSection === "analytics"
+                    ? "Infrastructure & Storage"
+                    : "Platform Security & Access"}
+                </h1>
+              </div>
             </div>
-          </div>
 
-          <div >
-            <button
-              type="button"
-              onClick={openCreate}
-              
-            >
-              <PlusIcon size={15} />
-              <span>Onboard Company</span>
-            </button>
-          </div>
-        </header>
-
-        {errorMsg ? (
-          <div >
-            <h2 >{errorMsg}</h2>
-            <p >
-              You do not have active master admin authorization for this platform console.
-            </p>
-            <button
-              type="button"
-              onClick={() => navigate({ to: "/master-login" })}
-              
-            >
-              Return to Master Login
-            </button>
-          </div>
-        ) : (
-          <div >
-            {/* Stats bar */}
-            <div >
-              {[
-                {
-                  label: "Total Companies",
-                  value: stats?.companies ?? "—",
-                  icon: <Business size={17} />,
-                },
-                {
-                  label: "Total Employees",
-                  value: stats?.employees ?? "—",
-                  icon: <Group size={17} />,
-                },
-                {
-                  label: "Active Tenants",
-                  value: stats?.activeCompanies ?? "—",
-                  icon: <CircleCheck size={17} />,
-                },
-                {
-                  label: "Suspended",
-                  value: stats?.suspendedCompanies ?? "—",
-                  icon: <CircleAlert size={17} />,
-                },
-                {
-                  label: "Storage Used",
-                  value: stats
-                    ? `${formatBytes(stats.totalUsedBytes)} / ${formatBytes(stats.totalQuotaBytes)}`
-                    : "—",
-                  icon: <StorageIcon size={17} />,
-                },
-              ].map((s) => (
-                <div
-                  key={s.label}
-                  
+            <div className="master-header-actions">
+              {activeSection !== "onboarding" && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setForm({ ...emptyForm });
+                    setFormMode("create");
+                    setActiveSection("onboarding");
+                  }}
+                  className="master-btn-primary"
                 >
-                  <div >
-                    <span >
-                      {s.label}
-                    </span>
-                    <div >
-                      {s.icon}
+                  <PlusIcon size={14} />
+                  <span>Onboard Company</span>
+                </button>
+              )}
+            </div>
+          </header>
+
+          {errorMsg ? (
+            <div className="master-empty-state">
+              <h2 className="master-empty-title">{errorMsg}</h2>
+              <p style={{ margin: 0, fontSize: "0.8125rem", color: "#71717a" }}>
+                You do not have active master admin authorization for this platform console.
+              </p>
+              <button
+                type="button"
+                onClick={() => navigate({ to: "/master-login" })}
+                className="master-btn-primary"
+              >
+                Return to Master Login
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* SECTION 1: TENANTS DIRECTORY */}
+              {activeSection === "tenants" && (
+                <>
+                  {/* Minimal Stat Boxes */}
+                  <div className="master-stats-grid">
+                    {[
+                      {
+                        label: "Total Companies",
+                        value: stats?.companies ?? companies.length,
+                      },
+                      {
+                        label: "Total Employees",
+                        value: stats?.employees ?? "—",
+                      },
+                      {
+                        label: "Active Tenants",
+                        value: stats?.activeCompanies ?? "—",
+                      },
+                      {
+                        label: "Suspended",
+                        value: stats?.suspendedCompanies ?? "—",
+                      },
+                      {
+                        label: "Storage Used",
+                        value: stats
+                          ? `${formatBytes(stats.totalUsedBytes)} / ${formatBytes(stats.totalQuotaBytes)}`
+                          : "—",
+                      },
+                    ].map((s) => (
+                      <div key={s.label} className="master-stat-box">
+                        <span className="master-stat-box-label">{s.label}</span>
+                        <p className="master-stat-box-value">{s.value}</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Sub-tabs */}
+                  <div className="master-sub-tabs">
+                    <button
+                      type="button"
+                      onClick={() => setActiveNavTab("all")}
+                      className={`master-sub-tab ${activeNavTab === "all" ? "active" : ""}`}
+                    >
+                      All Companies ({companies.length})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveNavTab("active")}
+                      className={`master-sub-tab ${activeNavTab === "active" ? "active" : ""}`}
+                    >
+                      Active ({stats?.activeCompanies ?? companies.filter((c) => c.status === "active").length})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveNavTab("suspended")}
+                      className={`master-sub-tab ${activeNavTab === "suspended" ? "active" : ""}`}
+                    >
+                      Suspended ({stats?.suspendedCompanies ?? companies.filter((c) => c.status === "suspended").length})
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveNavTab("enterprise")}
+                      className={`master-sub-tab ${activeNavTab === "enterprise" ? "active" : ""}`}
+                    >
+                      Enterprise ({companies.filter((c) => c.plan.toLowerCase() === "enterprise").length})
+                    </button>
+                  </div>
+
+                  {/* Table Card */}
+                  <div className="master-table-card">
+                    <div className="master-toolbar">
+                      <div className="master-toolbar-controls">
+                        <div className="master-search-wrap">
+                          <Search size={14} className="master-search-icon" />
+                          <input
+                            type="text"
+                            placeholder="Search companies..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="master-search-input"
+                          />
+                        </div>
+
+                        <select
+                          value={planFilter}
+                          onChange={(e) => setPlanFilter(e.target.value)}
+                          className="master-select"
+                        >
+                          <option value="all">All Plans</option>
+                          <option value="Starter">Starter</option>
+                          <option value="Pro">Pro</option>
+                          <option value="Enterprise">Enterprise</option>
+                        </select>
+
+                        <select
+                          value={statusFilter}
+                          onChange={(e) => setStatusFilter(e.target.value)}
+                          className="master-select"
+                        >
+                          <option value="all">All Status</option>
+                          <option value="active">Active</option>
+                          <option value="suspended">Suspended</option>
+                        </select>
+
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const uid = await authGuard();
+                            if (uid) loadDashboard(uid);
+                          }}
+                          disabled={loading}
+                          title="Refresh data"
+                          className="master-icon-btn"
+                        >
+                          <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="master-table-wrapper">
+                      <table className="master-table">
+                        <thead>
+                          <tr>
+                            <th>Company</th>
+                            <th>Subdomain</th>
+                            <th>Plan</th>
+                            <th>Status</th>
+                            <th>Seats</th>
+                            <th>Storage</th>
+                            <th>Onboarded</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {loading ? (
+                            <tr>
+                              <td colSpan={8} style={{ textAlign: "center", padding: "2.5rem 1rem", color: "#71717a" }}>
+                                <Loader2 size={20} className="animate-spin" style={{ margin: "0 auto 0.5rem auto", display: "block" }} />
+                                <span>Loading companies...</span>
+                              </td>
+                            </tr>
+                          ) : filteredCompanies.length === 0 ? (
+                            <tr>
+                              <td colSpan={8}>
+                                <div className="master-empty-state">
+                                  <Business size={24} style={{ color: "#a1a1aa" }} />
+                                  <p className="master-empty-title">
+                                    {searchQuery || statusFilter !== "all" || planFilter !== "all" || activeNavTab !== "all"
+                                      ? "No matching companies found"
+                                      : "No companies onboarded yet"}
+                                  </p>
+                                  <button
+                                    type="button"
+                                    onClick={() => {
+                                      setForm({ ...emptyForm });
+                                      setFormMode("create");
+                                      setActiveSection("onboarding");
+                                    }}
+                                    className="master-btn-primary"
+                                  >
+                                    <PlusIcon size={14} />
+                                    <span>Onboard Company</span>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ) : (
+                            filteredCompanies.map((c) => {
+                              return (
+                                <tr key={c.id}>
+                                  <td>
+                                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                                      {c.logo_url ? (
+                                        <img
+                                          src={c.logo_url}
+                                          alt={c.name}
+                                          style={{ width: 22, height: 22, objectFit: "contain", borderRadius: 3, border: "1px solid #e4e4e7" }}
+                                        />
+                                      ) : (
+                                        <div style={{ width: 22, height: 22, borderRadius: 3, background: "#f4f4f5", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #e4e4e7" }}>
+                                          <Business size={12} color="#71717a" />
+                                        </div>
+                                      )}
+                                      <div>
+                                        <span style={{ fontWeight: 600, color: "#09090b", display: "block" }}>{c.name}</span>
+                                        <span style={{ fontSize: "0.6875rem", color: "#71717a" }}>{c.short_name || "—"}</span>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "#52525b" }}>
+                                      {c.tenant_domain ? (c.tenant_domain.includes(".") ? c.tenant_domain : `${c.tenant_domain}.teamstuff.com`) : "default"}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <span className="master-badge-plan">{c.plan}</span>
+                                  </td>
+                                  <td>
+                                    <button
+                                      type="button"
+                                      onClick={() => toggleStatus(c)}
+                                      title="Toggle status"
+                                      style={{ background: "transparent", border: "none", padding: 0, cursor: "pointer" }}
+                                    >
+                                      {c.status === "active" ? (
+                                        <span className="master-badge-active">Active</span>
+                                      ) : (
+                                        <span className="master-badge-suspended">Suspended</span>
+                                      )}
+                                    </button>
+                                  </td>
+                                  <td>
+                                    <button
+                                      type="button"
+                                      onClick={() => openCompanyEmployees(c)}
+                                      style={{ background: "transparent", border: "none", padding: 0, cursor: "pointer", color: "#27272a", fontSize: "0.8125rem", display: "flex", alignItems: "center", gap: "4px" }}
+                                    >
+                                      <span>{c.employeeCount} / {c.seat_limit}</span>
+                                      <Group size={12} color="#71717a" />
+                                    </button>
+                                  </td>
+                                  <td>
+                                    <span style={{ fontSize: "0.75rem", color: "#27272a" }}>
+                                      {formatBytes(c.usedBytes)} / {c.storage_quota_gb} GB
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <span style={{ fontSize: "0.75rem", color: "#71717a" }}>
+                                      {c.created_at ? new Date(c.created_at).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—"}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <div className="master-action-row">
+                                      <button
+                                        type="button"
+                                        onClick={() => handleImpersonate(c)}
+                                        title="Enter Workspace"
+                                        className="master-row-btn"
+                                      >
+                                        <ExternalLink size={13} />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => openCompanyEmployees(c)}
+                                        title="View members"
+                                        className="master-row-btn"
+                                      >
+                                        <Group size={13} />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => openAddUser(c)}
+                                        title="Add employee"
+                                        className="master-row-btn"
+                                      >
+                                        <PersonAdd size={13} />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => openEdit(c)}
+                                        title="Edit settings"
+                                        className="master-row-btn"
+                                      >
+                                        <Edit size={13} />
+                                      </button>
+                                      <button
+                                        type="button"
+                                        onClick={() => setDeleteTarget(c)}
+                                        title="Delete company"
+                                        className="master-row-btn danger"
+                                      >
+                                        <Delete size={13} />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          )}
+                        </tbody>
+                      </table>
                     </div>
                   </div>
-                  <p >
-                    {s.value}
-                  </p>
-                </div>
-              ))}
-            </div>
+                </>
+              )}
 
-            {/* Companies Table Card */}
-            <div >
-              {/* Controls Bar */}
-              <div >
-                <div>
-                  <div >
-                    <h3 >
-                      Tenant Accounts
-                    </h3>
-                    <span >
-                      {filteredCompanies.length} result{filteredCompanies.length === 1 ? "" : "s"}
-                    </span>
-                  </div>
-                  <p >
-                    Subdomain configuration, employee capacity, and workspace management.
-                  </p>
-                </div>
-
-                {/* Filters */}
-                <div >
-                  <div >
-                    <Search
-                      size={15}
-                      
-                    />
-                    <input
-                      type="text"
-                      placeholder="Search companies..."
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                      
-                    />
+              {/* SECTION 2: ONBOARD TENANT */}
+              {activeSection === "onboarding" && (
+                <div className="master-form-card">
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid #e4e4e7", paddingBottom: "0.75rem" }}>
+                    <h2 style={{ margin: 0, fontSize: "0.9375rem", fontWeight: 600 }}>Company Onboarding</h2>
+                    <button type="button" onClick={() => setActiveSection("tenants")} className="master-btn-secondary">
+                      Back to Directory
+                    </button>
                   </div>
 
-                  <select
-                    value={planFilter}
-                    onChange={(e) => setPlanFilter(e.target.value)}
-                    
-                  >
-                    <option value="all">All Plans</option>
-                    <option value="Starter">Starter</option>
-                    <option value="Pro">Pro</option>
-                    <option value="Enterprise">Enterprise</option>
-                  </select>
+                  <div className="master-form-grid">
+                    <div className="master-field">
+                      <label className="master-label">Company Full Name *</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Acme Corporation"
+                        value={form.name}
+                        onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                        className="master-input"
+                        required
+                      />
+                    </div>
 
-                  <select
-                    value={statusFilter}
-                    onChange={(e) => setStatusFilter(e.target.value)}
-                    
-                  >
-                    <option value="all">All Status</option>
-                    <option value="active">Active</option>
-                    <option value="suspended">Suspended</option>
-                  </select>
+                    <div className="master-field">
+                      <label className="master-label">Short Name / Code *</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Acme"
+                        value={form.shortName}
+                        onChange={(e) => setForm((f) => ({ ...f, shortName: e.target.value }))}
+                        className="master-input"
+                        required
+                      />
+                      <span className="master-field-hint">Displayed in employee sidebar and navigation</span>
+                    </div>
 
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      const uid = await authGuard();
-                      if (uid) loadDashboard(uid);
-                    }}
-                    disabled={loading}
-                    title="Refresh data"
-                    
-                  >
-                    <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
-                  </button>
+                    <div className="master-field">
+                      <label className="master-label">Tenant Subdomain Slug</label>
+                      <input
+                        type="text"
+                        placeholder="acme"
+                        value={form.tenantDomain}
+                        onChange={(e) => setForm((f) => ({ ...f, tenantDomain: e.target.value.toLowerCase().replace(/[^a-z0-9-.]/g, "") }))}
+                        className="master-input"
+                      />
+                      <span className="master-field-hint">{form.tenantDomain ? `${form.tenantDomain}.teamstuff.com` : "Default domain fallback"}</span>
+                    </div>
+
+                    <div className="master-field">
+                      <label className="master-label">Login Tagline</label>
+                      <input
+                        type="text"
+                        placeholder="Welcome to Acme Intranet"
+                        value={form.brandTagline}
+                        onChange={(e) => setForm((f) => ({ ...f, brandTagline: e.target.value }))}
+                        className="master-input"
+                      />
+                    </div>
+
+                    <div className="master-field">
+                      <label className="master-label">Subscription Plan</label>
+                      <select
+                        value={form.plan}
+                        onChange={(e) => setForm((f) => ({ ...f, plan: e.target.value }))}
+                        className="master-select"
+                        style={{ height: "36px" }}
+                      >
+                        <option value="Starter">Starter</option>
+                        <option value="Pro">Pro</option>
+                        <option value="Enterprise">Enterprise</option>
+                      </select>
+                    </div>
+
+                    <div className="master-field">
+                      <label className="master-label">Seat Limit</label>
+                      <input
+                        type="number"
+                        value={form.seatLimit}
+                        onChange={(e) => setForm((f) => ({ ...f, seatLimit: Number(e.target.value) }))}
+                        className="master-input"
+                        min={1}
+                      />
+                    </div>
+
+                    <div className="master-field">
+                      <label className="master-label">Storage Quota (GB/User)</label>
+                      <input
+                        type="number"
+                        value={form.storageQuotaGb}
+                        onChange={(e) => setForm((f) => ({ ...f, storageQuotaGb: Number(e.target.value) }))}
+                        className="master-input"
+                        min={1}
+                      />
+                    </div>
+
+                    <div className="master-field">
+                      <label className="master-label">Initial Admin Email</label>
+                      <input
+                        type="email"
+                        placeholder="admin@company.com"
+                        value={form.adminEmail}
+                        onChange={(e) => setForm((f) => ({ ...f, adminEmail: e.target.value }))}
+                        className="master-input"
+                      />
+                    </div>
+
+                    <div className="master-field">
+                      <label className="master-label">Initial Admin Name</label>
+                      <input
+                        type="text"
+                        placeholder="Jane Doe"
+                        value={form.adminName}
+                        onChange={(e) => setForm((f) => ({ ...f, adminName: e.target.value }))}
+                        className="master-input"
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "0.5rem", marginTop: "1rem" }}>
+                    <button
+                      type="button"
+                      onClick={handleSave}
+                      disabled={saving}
+                      className="master-btn-primary"
+                    >
+                      {saving ? (
+                        <>
+                          <Loader2 size={13} className="animate-spin" />
+                          <span>Onboarding...</span>
+                        </>
+                      ) : (
+                        <span>Onboard Company</span>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setActiveSection("tenants")}
+                      className="master-btn-secondary"
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Table */}
-              <div >
-                <table >
-                  <thead>
-                    <tr >
-                      <th >Company</th>
-                      <th >Subdomain & Brand</th>
-                      <th >Plan</th>
-                      <th >Status</th>
-                      <th >Seats Usage</th>
-                      <th >Storage Quota</th>
-                      <th >Onboarded</th>
-                      <th >Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody >
-                    {loading ? (
-                      <tr>
-                        <td colSpan={8} >
-                          <Loader2 size={24}  />
-                          <span>Loading companies...</span>
-                        </td>
-                      </tr>
-                    ) : filteredCompanies.length === 0 ? (
-                      <tr>
-                        <td colSpan={8} >
-                          <div >
-                            <Business size={20} />
-                          </div>
-                          <p >
-                            {searchQuery || statusFilter !== "all" || planFilter !== "all" || activeNavTab !== "all"
-                              ? "No matching companies found"
-                              : "No companies onboarded yet"}
-                          </p>
-                          <p >
-                            {searchQuery || statusFilter !== "all" || planFilter !== "all" || activeNavTab !== "all"
-                              ? "Try adjusting your search query or filters."
-                              : "Click 'Onboard Company' to setup your first tenant."}
-                          </p>
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredCompanies.map((c) => {
-                        const pct =
-                          c.storage_quota_gb > 0
-                            ? Math.min(100, (c.usedBytes / (c.storage_quota_gb * GB)) * 100)
-                            : 0;
-                        const seatPct =
-                          c.seat_limit > 0 ? Math.min(100, (c.employeeCount / c.seat_limit) * 100) : 0;
+              {/* SECTION 3: INFRASTRUCTURE & METRICS */}
+              {activeSection === "analytics" && (
+                <div className="master-stats-grid">
+                  <div className="master-stat-box">
+                    <span className="master-stat-box-label">Total Registered Companies</span>
+                    <p className="master-stat-box-value">{stats?.companies ?? companies.length}</p>
+                  </div>
+                  <div className="master-stat-box">
+                     <span className="master-stat-box-label">Total Employee Profiles</span>
+                     <p className="master-stat-box-value">{stats?.employees ?? 0}</p>
+                  </div>
+                  <div className="master-stat-box">
+                    <span className="master-stat-box-label">Active Workspaces</span>
+                    <p className="master-stat-box-value">{stats?.activeCompanies ?? 0}</p>
+                  </div>
+                  <div className="master-stat-box">
+                    <span className="master-stat-box-label">Suspended Workspaces</span>
+                    <p className="master-stat-box-value">{stats?.suspendedCompanies ?? 0}</p>
+                  </div>
+                  <div className="master-stat-box">
+                    <span className="master-stat-box-label">Cloudflare R2 Storage Used</span>
+                    <p className="master-stat-box-value">{stats ? formatBytes(stats.totalUsedBytes) : "0 B"}</p>
+                  </div>
+                  <div className="master-stat-box">
+                    <span className="master-stat-box-label">Total Storage Allocation</span>
+                    <p className="master-stat-box-value">{stats ? formatBytes(stats.totalQuotaBytes) : "0 B"}</p>
+                  </div>
+                </div>
+              )}
 
-                        return (
-                          <tr
-                            key={c.id}
-                            
-                          >
-                            {/* Company Name & Logo */}
-                            <td >
-                              <div >
-                                <div >
-                                  {c.logo_url ? (
-                                    <img
-                                      src={c.logo_url}
-                                      alt={c.name}
-                                      
-                                    />
-                                  ) : (
-                                    <Business size={16}  />
-                                  )}
-                                </div>
-                                <div>
-                                  <span >
-                                    {c.name}
-                                  </span>
-                                  <span >
-                                    {c.short_name || "—"}
-                                  </span>
-                                </div>
-                              </div>
-                            </td>
+              {/* SECTION 4: PLATFORM SECURITY & ACCESS */}
+              {activeSection === "admins" && (
+                <div className="master-form-card" style={{ maxWidth: "560px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.75rem" }}>
+                    <div className="master-user-avatar" style={{ width: "36px", height: "36px", fontSize: "0.875rem" }}>
+                      {adminName ? adminName.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase() : "SA"}
+                    </div>
+                    <div>
+                      <h3 style={{ margin: 0, fontSize: "0.9375rem", fontWeight: 600 }}>{adminName || "Super Admin"}</h3>
+                      <p style={{ margin: "2px 0 0 0", fontSize: "0.75rem", color: "#71717a" }}>Platform Owner &bull; Root Privileges</p>
+                    </div>
+                  </div>
 
-                            {/* Subdomain & Brand */}
-                            <td >
-                              <div >
-                                {c.tenant_domain ? (
-                                  <span >
-                                    {c.tenant_domain.includes(".") ? c.tenant_domain : `${c.tenant_domain}.teamstuff.com`}
-                                  </span>
-                                ) : (
-                                  <span >Default domain</span>
-                                )}
-                                {c.brand_color && (
-                                  <div >
-                                    <span
-                                      
-                                      style={{ backgroundColor: c.brand_color }}
-                                    />
-                                    <span >
-                                      {c.brand_color}
-                                    </span>
-                                  </div>
-                                )}
-                              </div>
-                            </td>
+                  <div className="master-field">
+                    <label className="master-label">Security & Authentication</label>
+                    <p style={{ margin: 0, fontSize: "0.8125rem", color: "#27272a" }}>PBKDF2-SHA256 authenticated session active.</p>
+                  </div>
 
-                            {/* Plan */}
-                            <td >
-                              <span
-                                className={`rounded${ c.plan === "Enterprise" ? "" : "" }`}
-                              >
-                                {c.plan}
-                              </span>
-                            </td>
-
-                            {/* Status */}
-                            <td >
-                              <button
-                                type="button"
-                                onClick={() => toggleStatus(c)}
-                                title="Click to toggle status"
-                                className={`${ c.status === "active" ? "" : "" }`}
-                              >
-                                {c.status === "active" ? "Active" : "Suspended"}
-                              </button>
-                            </td>
-
-                            {/* Seats */}
-                            <td >
-                              <div
-                                onClick={() => openCompanyEmployees(c)}
-                                
-                              >
-                                <div >
-                                  <span>{c.employeeCount} / {c.seat_limit}</span>
-                                  <Group size={13}  />
-                                </div>
-                                <div >
-                                  <div
-                                    
-                                    style={{ width: `${seatPct}%` }}
-                                  />
-                                </div>
-                              </div>
-                            </td>
-
-                            {/* Storage */}
-                            <td >
-                              <div >
-                                {formatBytes(c.usedBytes)}
-                              </div>
-                              <span >
-                                Quota: {c.storage_quota_gb} GB/user
-                              </span>
-                              <div >
-                                <div
-                                  
-                                  style={{ width: `${pct}%` }}
-                                />
-                              </div>
-                            </td>
-
-                            {/* Onboarded Date */}
-                            <td >
-                              {c.created_at
-                                ? new Date(c.created_at).toLocaleDateString("en-IN", {
-                                    day: "2-digit",
-                                    month: "short",
-                                    year: "numeric",
-                                  })
-                                : "—"}
-                            </td>
-
-                            {/* Actions */}
-                            <td >
-                              <div >
-                                <button
-                                  type="button"
-                                  onClick={() => handleImpersonate(c)}
-                                  title="Enter Workspace as Company Admin"
-                                  
-                                >
-                                  <ExternalLink size={12} />
-                                  <span>Enter</span>
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => openCompanyEmployees(c)}
-                                  title="View employee directory"
-                                  
-                                >
-                                  <Group size={15} />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => openAddUser(c)}
-                                  title="Add user to company"
-                                  
-                                >
-                                  <PersonAdd size={15} />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => openEdit(c)}
-                                  title="Edit company settings"
-                                  
-                                >
-                                  <Edit size={15} />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => setDeleteTarget(c)}
-                                  title="Delete company & associated users"
-                                  
-                                >
-                                  <Delete size={15} />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        );
-                      })
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        )}
+                  <div style={{ marginTop: "1rem" }}>
+                    <button type="button" onClick={handleLogout} className="master-btn-danger">
+                      <Logout size={13} />
+                      <span>Sign out of Console</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </main>
 
       {/* Onboard / Edit Company Dialog */}
       <Dialog.Root open={formOpen} onOpenChange={(v) => !v && setFormOpen(false)}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fade-in" />
-          <Dialog.Content className="fade-in zoom-in-95">
-            <div >
-              <Dialog.Title >
+          <Dialog.Overlay className="master-modal-overlay" />
+          <Dialog.Content className="master-modal-content">
+            <div className="master-modal-header">
+              <Dialog.Title className="master-modal-title">
                 {formMode === "create" ? "Onboard New Company" : `Edit Company · ${form.name}`}
               </Dialog.Title>
               <button
                 type="button"
                 onClick={() => setFormOpen(false)}
-                
+                className="master-icon-btn"
+                style={{ width: 24, height: 24 }}
               >
-                <ClearIcon size={18} />
+                <ClearIcon size={14} />
               </button>
             </div>
-            <Dialog.Description >Company setup and configurations</Dialog.Description>
+            <Dialog.Description style={{ display: "none" }}>Company configuration</Dialog.Description>
 
-            <div >
-              <div>
-                <label >
-                  Company Full Name
-                </label>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              <div className="master-field">
+                <label className="master-label">Company Full Name</label>
                 <input
                   type="text"
                   placeholder="e.g. Acme Corporation"
                   value={form.name}
                   onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                  
+                  className="master-input"
                 />
               </div>
 
-              <div>
-                <label >
-                  Short Name / Code
-                </label>
+              <div className="master-field">
+                <label className="master-label">Short Name / Code</label>
                 <input
                   type="text"
                   placeholder="e.g. Acme"
                   value={form.shortName}
                   onChange={(e) => setForm((f) => ({ ...f, shortName: e.target.value }))}
-                  
+                  className="master-input"
                 />
-                <span >
-                  Displayed in the employee navigation sidebar and badges.
-                </span>
               </div>
 
-              {/* Brand & Subdomain Section */}
-              <div >
-                <div >
-                  <div >
-                    <Palette size={15}  />
-                    <span >
-                      Subdomain & Brand Portal
-                    </span>
-                  </div>
-                  <span >
-                    {form.tenantDomain
-                      ? `${form.tenantDomain.toLowerCase().replace(/[^a-z0-9-]/g, "")}.teamstuff.com`
-                      : "Default Domain"}
-                  </span>
-                </div>
+              {/* Hidden file inputs */}
+              <input
+                type="file"
+                ref={heroFileInputRef}
+                style={{ display: "none" }}
+                accept="image/png,image/jpeg,image/webp,image/jpg"
+                onChange={handleHeroFileChange}
+              />
+              <input
+                type="file"
+                ref={logoFileInputRef}
+                style={{ display: "none" }}
+                accept="image/png,image/svg+xml,image/jpeg,image/webp,image/jpg"
+                onChange={handleLogoFileChange}
+              />
+              <input
+                type="file"
+                ref={faviconFileInputRef}
+                style={{ display: "none" }}
+                accept="image/png,image/x-icon,image/vnd.microsoft.icon,image/svg+xml,image/jpeg,image/webp,image/jpg"
+                onChange={handleFaviconFileChange}
+              />
 
-                {/* Hidden file inputs */}
+              <div className="master-field">
+                <label className="master-label">Tenant Subdomain Slug</label>
                 <input
-                  type="file"
-                  ref={heroFileInputRef}
-                  
-                  accept="image/png,image/jpeg,image/webp,image/jpg"
-                  onChange={handleHeroFileChange}
+                  type="text"
+                  placeholder="acme"
+                  value={form.tenantDomain}
+                  onChange={(e) =>
+                    setForm((f) => ({
+                      ...f,
+                      tenantDomain: e.target.value.toLowerCase().replace(/[^a-z0-9-.]/g, ""),
+                    }))
+                  }
+                  className="master-input"
                 />
-                <input
-                  type="file"
-                  ref={logoFileInputRef}
-                  
-                  accept="image/png,image/svg+xml,image/jpeg,image/webp,image/jpg"
-                  onChange={handleLogoFileChange}
-                />
-                <input
-                  type="file"
-                  ref={faviconFileInputRef}
-                  
-                  accept="image/png,image/x-icon,image/vnd.microsoft.icon,image/svg+xml,image/jpeg,image/webp,image/jpg"
-                  onChange={handleFaviconFileChange}
-                />
+              </div>
 
-                <div >
-                  <div>
-                    <label >
-                      Tenant Subdomain Slug
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="acme"
-                      value={form.tenantDomain}
-                      onChange={(e) =>
-                        setForm((f) => ({
-                          ...f,
-                          tenantDomain: e.target.value.toLowerCase().replace(/[^a-z0-9-.]/g, ""),
-                        }))
-                      }
-                      
-                    />
-                  </div>
-                  <div>
-                    <label >
-                      Login Tagline
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Welcome to Acme Intranet"
-                      value={form.brandTagline}
-                      onChange={(e) => setForm((f) => ({ ...f, brandTagline: e.target.value }))}
-                      
-                    />
-                  </div>
-                </div>
-
-                {/* Logo Section */}
-                <div >
-                  <div >
-                    <span >
-                      <ImageIcon size={14}  />
-                      Company Logo
-                    </span>
-                    <button
-                      type="button"
-                      disabled={uploadingLogo}
-                      onClick={() => logoFileInputRef.current?.click()}
-                      
-                    >
-                      {uploadingLogo ? (
-                        <Loader2 size={12}  />
-                      ) : (
-                        <UploadIcon size={12} />
-                      )}
-                      <span>{uploadingLogo ? "Uploading..." : "Upload Logo"}</span>
-                    </button>
-                  </div>
-                  <div >
-                    <input
-                      type="text"
-                      placeholder="https://..."
-                      value={form.logoUrl}
-                      onChange={(e) => setForm((f) => ({ ...f, logoUrl: e.target.value }))}
-                      
-                    />
-                    {form.logoUrl && (
-                      <div >
-                        <img
-                          src={form.logoUrl}
-                          alt="Logo Preview"
-                          
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setForm((f) => ({ ...f, logoUrl: "" }))}
-                          
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Favicon Section */}
-                <div >
-                  <div >
-                    <span >
-                      <Globe size={14}  />
-                      Browser Favicon
-                    </span>
-                    <button
-                      type="button"
-                      disabled={uploadingFavicon}
-                      onClick={() => faviconFileInputRef.current?.click()}
-                      
-                    >
-                      {uploadingFavicon ? (
-                        <Loader2 size={12}  />
-                      ) : (
-                        <UploadIcon size={12} />
-                      )}
-                      <span>{uploadingFavicon ? "Uploading..." : "Upload Favicon"}</span>
-                    </button>
-                  </div>
-                  <div >
-                    <input
-                      type="text"
-                      placeholder="https://... (PNG / ICO)"
-                      value={form.faviconUrl}
-                      onChange={(e) => setForm((f) => ({ ...f, faviconUrl: e.target.value }))}
-                      
-                    />
-                    {form.faviconUrl && (
-                      <div >
-                        <img
-                          src={form.faviconUrl}
-                          alt="Favicon"
-                          
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setForm((f) => ({ ...f, faviconUrl: "" }))}
-                          
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Login Hero Artwork Section */}
-                <div >
-                  <div >
-                    <span >
-                      <Sparkles size={14}  />
-                      Login Portal Hero Artwork
-                    </span>
-                    <button
-                      type="button"
-                      disabled={uploadingHero}
-                      onClick={() => heroFileInputRef.current?.click()}
-                      
-                    >
-                      {uploadingHero ? (
-                        <Loader2 size={12}  />
-                      ) : (
-                        <UploadIcon size={12} />
-                      )}
-                      <span>{uploadingHero ? "Uploading..." : "Upload Artwork"}</span>
-                    </button>
-                  </div>
-                  <div >
-                    <input
-                      type="text"
-                      placeholder="https://... or /login_hero.png"
-                      value={form.loginHeroUrl}
-                      onChange={(e) => setForm((f) => ({ ...f, loginHeroUrl: e.target.value }))}
-                      
-                    />
-                    {form.loginHeroUrl && (
-                      <button
-                        type="button"
-                        onClick={() => setForm((f) => ({ ...f, loginHeroUrl: "" }))}
-                        
-                      >
-                        Reset
-                      </button>
-                    )}
-                  </div>
-                </div>
-
-                {/* Color Presets */}
-                <div>
-                  <span >
-                    Tenant Brand Accent Color
-                  </span>
-                  <div >
-                    {BRAND_COLOR_PRESETS.map((preset) => {
-                      const isSelected = form.brandColor.toLowerCase() === preset.hex.toLowerCase();
-                      return (
-                        <button
-                          key={preset.hex}
-                          type="button"
-                          title={preset.name}
-                          onClick={() => setForm((f) => ({ ...f, brandColor: preset.hex }))}
-                          className={`${ isSelected ? "" : "" }`}
-                          style={{ backgroundColor: preset.hex }}
-                        />
-                      );
-                    })}
-                    <input
-                      type="color"
-                      value={form.brandColor}
-                      onChange={(e) => setForm((f) => ({ ...f, brandColor: e.target.value }))}
-                      
-                    />
-                    <input
-                      type="text"
-                      value={form.brandColor}
-                      onChange={(e) => setForm((f) => ({ ...f, brandColor: e.target.value }))}
-                      
-                    />
-                  </div>
+              <div className="master-field">
+                <label className="master-label">Company Logo</label>
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  <input
+                    type="text"
+                    placeholder="https://..."
+                    value={form.logoUrl}
+                    onChange={(e) => setForm((f) => ({ ...f, logoUrl: e.target.value }))}
+                    className="master-input"
+                    style={{ flex: 1 }}
+                  />
+                  <button
+                    type="button"
+                    disabled={uploadingLogo}
+                    onClick={() => logoFileInputRef.current?.click()}
+                    className="master-btn-secondary"
+                  >
+                    {uploadingLogo ? <Loader2 size={12} className="animate-spin" /> : <UploadIcon size={12} />}
+                    <span>Upload</span>
+                  </button>
                 </div>
               </div>
 
-              <div >
-                <div>
-                  <label >
-                    Plan
-                  </label>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+                <div className="master-field">
+                  <label className="master-label">Plan</label>
                   <select
                     value={form.plan}
                     onChange={(e) => setForm((f) => ({ ...f, plan: e.target.value }))}
-                    
+                    className="master-select"
                   >
                     <option value="Starter">Starter</option>
                     <option value="Pro">Pro</option>
                     <option value="Enterprise">Enterprise</option>
                   </select>
                 </div>
-                <div>
-                  <label >
-                    Status
-                  </label>
+                <div className="master-field">
+                  <label className="master-label">Status</label>
                   <select
                     value={form.status}
                     onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}
-                    
+                    className="master-select"
                   >
                     <option value="active">Active</option>
                     <option value="suspended">Suspended</option>
@@ -1540,71 +1492,35 @@ function MasterPage() {
                 </div>
               </div>
 
-              <div >
-                <div>
-                  <label >
-                    Seat Limit
-                  </label>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+                <div className="master-field">
+                  <label className="master-label">Seat Limit</label>
                   <input
                     type="number"
                     value={form.seatLimit}
                     onChange={(e) => setForm((f) => ({ ...f, seatLimit: Number(e.target.value) }))}
-                    
+                    className="master-input"
                   />
                 </div>
-                <div>
-                  <label >
-                    Storage Quota (GB/User)
-                  </label>
+                <div className="master-field">
+                  <label className="master-label">Storage (GB/User)</label>
                   <input
                     type="number"
                     value={form.storageQuotaGb}
                     onChange={(e) =>
                       setForm((f) => ({ ...f, storageQuotaGb: Number(e.target.value) }))
                     }
-                    
+                    className="master-input"
                   />
                 </div>
               </div>
-
-              {formMode === "create" && (
-                <div >
-                  <span >
-                    Initial Company Admin (Auto-creates credentials)
-                  </span>
-                  <div >
-                    <div>
-                      <label >
-                        Admin Email
-                      </label>
-                      <input
-                        type="email"
-                        value={form.adminEmail}
-                        onChange={(e) => setForm((f) => ({ ...f, adminEmail: e.target.value }))}
-                        
-                      />
-                    </div>
-                    <div>
-                      <label >
-                        Admin Name
-                      </label>
-                      <input
-                        type="text"
-                        value={form.adminName}
-                        onChange={(e) => setForm((f) => ({ ...f, adminName: e.target.value }))}
-                        
-                      />
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
 
-            <div >
+            <div className="master-modal-actions">
               <button
                 type="button"
                 onClick={() => setFormOpen(false)}
-                
+                className="master-btn-secondary"
               >
                 Cancel
               </button>
@@ -1612,16 +1528,9 @@ function MasterPage() {
                 type="button"
                 onClick={handleSave}
                 disabled={saving}
-                
+                className="master-btn-primary"
               >
-                {saving ? (
-                  <>
-                    <Loader2 size={13}  />
-                    <span>Saving...</span>
-                  </>
-                ) : (
-                  <span>{formMode === "create" ? "Onboard Company" : "Save Changes"}</span>
-                )}
+                {saving ? "Saving..." : formMode === "create" ? "Onboard" : "Save Changes"}
               </button>
             </div>
           </Dialog.Content>
@@ -1631,53 +1540,48 @@ function MasterPage() {
       {/* Add User Dialog */}
       <Dialog.Root open={userDialogOpen} onOpenChange={(v) => !v && setUserDialogOpen(false)}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fade-in" />
-          <Dialog.Content className="fade-in zoom-in-95">
-            <div >
-              <Dialog.Title >
+          <Dialog.Overlay className="master-modal-overlay" />
+          <Dialog.Content className="master-modal-content">
+            <div className="master-modal-header">
+              <Dialog.Title className="master-modal-title">
                 Add User · {userForm.companyName}
               </Dialog.Title>
               <button
                 type="button"
                 onClick={() => setUserDialogOpen(false)}
-                
+                className="master-icon-btn"
+                style={{ width: 24, height: 24 }}
               >
-                <ClearIcon size={16} />
+                <ClearIcon size={14} />
               </button>
             </div>
-            <Dialog.Description >Add a new user</Dialog.Description>
+            <Dialog.Description style={{ display: "none" }}>Add a new user</Dialog.Description>
 
-            <div >
-              <div>
-                <label >
-                  Full Name
-                </label>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+              <div className="master-field">
+                <label className="master-label">Full Name</label>
                 <input
                   type="text"
                   placeholder="e.g. John Doe"
                   value={userForm.name}
                   onChange={(e) => setUserForm((f) => ({ ...f, name: e.target.value }))}
-                  
+                  className="master-input"
                 />
               </div>
 
-              <div>
-                <label >
-                  Email Address
-                </label>
+              <div className="master-field">
+                <label className="master-label">Email Address</label>
                 <input
                   type="email"
                   placeholder="user@company.com"
                   value={userForm.email}
                   onChange={(e) => setUserForm((f) => ({ ...f, email: e.target.value }))}
-                  
+                  className="master-input"
                 />
               </div>
 
-              <div>
-                <label >
-                  Role
-                </label>
+              <div className="master-field">
+                <label className="master-label">Role</label>
                 <select
                   value={userForm.role}
                   onChange={(e) =>
@@ -1686,7 +1590,7 @@ function MasterPage() {
                       role: e.target.value as "admin" | "hr" | "employee",
                     }))
                   }
-                  
+                  className="master-select"
                 >
                   <option value="admin">Admin</option>
                   <option value="hr">HR</option>
@@ -1694,29 +1598,23 @@ function MasterPage() {
                 </select>
               </div>
 
-              <div>
-                <label >
-                  Job Title (optional)
-                </label>
+              <div className="master-field">
+                <label className="master-label">Job Title</label>
                 <input
                   type="text"
-                  placeholder="e.g. Lead Engineer"
+                  placeholder="e.g. Software Engineer"
                   value={userForm.jobTitle}
                   onChange={(e) => setUserForm((f) => ({ ...f, jobTitle: e.target.value }))}
-                  
+                  className="master-input"
                 />
               </div>
-
-              <p >
-                A temporary password will be generated and credentials will be sent to the email.
-              </p>
             </div>
 
-            <div >
+            <div className="master-modal-actions">
               <button
                 type="button"
                 onClick={() => setUserDialogOpen(false)}
-                
+                className="master-btn-secondary"
               >
                 Cancel
               </button>
@@ -1724,7 +1622,7 @@ function MasterPage() {
                 type="button"
                 onClick={handleAddUser}
                 disabled={savingUser}
-                
+                className="master-btn-primary"
               >
                 {savingUser ? "Creating..." : "Create User"}
               </button>
@@ -1743,121 +1641,93 @@ function MasterPage() {
         }}
       >
         <Dialog.Portal>
-          <Dialog.Overlay className="fade-in" />
-          <Dialog.Content className="fade-in zoom-in-95">
-            {/* Header */}
-            <div >
-              <div >
-                <div >
-                  <Group size={17} />
-                </div>
-                <div>
-                  <Dialog.Title >
-                    Employees · {selectedCompanyForEmployees?.name}
-                  </Dialog.Title>
-                  <p >
-                    {selectedCompanyForEmployees?.short_name || "Tenant"} • {employeesList.length} of{" "}
-                    {selectedCompanyForEmployees?.seat_limit} Seats Used
-                  </p>
-                </div>
+          <Dialog.Overlay className="master-modal-overlay" />
+          <Dialog.Content className="master-modal-content" style={{ maxWidth: "680px" }}>
+            <div className="master-modal-header">
+              <div>
+                <Dialog.Title className="master-modal-title">
+                  Members · {selectedCompanyForEmployees?.name}
+                </Dialog.Title>
+                <span style={{ fontSize: "0.6875rem", color: "#71717a" }}>
+                  {employeesList.length} of {selectedCompanyForEmployees?.seat_limit} Seats Used
+                </span>
               </div>
-              <div >
+              <div style={{ display: "flex", gap: "0.375rem" }}>
                 {selectedCompanyForEmployees && (
                   <button
                     type="button"
                     onClick={() => openAddUser(selectedCompanyForEmployees)}
-                    
+                    className="master-btn-primary"
+                    style={{ height: 28, fontSize: "0.75rem" }}
                   >
-                    <PersonAdd size={13} />
+                    <PersonAdd size={12} />
                     <span>Add User</span>
                   </button>
                 )}
                 <button
                   type="button"
                   onClick={() => setSelectedCompanyForEmployees(null)}
-                  
+                  className="master-icon-btn"
+                  style={{ width: 28, height: 28 }}
                 >
-                  <ClearIcon size={16} />
+                  <ClearIcon size={14} />
                 </button>
               </div>
             </div>
-            <Dialog.Description >Company employees directory</Dialog.Description>
+            <Dialog.Description style={{ display: "none" }}>Employees list</Dialog.Description>
 
-            {/* Filter and Search */}
-            <div >
-              <div >
-                <Search size={14}  />
-                <input
-                  type="text"
-                  placeholder="Search employees..."
-                  value={employeeSearchQuery}
-                  onChange={(e) => setEmployeeSearchQuery(e.target.value)}
-                  
-                />
-              </div>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <input
+                type="text"
+                placeholder="Search employees..."
+                value={employeeSearchQuery}
+                onChange={(e) => setEmployeeSearchQuery(e.target.value)}
+                className="master-input"
+                style={{ flex: 1 }}
+              />
               <select
                 value={employeeRoleFilter}
                 onChange={(e) => setEmployeeRoleFilter(e.target.value)}
-                
+                className="master-select"
               >
-                <option value="all">All Roles ({employeesList.length})</option>
-                <option value="admin">Admins ({employeesList.filter((e) => e.role === "admin").length})</option>
-                <option value="hr">HR Managers ({employeesList.filter((e) => e.role === "hr").length})</option>
-                <option value="employee">Employees ({employeesList.filter((e) => e.role === "employee").length})</option>
+                <option value="all">All Roles</option>
+                <option value="admin">Admins</option>
+                <option value="hr">HR</option>
+                <option value="employee">Employees</option>
               </select>
-              <button
-                type="button"
-                onClick={() => selectedCompanyForEmployees && openCompanyEmployees(selectedCompanyForEmployees)}
-                disabled={loadingEmployees}
-                
-              >
-                <RefreshCw size={14} className={loadingEmployees ? "animate-spin" : ""} />
-              </button>
             </div>
 
-            {/* Table Content */}
-            <div >
-              {loadingEmployees ? (
-                <div >
-                  <Loader2 size={22}  />
-                  <span >Loading employees...</span>
-                </div>
-              ) : employeesList.filter((emp) => {
-                  const q = employeeSearchQuery.trim().toLowerCase();
-                  const matchesSearch =
-                    !q ||
-                    emp.name.toLowerCase().includes(q) ||
-                    emp.email.toLowerCase().includes(q) ||
-                    (emp.department && emp.department.toLowerCase().includes(q)) ||
-                    (emp.job_title && emp.job_title.toLowerCase().includes(q));
-                  const matchesRole =
-                    employeeRoleFilter === "all" ||
-                    emp.role.toLowerCase() === employeeRoleFilter.toLowerCase();
-                  return matchesSearch && matchesRole;
-                }).length === 0 ? (
-                <div >
-                  <p >No employees found</p>
-                </div>
-              ) : (
-                <table >
-                  <thead>
-                    <tr >
-                      <th >Employee</th>
-                      <th >Role</th>
-                      <th >Designation</th>
-                      <th >Joined</th>
-                      <th >Actions</th>
+            <div className="master-table-wrapper" style={{ maxHeight: "360px", overflowY: "auto" }}>
+              <table className="master-table">
+                <thead>
+                  <tr>
+                    <th>Member</th>
+                    <th>Role</th>
+                    <th>Designation</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loadingEmployees ? (
+                    <tr>
+                      <td colSpan={4} style={{ textAlign: "center", padding: "1.5rem" }}>
+                        <Loader2 size={16} className="animate-spin" />
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody >
-                    {employeesList
+                  ) : employeesList.length === 0 ? (
+                    <tr>
+                      <td colSpan={4} style={{ textAlign: "center", padding: "1.5rem", color: "#71717a" }}>
+                        No employees found.
+                      </td>
+                    </tr>
+                  ) : (
+                    employeesList
                       .filter((emp) => {
                         const q = employeeSearchQuery.trim().toLowerCase();
                         const matchesSearch =
                           !q ||
                           emp.name.toLowerCase().includes(q) ||
                           emp.email.toLowerCase().includes(q) ||
-                          (emp.department && emp.department.toLowerCase().includes(q)) ||
                           (emp.job_title && emp.job_title.toLowerCase().includes(q));
                         const matchesRole =
                           employeeRoleFilter === "all" ||
@@ -1865,86 +1735,54 @@ function MasterPage() {
                         return matchesSearch && matchesRole;
                       })
                       .map((emp) => (
-                        <tr key={emp.id} >
-                          <td >
-                            <div >
-                              <div >
-                                {emp.name
-                                  .split(" ")
-                                  .map((n) => n[0])
-                                  .slice(0, 2)
-                                  .join("")
-                                  .toUpperCase()}
-                              </div>
-                              <div>
-                                <span >
-                                  {emp.name}
-                                </span>
-                                <span >{emp.email}</span>
-                              </div>
-                            </div>
+                        <tr key={emp.id}>
+                          <td>
+                            <div style={{ fontWeight: 600, color: "#09090b" }}>{emp.name}</div>
+                            <div style={{ fontSize: "0.6875rem", color: "#71717a" }}>{emp.email}</div>
                           </td>
-                          <td >
-                            <span
-                              className={`rounded${ emp.role === "admin" ? "" : "" }`}
-                            >
-                              {emp.role === "admin" ? "Admin" : emp.role === "hr" ? "HR" : "Employee"}
-                            </span>
+                          <td>
+                            <span className="master-badge-plan">{emp.role}</span>
                           </td>
-                          <td >
-                            <span >
-                              {emp.job_title || "—"}
-                            </span>
-                            <span >{emp.department || "General"}</span>
+                          <td>
+                            <span style={{ fontSize: "0.75rem", color: "#52525b" }}>{emp.job_title || "—"}</span>
                           </td>
-                          <td >
-                            {emp.date_of_joining
-                              ? new Date(emp.date_of_joining).toLocaleDateString("en-IN", {
-                                  day: "2-digit",
-                                  month: "short",
-                                  year: "numeric",
-                                })
-                              : "—"}
-                          </td>
-                          <td >
-                            <div >
+                          <td>
+                            <div className="master-action-row">
                               <button
                                 type="button"
-                                title="Reset & Email Temporary Password"
+                                title="Reset Password"
                                 onClick={() => handleResetEmployeePassword(emp)}
                                 disabled={employeeActionLoading === emp.id}
-                                
+                                className="master-row-btn"
                               >
                                 {employeeActionLoading === emp.id ? (
-                                  <Loader2 size={13}  />
+                                  <Loader2 size={12} className="animate-spin" />
                                 ) : (
-                                  <Key size={14} />
+                                  <Key size={12} />
                                 )}
                               </button>
                               <button
                                 type="button"
                                 title="Remove employee"
                                 onClick={() => setDeleteEmployeeTarget(emp)}
-                                
+                                className="master-row-btn danger"
                               >
-                                <Delete size={14} />
+                                <Delete size={12} />
                               </button>
                             </div>
                           </td>
                         </tr>
-                      ))}
-                  </tbody>
-                </table>
-              )}
+                      ))
+                  )}
+                </tbody>
+              </table>
             </div>
 
-            {/* Footer */}
-            <div >
-              <span>{employeesList.length} total members</span>
+            <div className="master-modal-actions">
               <button
                 type="button"
                 onClick={() => setSelectedCompanyForEmployees(null)}
-                
+                className="master-btn-secondary"
               >
                 Close
               </button>
@@ -1956,22 +1794,21 @@ function MasterPage() {
       {/* Delete Employee Confirmation Dialog */}
       <Dialog.Root open={Boolean(deleteEmployeeTarget)} onOpenChange={(v) => !v && setDeleteEmployeeTarget(null)}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fade-in" />
-          <Dialog.Content className="fade-in zoom-in-95">
-            <div >
-              <Delete size={18} />
+          <Dialog.Overlay className="master-modal-overlay" />
+          <Dialog.Content className="master-modal-content">
+            <div className="master-modal-header">
+              <Dialog.Title className="master-modal-title">
+                Remove {deleteEmployeeTarget?.name}?
+              </Dialog.Title>
             </div>
-            <Dialog.Title >
-              Remove {deleteEmployeeTarget?.name}?
-            </Dialog.Title>
-            <Dialog.Description >
-              This will permanently remove <b>{deleteEmployeeTarget?.name}</b> ({deleteEmployeeTarget?.email}) from {selectedCompanyForEmployees?.name}.
+            <Dialog.Description style={{ margin: 0, fontSize: "0.8125rem", color: "#71717a" }}>
+              This will remove <b>{deleteEmployeeTarget?.name}</b> ({deleteEmployeeTarget?.email}) from {selectedCompanyForEmployees?.name}.
             </Dialog.Description>
-            <div >
+            <div className="master-modal-actions">
               <button
                 type="button"
                 onClick={() => setDeleteEmployeeTarget(null)}
-                
+                className="master-btn-secondary"
               >
                 Cancel
               </button>
@@ -1979,7 +1816,7 @@ function MasterPage() {
                 type="button"
                 onClick={confirmDeleteEmployee}
                 disabled={deletingEmployee}
-                
+                className="master-btn-danger"
               >
                 {deletingEmployee ? "Removing..." : "Remove Employee"}
               </button>
@@ -1991,28 +1828,38 @@ function MasterPage() {
       {/* Credentials Generated Dialog */}
       <Dialog.Root open={Boolean(newCredentials)} onOpenChange={(v) => !v && setNewCredentials(null)}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fade-in" />
-          <Dialog.Content className="fade-in zoom-in-95">
-            <Dialog.Title >
-              Credentials Generated
-            </Dialog.Title>
-            <Dialog.Description >
+          <Dialog.Overlay className="master-modal-overlay" />
+          <Dialog.Content className="master-modal-content">
+            <div className="master-modal-header">
+              <Dialog.Title className="master-modal-title">
+                Credentials Generated
+              </Dialog.Title>
+            </div>
+            <Dialog.Description style={{ margin: 0, fontSize: "0.8125rem", color: "#71717a" }}>
               Login credentials were automatically dispatched to {newCredentials?.email}.
             </Dialog.Description>
-            <div >
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
               {[
                 { label: "Email", value: newCredentials?.email || "" },
                 { label: "Temporary Password", value: newCredentials?.password || "" },
               ].map((row) => (
                 <div
                   key={row.label}
-                  
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "0.625rem",
+                    border: "1px solid #e4e4e7",
+                    borderRadius: 4,
+                    backgroundColor: "#fbfbfb",
+                  }}
                 >
                   <div>
-                    <span >
+                    <span style={{ fontSize: "0.6875rem", color: "#71717a", textTransform: "uppercase", display: "block" }}>
                       {row.label}
                     </span>
-                    <span >
+                    <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#09090b", fontFamily: "var(--font-mono)" }}>
                       {row.value}
                     </span>
                   </div>
@@ -2022,18 +1869,18 @@ function MasterPage() {
                       await navigator.clipboard.writeText(row.value);
                       setToast({ open: true, message: `${row.label} copied`, severity: "success" });
                     }}
-                    
+                    className="master-icon-btn"
                   >
-                    <ContentCopy size={14} />
+                    <ContentCopy size={13} />
                   </button>
                 </div>
               ))}
             </div>
-            <div >
+            <div className="master-modal-actions">
               <button
                 type="button"
                 onClick={() => setNewCredentials(null)}
-                
+                className="master-btn-primary"
               >
                 Done
               </button>
@@ -2045,22 +1892,21 @@ function MasterPage() {
       {/* Delete Company Confirmation Dialog */}
       <Dialog.Root open={Boolean(deleteTarget)} onOpenChange={(v) => !v && setDeleteTarget(null)}>
         <Dialog.Portal>
-          <Dialog.Overlay className="fade-in" />
-          <Dialog.Content className="fade-in zoom-in-95">
-            <div >
-              <Delete size={18} />
+          <Dialog.Overlay className="master-modal-overlay" />
+          <Dialog.Content className="master-modal-content">
+            <div className="master-modal-header">
+              <Dialog.Title className="master-modal-title">
+                Delete {deleteTarget?.name}?
+              </Dialog.Title>
             </div>
-            <Dialog.Title >
-              Delete {deleteTarget?.name}?
-            </Dialog.Title>
-            <Dialog.Description >
-              This permanently removes the company, its {deleteTarget?.employeeCount} employee profile(s) and their login credentials. This action cannot be undone.
+            <Dialog.Description style={{ margin: 0, fontSize: "0.8125rem", color: "#71717a" }}>
+              This permanently removes the company and all {deleteTarget?.employeeCount} associated employee profile(s).
             </Dialog.Description>
-            <div >
+            <div className="master-modal-actions">
               <button
                 type="button"
                 onClick={() => setDeleteTarget(null)}
-                
+                className="master-btn-secondary"
               >
                 Cancel
               </button>
@@ -2068,7 +1914,7 @@ function MasterPage() {
                 type="button"
                 onClick={confirmDelete}
                 disabled={deleting}
-                
+                className="master-btn-danger"
               >
                 {deleting ? "Deleting..." : "Delete Company"}
               </button>
@@ -2079,19 +1925,15 @@ function MasterPage() {
 
       {/* Toast Notification */}
       {toast.open && (
-        <div className="fade-in">
-          <div
-            className={`${ toast.severity === "error" ? "" : "" }`}
+        <div className={`master-login-toast ${toast.severity}`}>
+          <span>{toast.message}</span>
+          <button
+            type="button"
+            className="master-login-toast-close"
+            onClick={() => setToast((t) => ({ ...t, open: false }))}
           >
-            <span>{toast.message}</span>
-            <button
-              type="button"
-              onClick={() => setToast((t) => ({ ...t, open: false }))}
-              
-            >
-              ✕
-            </button>
-          </div>
+            ✕
+          </button>
         </div>
       )}
     </div>
