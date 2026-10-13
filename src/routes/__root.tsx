@@ -11,8 +11,26 @@ import {
 } from "@tanstack/react-router";
 import React, { useEffect, type ReactNode } from "react";
 import { supabase } from "../lib/supabase";
-import { isMasterAdmin } from "../lib/master";
-import { ImagePlus as UploadPhotoIcon, X as CloseIcon, FileCheck, FileText, AlertCircle, Clock, CheckCircle2, Upload, ExternalLink } from "lucide-react";
+import {
+  ImagePlus as UploadPhotoIcon,
+  X as CloseIcon,
+  FileCheck,
+  FileText,
+  AlertCircle,
+  Clock,
+  CheckCircle2,
+  Upload,
+  ExternalLink,
+  User as UserIcon,
+  MapPin,
+  Phone,
+  Landmark,
+  Camera,
+  Check,
+  LogOut,
+  ArrowLeft,
+  ArrowRight,
+} from "lucide-react";
 import { getCompanyTrainingSections } from "../lib/induction";
 import {
   getCompanyDocumentRequirements,
@@ -869,6 +887,17 @@ function RootComponent() {
   };
 
   const renderOnboardingWizard = () => {
+    const onboardingSteps = [
+      { num: "01", label: "Personal Profile", step: 1, icon: UserIcon },
+      { num: "02", label: "Address Details", step: 2, icon: MapPin },
+      { num: "03", label: "Emergency Contact", step: 3, icon: Phone },
+      { num: "04", label: "Financial Information", step: 4, icon: Landmark },
+      { num: "05", label: "KYC Documents", step: 5, icon: FileText },
+      { num: "06", label: "Profile Photo & Bio", step: 6, icon: Camera },
+    ];
+
+    const currentStepConfig = onboardingSteps.find((s) => s.step === onboardStep) || onboardingSteps[0];
+
     return (
       <div className="onboard-shell">
         {/* Left Sidebar */}
@@ -878,38 +907,53 @@ function RootComponent() {
               <img src="/teamstuff_icon_logo.png" alt="Teamstuff" className="onboard-sidebar-logo" />
               <div>
                 <h2 className="onboard-sidebar-title">Teamstuff</h2>
-                <p className="onboard-sidebar-tag">Employee Setup</p>
+                <p className="onboard-sidebar-tag">Employee Onboarding</p>
               </div>
             </div>
 
             <div className="onboard-nav-steps">
-              {[
-                { num: "01", label: "Personal Profile", step: 1 },
-                { num: "02", label: "Address Details", step: 2 },
-                { num: "03", label: "Emergency Contact", step: 3 },
-                { num: "04", label: "Financial Information", step: 4 },
-                { num: "05", label: "KYC Documents", step: 5 },
-                { num: "06", label: "Profile Photo & Bio", step: 6 },
-              ].map((s) => (
-                <div
-                  key={s.step}
-                  className={cn(
-                    "onboard-nav-item",
-                    onboardStep === s.step && "active",
-                    onboardStep > s.step && "completed",
-                  )}
-                >
-                  <span className="onboard-nav-num">{s.num}</span>
-                  <span>{s.label}</span>
-                </div>
-              ))}
+              {onboardingSteps.map((s) => {
+                const IconComponent = s.icon;
+                const isCompleted = onboardStep > s.step;
+                const isActive = onboardStep === s.step;
+                return (
+                  <div
+                    key={s.step}
+                    className={cn(
+                      "onboard-nav-item",
+                      isActive && "active",
+                      isCompleted && "completed",
+                    )}
+                  >
+                    <div className="onboard-nav-item-left">
+                      <span className="onboard-nav-icon">
+                        <IconComponent size={14} />
+                      </span>
+                      <span className="onboard-nav-label">{s.label}</span>
+                    </div>
+                    {isCompleted ? (
+                      <Check size={13} className="onboard-nav-check" />
+                    ) : (
+                      <span className="onboard-nav-num">{s.num}</span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
           <div className="onboard-sidebar-footer">
-            <span className="onboard-sidebar-user">
-              {sessionUser?.email || "Employee"}
-            </span>
+            <div className="onboard-user-badge">
+              <div className="onboard-user-avatar">
+                {(sessionUser?.email?.[0] || "E").toUpperCase()}
+              </div>
+              <div className="onboard-user-details">
+                <p className="onboard-user-email" title={sessionUser?.email || "Employee"}>
+                  {sessionUser?.email || "Employee"}
+                </p>
+                <p className="onboard-user-role">New Hire</p>
+              </div>
+            </div>
             <button
               type="button"
               onClick={async () => {
@@ -920,32 +964,55 @@ function RootComponent() {
                 setCheckingStatus(false);
                 navigate({ to: "/login" });
               }}
-              className="onboard-signout-link"
+              title="Sign Out"
+              className="onboard-signout-btn"
             >
-              Sign Out
+              <LogOut size={14} />
             </button>
           </div>
         </aside>
 
         {/* Right Main Viewport */}
         <main className="onboard-main">
-          <div className="onboard-content-wrap">
-            <div className="onboard-section-header">
-              <p className="onboard-section-step">Step {onboardStep} of 6</p>
-              <h1 className="onboard-section-title">
-                {onboardStep === 1
-                  ? "Personal Profile"
-                  : onboardStep === 2
-                  ? "Address Details"
-                  : onboardStep === 3
-                  ? "Emergency Contact"
-                  : onboardStep === 4
-                  ? "Financial Information"
-                  : onboardStep === 5
-                  ? "Identity & KYC Documents"
-                  : "Profile Photo & Bio"}
-              </h1>
+          {/* Top Breadcrumb & Progress Bar */}
+          <header className="onboard-top-bar">
+            <div className="onboard-top-breadcrumbs">
+              <span className="onboard-crumb-root">Onboarding</span>
+              <span className="onboard-crumb-sep">/</span>
+              <span className="onboard-crumb-current">{currentStepConfig.label}</span>
             </div>
+            <div className="onboard-top-progress">
+              <span className="onboard-progress-text">
+                Step {onboardStep} of 6 &middot; {Math.round((onboardStep / 6) * 100)}%
+              </span>
+              <div className="onboard-progress-track">
+                <div
+                  className="onboard-progress-fill"
+                  style={{ width: `${(onboardStep / 6) * 100}%` }}
+                />
+              </div>
+            </div>
+          </header>
+
+          <div className="onboard-body">
+            <div className="onboard-content-wrap">
+              <div className="onboard-section-header">
+                <p className="onboard-section-step">Step {onboardStep} of 6</p>
+                <h1 className="onboard-section-title">{currentStepConfig.label}</h1>
+                <p className="onboard-section-desc">
+                  {onboardStep === 1
+                    ? "Enter your primary contact number, birth date, and gender."
+                    : onboardStep === 2
+                    ? "Provide your current residential address for official company records."
+                    : onboardStep === 3
+                    ? "Provide an emergency contact person and their phone number."
+                    : onboardStep === 4
+                    ? "Add your salary account details for direct deposit and tax filing."
+                    : onboardStep === 5
+                    ? "Upload required verification documents for compliance."
+                    : "Upload a professional headshot and a brief introduction about yourself."}
+                </p>
+              </div>
             {onboardStep === 1 && (
               <>
                 {/* Contact Number */}
@@ -1452,14 +1519,18 @@ function RootComponent() {
             )}
 
             <div className="onboard-footer">
-              <button
-                type="button"
-                disabled={onboardStep === 1}
-                onClick={() => setOnboardStep((p) => p - 1)}
-                className="onboard-btn-secondary"
-              >
-                Back
-              </button>
+              {onboardStep > 1 ? (
+                <button
+                  type="button"
+                  onClick={() => setOnboardStep((p) => p - 1)}
+                  className="onboard-btn-secondary"
+                >
+                  <ArrowLeft size={14} />
+                  <span>Back</span>
+                </button>
+              ) : (
+                <div />
+              )}
               {onboardStep < 6 ? (
                 <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
                   {(onboardStep === 4 || onboardStep === 5) && (
@@ -1481,7 +1552,8 @@ function RootComponent() {
                     onClick={() => setOnboardStep((p) => p + 1)}
                     className="onboard-btn-primary"
                   >
-                    Continue
+                    <span>Continue</span>
+                    <ArrowRight size={14} />
                   </button>
                 </div>
               ) : (
@@ -1491,12 +1563,14 @@ function RootComponent() {
                   onClick={handleOnboardingSubmit}
                   className="onboard-btn-primary"
                 >
-                  Complete Onboarding
+                  <span>Complete Onboarding</span>
+                  <ArrowRight size={14} />
                 </button>
               )}
             </div>
           </div>
-        </main>
+        </div>
+      </main>
 
         {/* Photo Adjust Modal (Zoom & Reposition) */}
         <Dialog open={Boolean(pendingOnboardPhoto)} onOpenChange={(open) => !open && setPendingOnboardPhoto(null)}>
