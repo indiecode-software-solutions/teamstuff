@@ -870,26 +870,46 @@ function RootComponent() {
 
   const renderOnboardingWizard = () => {
     return (
-      <div className="onboard-wizard-overlay">
-        <div className="onboard-wizard-card">
-          {/* Header */}
-          <div className="onboard-header">
-            <div>
-              <span className="onboard-step-indicator">Step {onboardStep} of 6</span>
-              <h1 className="onboard-header-title">
-                {onboardStep === 1
-                  ? "Personal Profile"
-                  : onboardStep === 2
-                  ? "Address Details"
-                  : onboardStep === 3
-                  ? "Emergency Contact"
-                  : onboardStep === 4
-                  ? "Financial Information"
-                  : onboardStep === 5
-                  ? "Identity & KYC Documents"
-                  : "Profile Photo & Bio"}
-              </h1>
+      <div className="onboard-shell">
+        {/* Left Sidebar */}
+        <aside className="onboard-sidebar">
+          <div>
+            <div className="onboard-sidebar-brand">
+              <img src="/teamstuff_icon_logo.png" alt="Teamstuff" className="onboard-sidebar-logo" />
+              <div>
+                <h2 className="onboard-sidebar-title">Teamstuff</h2>
+                <p className="onboard-sidebar-tag">Employee Setup</p>
+              </div>
             </div>
+
+            <div className="onboard-nav-steps">
+              {[
+                { num: "01", label: "Personal Profile", step: 1 },
+                { num: "02", label: "Address Details", step: 2 },
+                { num: "03", label: "Emergency Contact", step: 3 },
+                { num: "04", label: "Financial Information", step: 4 },
+                { num: "05", label: "KYC Documents", step: 5 },
+                { num: "06", label: "Profile Photo & Bio", step: 6 },
+              ].map((s) => (
+                <div
+                  key={s.step}
+                  className={cn(
+                    "onboard-nav-item",
+                    onboardStep === s.step && "active",
+                    onboardStep > s.step && "completed",
+                  )}
+                >
+                  <span className="onboard-nav-num">{s.num}</span>
+                  <span>{s.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="onboard-sidebar-footer">
+            <span className="onboard-sidebar-user">
+              {sessionUser?.email || "Employee"}
+            </span>
             <button
               type="button"
               onClick={async () => {
@@ -905,16 +925,27 @@ function RootComponent() {
               Sign Out
             </button>
           </div>
+        </aside>
 
-          {/* Hairline Progress Track */}
-          <div className="onboard-progress-track">
-            <div
-              className="onboard-progress-fill"
-              style={{ width: `${(onboardStep / 6) * 100}%` }}
-            />
-          </div>
-
-          <div>
+        {/* Right Main Viewport */}
+        <main className="onboard-main">
+          <div className="onboard-content-wrap">
+            <div className="onboard-section-header">
+              <p className="onboard-section-step">Step {onboardStep} of 6</p>
+              <h1 className="onboard-section-title">
+                {onboardStep === 1
+                  ? "Personal Profile"
+                  : onboardStep === 2
+                  ? "Address Details"
+                  : onboardStep === 3
+                  ? "Emergency Contact"
+                  : onboardStep === 4
+                  ? "Financial Information"
+                  : onboardStep === 5
+                  ? "Identity & KYC Documents"
+                  : "Profile Photo & Bio"}
+              </h1>
+            </div>
             {onboardStep === 1 && (
               <>
                 {/* Contact Number */}
@@ -1465,7 +1496,7 @@ function RootComponent() {
               )}
             </div>
           </div>
-        </div>
+        </main>
 
         {/* Photo Adjust Modal (Zoom & Reposition) */}
         <Dialog open={Boolean(pendingOnboardPhoto)} onOpenChange={(open) => !open && setPendingOnboardPhoto(null)}>

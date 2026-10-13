@@ -3,143 +3,206 @@
  * 100% Pure Vanilla CSS
  */
 
-/* 1. Onboarding Wizard Overlay & Base Card */
-.onboard-wizard-overlay {
+/* 1. Onboarding Shell & SPA Two-Column Layout */
+.onboard-shell {
   position: fixed;
   inset: 0;
   z-index: 50;
-  overflow-y: auto;
-  background-color: var(--color-background, #ffffff);
+  height: 100vh;
+  width: 100vw;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 3rem 1.5rem;
-  box-sizing: border-box;
-  scrollbar-width: thin;
+  background-color: #ffffff;
+  overflow: hidden;
+  font-family: var(--font-sans);
+  color: #09090b;
 }
 
-:root.dark .onboard-wizard-overlay {
+:root.dark .onboard-shell {
   background-color: #09090b;
+  color: #fafafa;
 }
 
-.onboard-wizard-card {
-  width: 100%;
-  max-width: 580px;
-  background-color: transparent;
-  border-radius: 0;
-  border: none;
-  box-shadow: none;
-  padding: 0;
-  margin: 0 auto;
-  box-sizing: border-box;
+/* Left Sidebar Navigation */
+.onboard-sidebar {
+  width: 240px;
+  min-width: 240px;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  animation: onboardFadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes onboardFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(12px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Header & Signout */
-.onboard-header {
-  display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 1rem;
+  background-color: #fbfbfb;
+  border-right: 1px solid #e4e4e7;
+  padding: 1.5rem 1rem;
+  box-sizing: border-box;
+  flex-shrink: 0;
+  user-select: none;
 }
 
-.onboard-step-indicator {
-  display: block;
-  font-size: 0.6875rem;
+:root.dark .onboard-sidebar {
+  background-color: #121215;
+  border-right-color: #27272a;
+}
+
+.onboard-sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid #e4e4e7;
+  margin-bottom: 1rem;
+}
+
+:root.dark .onboard-sidebar-brand {
+  border-bottom-color: #27272a;
+}
+
+.onboard-sidebar-logo {
+  height: 22px;
+  width: auto;
+  object-fit: contain;
+}
+
+.onboard-sidebar-title {
+  font-size: 0.875rem;
   font-weight: 600;
+  color: #09090b;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+:root.dark .onboard-sidebar-title {
+  color: #fafafa;
+}
+
+.onboard-sidebar-tag {
+  font-size: 0.6875rem;
+  font-weight: 500;
   color: #71717a;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  margin: 2px 0 0 0;
+}
+
+.onboard-nav-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.onboard-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  padding: 0.5rem 0.625rem;
+  border-radius: 4px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #71717a;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: default;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.onboard-nav-item.active {
+  background-color: #09090b;
+  color: #ffffff;
+}
+
+:root.dark .onboard-nav-item.active {
+  background-color: #fafafa;
+  color: #09090b;
+}
+
+.onboard-nav-item.completed {
+  color: #27272a;
+}
+
+:root.dark .onboard-nav-item.completed {
+  color: #d4d4d8;
+}
+
+.onboard-nav-num {
+  font-size: 0.6875rem;
+  font-family: var(--font-mono);
+  opacity: 0.65;
+}
+
+.onboard-sidebar-footer {
+  padding-top: 1rem;
+  border-top: 1px solid #e4e4e7;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+:root.dark .onboard-sidebar-footer {
+  border-top-color: #27272a;
+}
+
+.onboard-sidebar-user {
+  font-size: 0.75rem;
+  color: #71717a;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Right Main Canvas */
+.onboard-main {
+  flex: 1;
+  height: 100%;
+  overflow-y: auto;
+  padding: 3.5rem 4rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.onboard-content-wrap {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.onboard-section-header {
   margin-bottom: 0.25rem;
 }
 
-.onboard-header-title {
+.onboard-section-step {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #71717a;
+  margin: 0 0 0.25rem 0;
+}
+
+.onboard-section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  color: var(--color-text-primary, #09090b);
+  color: #09090b;
   letter-spacing: -0.02em;
   margin: 0;
 }
 
-:root.dark .onboard-header-title {
+:root.dark .onboard-section-title {
   color: #fafafa;
 }
 
-.onboard-signout-link {
-  background: none;
-  border: none;
-  padding: 0;
-  font-size: 0.8125rem;
-  font-weight: 500;
-  color: #71717a;
-  cursor: pointer;
-  transition: color 0.15s ease;
-  white-space: nowrap;
-}
-
-.onboard-signout-link:hover {
-  color: #09090b;
-  text-decoration: underline;
-}
-
-:root.dark .onboard-signout-link:hover {
-  color: #fafafa;
-}
-
-/* Slim Hairline Progress Track */
-.onboard-progress-track {
-  width: 100%;
-  height: 2px;
-  background-color: #e4e4e7;
-  overflow: hidden;
-  margin: 0.75rem 0 1.5rem 0;
-}
-
-:root.dark .onboard-progress-track {
-  background-color: #27272a;
-}
-
-.onboard-progress-fill {
-  height: 100%;
-  background-color: #09090b;
-  transition: width 0.25s ease;
-}
-
-:root.dark .onboard-progress-fill {
-  background-color: #fafafa;
-}
-
-/* Stepper Progress Indicator (Fallback) */
-.onboard-stepper {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
+.onboard-actions-row {
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
-  margin: 0.25rem 0 0.5rem;
-}
-
-.onboard-step-bar {
-  height: 3px;
-  border-radius: 2px;
-  background-color: #e4e4e7;
-  transition: background-color 0.25s ease;
-}
-
-.onboard-step-bar.active {
-  background-color: var(--color-brand, #18181b);
+  margin-top: 0.75rem;
 }
 
 /* Step Content Titles */
@@ -820,8 +883,25 @@
 }
 
 @media (max-width: 768px) {
-  .onboard-wizard-card {
-    padding: 1.5rem;
+  .onboard-shell {
+    flex-direction: column;
+  }
+
+  .onboard-sidebar {
+    width: 100%;
+    min-width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid #e4e4e7;
+    padding: 1rem;
+  }
+
+  .onboard-nav-steps {
+    display: none;
+  }
+
+  .onboard-main {
+    padding: 2rem 1.25rem;
   }
 
   .onboard-row-2,
