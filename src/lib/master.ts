@@ -38,21 +38,21 @@ async function sendCredentialsEmail(
       body: JSON.stringify({
         from,
         to: [email],
-        subject: `Your ${companyName} intranet login credentials`,
+        subject: `Your ${companyName} HRMS login credentials`,
         html: `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;border:1px solid #eee;border-radius:12px;overflow:hidden">
           <div style="background:#0f172a;padding:20px 28px;color:#fff;">
             <p style="margin:0;font-size:18px;font-weight:bold;">${companyName}</p>
-            <p style="margin:4px 0 0;font-size:12px;color:#94a3b8;">Corporate Intranet Portal</p>
+            <p style="margin:4px 0 0;font-size:12px;color:#94a3b8;">Corporate HRMS Portal</p>
           </div>
           <div style="padding:28px">
-            <p style="margin:0 0 16px;font-size:15px;color:#111">Welcome, ${name}! Your login for <b>${companyName}</b> has been created on the intranet. You can access the portal at <a href="${portalUrl}" style="color:#2563eb;font-weight:bold;text-decoration:underline;">${portalDisplayUrl}</a>.</p>
+            <p style="margin:0 0 16px;font-size:15px;color:#111">Welcome, ${name}! Your login for <b>${companyName}</b> has been created on the HRMS. You can access the portal at <a href="${portalUrl}" style="color:#2563eb;font-weight:bold;text-decoration:underline;">${portalDisplayUrl}</a>.</p>
             <table style="background:#f4f4f5;border:1px solid #e2e8f0;border-radius:8px;width:100%;font-size:14px;margin-bottom:20px;">
-              <tr><td style="padding:8px 16px;color:#64748b">Intranet portal</td><td align="right" style="padding:8px 16px;font-weight:bold;"><a href="${portalUrl}" style="color:#2563eb;text-decoration:none;">${portalDisplayUrl} &rarr;</a></td></tr>
+              <tr><td style="padding:8px 16px;color:#64748b">HRMS portal</td><td align="right" style="padding:8px 16px;font-weight:bold;"><a href="${portalUrl}" style="color:#2563eb;text-decoration:none;">${portalDisplayUrl} &rarr;</a></td></tr>
               <tr><td style="padding:8px 16px;color:#64748b">Login email</td><td align="right" style="padding:8px 16px;font-weight:bold;color:#0f172a">${email}</td></tr>
               <tr><td style="padding:8px 16px;color:#64748b">Temporary password</td><td align="right" style="padding:8px 16px;font-weight:bold;color:#0f172a">${password}</td></tr>
             </table>
             <div style="text-align:center;margin:20px 0 16px 0;">
-              <a href="${portalUrl}" style="background:#0f172a;color:#ffffff;padding:12px 24px;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;display:inline-block;">Access Intranet Portal &rarr;</a>
+              <a href="${portalUrl}" style="background:#0f172a;color:#ffffff;padding:12px 24px;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;display:inline-block;">Access HRMS Portal &rarr;</a>
             </div>
             <p style="margin:16px 0 0;font-size:13px;color:#94a3b8">Please change this password after your first login.</p>
           </div>

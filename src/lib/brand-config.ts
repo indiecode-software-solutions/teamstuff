@@ -20,7 +20,7 @@ export function getBrandConfig(): BrandConfig {
     brand: "teamstuff",
     appName: "Teamstuff",
     shortName: "Teamstuff",
-    tagline: "Corporate Internal Operations & Intranet Portal",
+    tagline: "Corporate Internal Operations & HRMS Portal",
     companyName: "Teamstuff",
     favicon: "/teamstuff_icon_logo.png",
     appleTouchIcon: "/teamstuff_icon_logo.png",

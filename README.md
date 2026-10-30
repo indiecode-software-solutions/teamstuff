@@ -1,6 +1,6 @@
-# Teamstuff — Modern Enterprise Intranet & HRMS Platform
+# Teamstuff — Modern Enterprise HRMS Platform
 
-**Teamstuff** is an all-in-one, multi-tenant corporate intranet and HR management system designed for modern teams. Built with a minimal, high-performance architecture, Teamstuff unifies company culture, workforce operations, field tracking, and employee self-service into a single cohesive workspace.
+**Teamstuff** is an all-in-one, multi-tenant corporate HRMS and workforce management platform designed for modern teams. Built with a minimal, high-performance architecture, Teamstuff unifies company culture, workforce operations, field tracking, and employee self-service into a single cohesive workspace.
 
 ---
 

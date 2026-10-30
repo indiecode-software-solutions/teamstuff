@@ -1232,7 +1232,7 @@ function MasterPage() {
                       <label className="master-label">Login Tagline</label>
                       <input
                         type="text"
-                        placeholder="Welcome to Acme Intranet"
+                        placeholder="Welcome to Acme HRMS"
                         value={form.brandTagline}
                         onChange={(e) => setForm((f) => ({ ...f, brandTagline: e.target.value }))}
                         className="master-input"

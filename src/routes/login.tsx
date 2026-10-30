@@ -43,7 +43,7 @@ export const Route = createFileRoute("/login")({
     const tenantBrand = loaderData?.branding;
     const rawShortName = (tenantBrand?.shortName || tenantBrand?.name || "").trim();
     const isCustomCompany = rawShortName.length > 0 && rawShortName.toLowerCase() !== "teamstuff";
-    const title = isCustomCompany ? `${rawShortName} Intranet` : brand.appName;
+    const title = isCustomCompany ? `${rawShortName} HRMS` : brand.appName;
     const favicon = tenantBrand?.faviconUrl?.trim()
       ? tenantBrand.faviconUrl.trim()
       : isCustomCompany
@@ -55,7 +55,7 @@ export const Route = createFileRoute("/login")({
       meta: [
         {
           name: "description",
-          content: `Access your ${tenantBrand?.name || brand.appName} corporate intranet portal.`,
+          content: `Access your ${tenantBrand?.name || brand.appName} HRMS portal.`,
         },
       ],
       links: [

@@ -72,7 +72,7 @@ export const sendApprovalWhatsAppNotification = createServerFn({ method: "POST" 
                  `*${applicantName}* has submitted a *${requestType}* request:\n` +
                  `_"${requestTitle}"_\n\n` +
                  `*Reason:* ${reason}\n\n` +
-                 `Please log into the Intranet Approvals Center to Approve or Reject.`;
+                 `Please log into the HRMS Approvals Center to Approve or Reject.`;
 
     const params = new URLSearchParams();
     params.append("From", fromFormatted);

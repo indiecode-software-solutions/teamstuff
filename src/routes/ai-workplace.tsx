@@ -188,7 +188,7 @@ const AI_TOOLS = [
     icon: <MessageSquare size={16} />,
     name: "Chat",
     desc: "Get answers & information",
-    prompt: "I need assistance understanding company policies or finding intranet documents.",
+    prompt: "I need assistance understanding company policies or finding HR documents.",
   },
   {
     icon: <Pencil size={16} />,
@@ -217,7 +217,7 @@ const AI_TOOLS = [
   {
     icon: <Play size={16} />,
     name: "Execute",
-    desc: "Take actions across the intranet",
+    desc: "Take actions across the HRMS",
     prompt: "Create a new task assigned to Design for UI refinements.",
   },
 ];
@@ -502,7 +502,7 @@ export function AiWorkplacePage() {
                         type="button"
                         onClick={() => setUseCompanyContext((prev) => !prev)}
                         className={`ai-wp-context-pill ${useCompanyContext ? "active" : ""}`}
-                        title="Include live company intranet data in responses"
+                        title="Include live company HRMS data in responses"
                       >
                         <Globe size={12} />
                         <span>Company context</span>

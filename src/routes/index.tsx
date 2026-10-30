@@ -55,7 +55,7 @@ export const Route = createFileRoute("/")({
         },
         {
           name: "keywords",
-          content: `${brand.shortName.toLowerCase()}, intranet, workspace, task management, collaboration, attendance, payroll`,
+          content: `${brand.shortName.toLowerCase()}, hrms, workspace, task management, collaboration, attendance, payroll`,
         },
         { property: "og:title", content: `${brand.appName} | ${brand.tagline}` },
         {

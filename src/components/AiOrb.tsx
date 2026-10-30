@@ -13,7 +13,7 @@ interface Message {
 const QUICK_ACTIONS = [
   { label: "Apply for leave", prompt: "How do I apply for leave or check my balance?" },
   { label: "View my tasks", prompt: "Where can I find my active tasks and projects?" },
-  { label: "Access Drive files", prompt: "How does cloud file storage work in the intranet?" },
+  { label: "Access Drive files", prompt: "How does cloud file storage work in the HRMS?" },
   { label: "View payslips", prompt: "Where can I view my monthly salary payslips?" },
 ];
 

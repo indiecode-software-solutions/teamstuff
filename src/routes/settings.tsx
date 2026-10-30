@@ -1420,7 +1420,7 @@ export function SettingsPageContent({
                   <div className="settings-card-header">
                     <div className="settings-card-header-left">
                       <h2 className="settings-card-title">Registered Biometric Devices</h2>
-                      <p className="settings-card-subtitle">Manage all hardware terminals connected to your intranet.</p>
+                      <p className="settings-card-subtitle">Manage all hardware terminals connected to your HRMS.</p>
                     </div>
                   </div>
 

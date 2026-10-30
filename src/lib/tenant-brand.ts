@@ -36,6 +36,7 @@ const RESERVED_SUBDOMAINS = new Set([
   "portal",
   "preview",
   "intranet",
+  "hrms",
   "teamstuff",
   "capoasis",
   "corporate-intranet",
@@ -164,7 +165,7 @@ export function getTenantFromHost(): string | null {
 }
 
 /**
- * Resolves the full intranet portal URL and display URL based on a tenant domain or slug.
+ * Resolves the full HRMS portal URL and display URL based on a tenant domain or slug.
  * Root domain is yoovaventures.com.
  * Examples:
  * - "salado" -> { url: "https://salado.yoovaventures.com", displayUrl: "salado.yoovaventures.com" }
@@ -480,7 +481,7 @@ export function generateLetterFaviconSvg(
 /**
  * Resolves a dynamic white-label page title.
  * - For a company tenant: "Salado | Cloud Drive"
- * - Fallback / Loading: "Cloud Drive | Intranet" (never flashes "Teamstuff")
+ * - Fallback / Loading: "Cloud Drive | HRMS" (never flashes "Teamstuff")
  */
 export function getDynamicPageTitle(pageName?: string): string {
   if (typeof window !== "undefined") {
@@ -494,13 +495,13 @@ export function getDynamicPageTitle(pageName?: string): string {
         rawShortName.toLowerCase() !== "teamstuff";
 
       if (isCustomCompany) {
-        return pageName ? `${rawShortName} | ${pageName}` : `${rawShortName} Intranet`;
+        return pageName ? `${rawShortName} | ${pageName}` : `${rawShortName} HRMS`;
       }
     } catch {
       // Fallback below
     }
   }
-  return pageName ? `${pageName} | Intranet` : "Intranet";
+  return pageName ? `${pageName} | HRMS` : "HRMS";
 }
 
 /**
@@ -527,11 +528,11 @@ export function applyBrowserWhiteLabel(
 
   let title: string;
   if (isCustomCompany) {
-    title = pageTitle ? `${rawShortName} | ${pageTitle}` : `${rawShortName} Intranet`;
+    title = pageTitle ? `${rawShortName} | ${pageTitle}` : `${rawShortName} HRMS`;
   } else if (pageTitle) {
-    title = `${pageTitle} | Intranet`;
+    title = `${pageTitle} | HRMS`;
   } else {
-    title = "Intranet";
+    title = "HRMS";
   }
 
   let favicon: string;

@@ -175,12 +175,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         { title: "Teamstuff" },
         {
           name: "description",
-          content: "Teamstuff Corporate Operations & Intranet Portal",
+          content: "Teamstuff Corporate Operations & HRMS Portal",
         },
         { property: "og:title", content: "Teamstuff" },
         {
           property: "og:description",
-          content: "Teamstuff Corporate Operations & Intranet Portal",
+          content: "Teamstuff Corporate Operations & HRMS Portal",
         },
         { property: "og:type", content: "website" },
       ],
@@ -246,7 +246,7 @@ const instantBrandScript = `(function() {
     var displayBrandName = isCustom ? tenantName : '';
 
     if (displayBrandName) {
-      document.title = displayBrandName + ' Intranet';
+      document.title = displayBrandName + ' HRMS';
     } else {
       document.title = 'Teamstuff';
     }

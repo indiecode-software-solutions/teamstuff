@@ -41,7 +41,7 @@ const CHANGELOG: ChangelogEntry[] = [
   {
     version: "v2.3.0",
     date: "August 2026",
-    heading: "Intranet Launch",
+    heading: "HRMS Launch",
     items: [
       "Cloud Drive with readable company/user folder paths on R2",
       "Company Library shared folder with per-company visibility",

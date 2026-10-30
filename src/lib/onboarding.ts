@@ -157,7 +157,7 @@ export const adminOnboardEmployee = createServerFn({ method: "POST" })
 
       console.log(`✅ Onboarded employee ${name} successfully. Email: ${email}`);
 
-      // 3. Query company details for tenant intranet portal link and branding
+      // 3. Query company details for tenant HRMS portal link and branding
       const { data: comp } = await adminClient
         .from("companies")
         .select("name, tenant_domain, brand_color")
@@ -187,16 +187,16 @@ export const adminOnboardEmployee = createServerFn({ method: "POST" })
             <tr>
               <td style="background:${brandColor};padding:24px 32px;">
                 <p style="margin:0;color:#ffffff;font-size:20px;font-weight:bold;">${appName}</p>
-                <p style="margin:4px 0 0 0;color:rgba(255,255,255,0.85);font-size:13px;">Corporate Intranet Portal</p>
+                <p style="margin:4px 0 0 0;color:rgba(255,255,255,0.85);font-size:13px;">Corporate HRMS Portal</p>
               </td>
             </tr>
             <tr>
               <td style="padding:32px;">
                 <p style="margin:0 0 8px 0;color:#111827;font-size:18px;font-weight:bold;">Welcome aboard, ${name}!</p>
-                <p style="margin:0 0 20px 0;color:#374151;font-size:14px;line-height:1.6;">Your employee account has been created by the HR team. You can access your company's intranet portal at <a href="${portalUrl}" style="color:${brandColor};font-weight:bold;text-decoration:underline;">${portalDisplayUrl}</a> using the credentials below.</p>
+                <p style="margin:0 0 20px 0;color:#374151;font-size:14px;line-height:1.6;">Your employee account has been created by the HR team. You can access your company's HRMS portal at <a href="${portalUrl}" style="color:${brandColor};font-weight:bold;text-decoration:underline;">${portalDisplayUrl}</a> using the credentials below.</p>
                 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:16px;margin-bottom:20px;">
                   <tr>
-                    <td style="padding:8px 16px;color:#6b7280;font-size:12px;font-weight:600;text-transform:uppercase;">Intranet Portal</td>
+                    <td style="padding:8px 16px;color:#6b7280;font-size:12px;font-weight:600;text-transform:uppercase;">HRMS Portal</td>
                     <td style="padding:8px 16px;font-size:14px;font-weight:bold;" align="right">
                       <a href="${portalUrl}" style="color:${brandColor};text-decoration:none;">${portalDisplayUrl} &rarr;</a>
                     </td>
@@ -211,7 +211,7 @@ export const adminOnboardEmployee = createServerFn({ method: "POST" })
                   </tr>
                 </table>
                 <div style="text-align:center;margin:24px 0 20px 0;">
-                  <a href="${portalUrl}" style="background:${brandColor};color:#ffffff;padding:12px 28px;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;display:inline-block;">Log in to Intranet Portal &rarr;</a>
+                  <a href="${portalUrl}" style="background:${brandColor};color:#ffffff;padding:12px 28px;text-decoration:none;border-radius:8px;font-weight:bold;font-size:14px;display:inline-block;">Log in to HRMS Portal &rarr;</a>
                 </div>
                 <p style="margin:0 0 16px 0;color:#6b7280;font-size:13px;line-height:1.6;">For security, please change this temporary password after your first login.</p>
                 <p style="margin:0;color:#9ca3af;font-size:12px;line-height:1.6;">If you weren't expecting this email, you can safely ignore it.</p>
@@ -233,7 +233,7 @@ export const adminOnboardEmployee = createServerFn({ method: "POST" })
             body: JSON.stringify({
               from,
               to: [email],
-              subject: `Your ${appName} intranet login credentials`,
+              subject: `Your ${appName} HRMS login credentials`,
               html,
             }),
           });

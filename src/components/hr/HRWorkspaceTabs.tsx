@@ -1121,7 +1121,7 @@ export function HRWorkspaceTabs({ activeTab, showToast }: HRWorkspaceTabsProps) 
                 {createdCredentials.portalUrl && (
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 12px", backgroundColor: "var(--color-surface-subtle)", borderRadius: "6px" }}>
                     <div style={{ fontSize: "13px" }}>
-                      <span style={{ color: "var(--color-text-muted)", marginRight: "8px" }}>Intranet:</span>
+                      <span style={{ color: "var(--color-text-muted)", marginRight: "8px" }}>HRMS:</span>
                       <a
                         href={createdCredentials.portalUrl}
                         target="_blank"
