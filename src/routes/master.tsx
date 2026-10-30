@@ -674,7 +674,6 @@ function MasterPage() {
         {/* Sidebar Header */}
         <div className="master-sidebar-header">
           <div className="master-sidebar-brand">
-            <img src="/indiecode_icon_logo.svg" alt="Indiecode" className="master-sidebar-logo" />
             <div>
               <h2 className="master-sidebar-title">Indiecode</h2>
               <p className="master-sidebar-tag">Master Console</p>

@@ -74,11 +74,7 @@ export const Route = createFileRoute("/")({
 function BrandLogo() {
   return (
     <a href="/" className="landing-brand-link">
-      <img
-        src="/indiecode_logo.svg"
-        alt="Indiecode HRMS"
-        className="landing-brand-img"
-      />
+      <span className="landing-brand-text">Indiecode HRMS</span>
     </a>
   );
 }

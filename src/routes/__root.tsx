@@ -1009,13 +1009,7 @@ function RootComponent() {
                   alt={`${branding.shortName || branding.name || "Company"} logo`}
                   className="onboard-sidebar-logo"
                 />
-              ) : (
-                <img
-                  src="/indiecode_icon_logo.svg"
-                  alt="Indiecode"
-                  className="onboard-sidebar-logo"
-                />
-              )}
+              ) : null}
               <div>
                 <h2 className="onboard-sidebar-title">
                   {branding?.shortName || branding?.name || "Indiecode"}
