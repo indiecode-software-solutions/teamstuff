@@ -177,14 +177,14 @@ export function resolveTenantPortalUrl(tenantDomain?: string | null): {
   url: string;
   displayUrl: string;
 } {
-  const rootDomain = "intranet.capoasis.com";
+  const rootDomain = "teamstuff.com";
   const raw = (tenantDomain || "")
     .trim()
     .toLowerCase()
     .replace(/^https?:\/\//, "")
     .replace(/\/+$/, "");
 
-  if (!raw || raw === rootDomain || raw === "teamstuff.com" || raw === "teamstuff.in") {
+  if (!raw || raw === rootDomain) {
     return {
       url: `https://${rootDomain}`,
       displayUrl: rootDomain,
@@ -198,7 +198,7 @@ export function resolveTenantPortalUrl(tenantDomain?: string | null): {
     };
   }
 
-  const fullDomain = `${raw}.capoasis.com`;
+  const fullDomain = `${raw}.${rootDomain}`;
   return {
     url: `https://${fullDomain}`,
     displayUrl: fullDomain,
@@ -259,8 +259,8 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
       if (!data) return null;
       return {
         id: data.id,
-        name: data.name || "CapOasis",
-        shortName: data.short_name || data.name || "CapOasis",
+        name: data.name || "Teamstuff",
+        shortName: data.short_name || data.name || "Teamstuff",
         tenantDomain: data.tenant_domain || null,
         brandColor: data.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: data.logo_url || null,
@@ -294,8 +294,8 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
     if (comp) {
       return {
         id: comp.id,
-        name: comp.name || "CapOasis",
-        shortName: comp.short_name || comp.name || "CapOasis",
+        name: comp.name || "Teamstuff",
+        shortName: comp.short_name || comp.name || "Teamstuff",
         tenantDomain: comp.tenant_domain || null,
         brandColor: comp.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: comp.logo_url || null,
@@ -340,8 +340,8 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
     if (match) {
       return {
         id: match.id,
-        name: match.name || "CapOasis",
-        shortName: match.short_name || match.name || "CapOasis",
+        name: match.name || "Teamstuff",
+        shortName: match.short_name || match.name || "Teamstuff",
         tenantDomain: match.tenant_domain || null,
         brandColor: match.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: match.logo_url || null,
@@ -387,8 +387,8 @@ export async function fetchTenantBranding(tenantSlug: string): Promise<TenantBra
     if (data) {
       const brand: TenantBranding = {
         id: data.id,
-        name: data.name || "CapOasis",
-        shortName: data.short_name || data.name || "CapOasis",
+        name: data.name || "Teamstuff",
+        shortName: data.short_name || data.name || "Teamstuff",
         tenantDomain: data.tenant_domain || null,
         brandColor: data.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: data.logo_url || null,
@@ -491,8 +491,7 @@ export function getDynamicPageTitle(pageName?: string): string {
       const rawShortName = (brand?.shortName || brand?.name || "").trim();
       const isCustomCompany =
         rawShortName.length > 0 &&
-        rawShortName.toLowerCase() !== "teamstuff" &&
-        rawShortName.toLowerCase() !== "capoasis";
+        rawShortName.toLowerCase() !== "teamstuff";
 
       if (isCustomCompany) {
         return pageName ? `${rawShortName} | ${pageName}` : `${rawShortName} Intranet`;
@@ -524,8 +523,7 @@ export function applyBrowserWhiteLabel(
   const rawShortName = (brand?.shortName || brand?.name || "").trim();
   const isCustomCompany =
     rawShortName.length > 0 &&
-    rawShortName.toLowerCase() !== "teamstuff" &&
-    rawShortName.toLowerCase() !== "capoasis";
+    rawShortName.toLowerCase() !== "teamstuff";
 
   let title: string;
   if (isCustomCompany) {

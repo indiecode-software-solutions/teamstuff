@@ -27,7 +27,7 @@ export function ProfileExitSection({ profile, showToast }: ProfileExitSectionPro
   const [myExitRequest, setMyExitRequest] = useState<ExitRequest | null>(null);
   const [showInitiate, setShowInitiate] = useState(false);
   const [selectedReq, setSelectedReq] = useState<ExitRequest | null>(null);
-  const [companyName, setCompanyName] = useState("CapOasis");
+  const [companyName, setCompanyName] = useState("Teamstuff");
 
   const load = useCallback(async () => {
     if (!profile?.id) {

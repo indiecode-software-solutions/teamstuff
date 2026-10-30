@@ -1,4 +1,4 @@
-export type BrandMode = "teamstuff" | "capoasis";
+export type BrandMode = "teamstuff";
 
 export interface BrandConfig {
   brand: BrandMode;
@@ -15,26 +15,20 @@ export interface BrandConfig {
   metaDescription: string;
 }
 
-const NEUTRAL_FAVICON =
-  "data:image/svg+xml;utf8," +
-  encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><rect width="64" height="64" rx="14" fill="#18181B"/><text x="50%" y="54%" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="34" font-weight="600" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">C</text></svg>'
-  );
-
 export function getBrandConfig(): BrandConfig {
   return {
-    brand: "capoasis",
-    appName: "CapOasis Intranet",
-    shortName: "CapOasis",
+    brand: "teamstuff",
+    appName: "Teamstuff",
+    shortName: "Teamstuff",
     tagline: "Corporate Internal Operations & Intranet Portal",
-    companyName: "CapOasis",
-    favicon: NEUTRAL_FAVICON,
-    appleTouchIcon: NEUTRAL_FAVICON,
+    companyName: "Teamstuff",
+    favicon: "/teamstuff_icon_logo.png",
+    appleTouchIcon: "/teamstuff_icon_logo.png",
     logo: "/teamstuff_logo.png",
-    logoIcon: NEUTRAL_FAVICON,
+    logoIcon: "/teamstuff_icon_logo.png",
     showMarketingLanding: true,
     showPricing: true,
-    metaDescription: "CapOasis Corporate internal hub for team operations, attendance, tasks, and resources.",
+    metaDescription: "Teamstuff — secure internal hub for team operations, attendance, tasks, and resources.",
   };
 }
 

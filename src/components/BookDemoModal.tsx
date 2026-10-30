@@ -149,7 +149,7 @@ export function BookDemoModal({ open, onClose, defaultTeamSize = 30 }: BookDemoM
                 Book a free demo
               </h3>
               <p className="demo-modal-subtitle">
-                See CapOasis in action. Pick a time that works for you.
+                See Teamstuff in action. Pick a time that works for you.
               </p>
             </div>
 

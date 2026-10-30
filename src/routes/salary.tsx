@@ -1044,7 +1044,7 @@ function SalaryPage() {
                                   Authorized Signatory
                                 </div>
                                 <div className="payslip-footer-sign-for">
-                                  For {userInfo?.company || "CapOasis Inc."}
+                                  For {userInfo?.company || "Teamstuff Inc."}
                                 </div>
                               </div>
                             ) : (

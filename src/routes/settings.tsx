@@ -248,13 +248,13 @@ export function SettingsPageContent({
   const [newLocRadius, setNewLocRadius] = useState("100");
 
   // Company Details
-  const [companyName, setCompanyName] = useState("CapOasis");
+  const [companyName, setCompanyName] = useState("Teamstuff");
   const [companyShortName, setCompanyShortName] = useState("");
   const [companyLogo, setCompanyLogo] = useState<string | null>(null);
   const [logoDisplay, setLogoDisplay] = useState<CompanyLogoDisplay>("logo_and_name");
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const logoInputRef = useRef<HTMLInputElement | null>(null);
-  const [companyDomain, setCompanyDomain] = useState("capoasis.com");
+  const [companyDomain, setCompanyDomain] = useState("teamstuff.com");
   const [workStartTime, setWorkStartTime] = useState("09:30");
   const [workEndTime, setWorkEndTime] = useState("18:30");
   const [inductionEnabled, setInductionEnabled] = useState(true);
@@ -358,8 +358,8 @@ export function SettingsPageContent({
           .eq("id", targetCompanyId)
           .maybeSingle();
         if (comp) {
-          setCompanyName(comp.name || "CapOasis");
-          setCompanyDomain(comp.tenant_domain || "capoasis.com");
+          setCompanyName(comp.name || "Teamstuff");
+          setCompanyDomain(comp.tenant_domain || "teamstuff.com");
           setWorkStartTime(comp.default_work_start_time || "09:30");
           setWorkEndTime(comp.default_work_end_time || "18:30");
           setCompanyShortName(comp.short_name || comp.name || "");
@@ -450,7 +450,7 @@ export function SettingsPageContent({
           // Table is empty. Auto-create a default company tenant
           const { data: newCompany, error: compErr } = await supabase
             .from("companies")
-            .insert({ name: "CapOasis", tenant_domain: "capoasis.com" })
+            .insert({ name: "Teamstuff", tenant_domain: "teamstuff.com" })
             .select()
             .single();
 
@@ -458,7 +458,7 @@ export function SettingsPageContent({
           if (compErr) {
             const { data: retryCompany, error: retryErr } = await supabase
               .from("companies")
-              .insert({ name: "CapOasis" })
+              .insert({ name: "Teamstuff" })
               .select()
               .single();
             if (retryErr)

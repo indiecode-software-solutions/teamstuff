@@ -172,15 +172,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { title: "CapOasis Intranet" },
+        { title: "Teamstuff" },
         {
           name: "description",
-          content: "CapOasis Corporate Operations & Intranet Portal",
+          content: "Teamstuff Corporate Operations & Intranet Portal",
         },
-        { property: "og:title", content: "CapOasis Intranet" },
+        { property: "og:title", content: "Teamstuff" },
         {
           property: "og:description",
-          content: "CapOasis Corporate Operations & Intranet Portal",
+          content: "Teamstuff Corporate Operations & Intranet Portal",
         },
         { property: "og:type", content: "website" },
       ],
@@ -242,16 +242,16 @@ const instantBrandScript = `(function() {
     }
 
     var tenantName = brand ? (brand.shortName || brand.name || '').trim() : '';
-    var isCustom = tenantName && tenantName.toLowerCase() !== 'teamstuff' && tenantName.toLowerCase() !== 'capoasis';
+    var isCustom = tenantName && tenantName.toLowerCase() !== 'teamstuff';
     var displayBrandName = isCustom ? tenantName : '';
 
     if (displayBrandName) {
       document.title = displayBrandName + ' Intranet';
     } else {
-      document.title = 'CapOasis Intranet';
+      document.title = 'Teamstuff';
     }
 
-    // Intercept document.title assignments so route hydration cannot revert to "Teamstuff"
+    // Intercept document.title assignments so route hydration cannot revert custom tenant titles
     try {
       var proto = Document.prototype;
       var descriptor = Object.getOwnPropertyDescriptor(proto, 'title');
@@ -270,11 +270,6 @@ const instantBrandScript = `(function() {
               if (displayBrandName) {
                 newVal = newVal.replace(/Teamstuff\s*\|\s*/gi, displayBrandName + ' | ');
                 newVal = newVal.replace(/Teamstuff/gi, displayBrandName);
-                newVal = newVal.replace(/CapOasis\s*\|\s*/gi, displayBrandName + ' | ');
-                newVal = newVal.replace(/CapOasis/gi, displayBrandName);
-              } else {
-                newVal = newVal.replace(/Teamstuff\s*\|\s*/gi, '');
-                newVal = newVal.replace(/Teamstuff/gi, 'CapOasis');
               }
             }
             originalSet.call(document, newVal);
@@ -1016,13 +1011,13 @@ function RootComponent() {
               ) : (
                 <img
                   src="/teamstuff_icon_logo.png"
-                  alt="CapOasis"
+                  alt="Teamstuff"
                   className="onboard-sidebar-logo"
                 />
               )}
               <div>
                 <h2 className="onboard-sidebar-title">
-                  {branding?.shortName || branding?.name || "CapOasis"}
+                  {branding?.shortName || branding?.name || "Teamstuff"}
                 </h2>
                 <p className="onboard-sidebar-tag">Employee Onboarding</p>
               </div>

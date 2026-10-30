@@ -168,7 +168,7 @@ export const adminOnboardEmployee = createServerFn({ method: "POST" })
       const { url: baseUrl, displayUrl: baseDisplayUrl } = resolveTenantPortalUrl(resolvedTenant);
       const portalUrl = `${baseUrl.replace(/\/+$/, "")}/login`;
       const portalDisplayUrl = `${baseDisplayUrl.replace(/\/+$/, "")}/login`;
-      const appName = companyName || comp?.name || "CapOasis";
+      const appName = companyName || comp?.name || "Teamstuff";
       const brandColor = comp?.brand_color || "#d97706";
 
       // 4. Send login credentials via email (Resend)
@@ -176,7 +176,7 @@ export const adminOnboardEmployee = createServerFn({ method: "POST" })
       const resendKey = process.env["RESEND_API"];
       if (resendKey) {
         try {
-          const from = process.env["EMAIL_FROM"] || "CapOasis Intranet <noreply@capoasis.com>";
+          const from = process.env["EMAIL_FROM"] || "Teamstuff <noreply@teamstuff.com>";
           const html = `<!DOCTYPE html>
 <html>
   <body style="margin:0;padding:0;background:#f6f6f6;font-family:Arial,Helvetica,sans-serif;">

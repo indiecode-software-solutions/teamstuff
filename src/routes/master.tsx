@@ -674,9 +674,9 @@ function MasterPage() {
         {/* Sidebar Header */}
         <div className="master-sidebar-header">
           <div className="master-sidebar-brand">
-            <img src="/teamstuff_icon_logo.png" alt="CapOasis" className="master-sidebar-logo" />
+            <img src="/teamstuff_icon_logo.png" alt="Teamstuff" className="master-sidebar-logo" />
             <div>
-              <h2 className="master-sidebar-title">CapOasis</h2>
+              <h2 className="master-sidebar-title">Teamstuff</h2>
               <p className="master-sidebar-tag">Master Console</p>
             </div>
           </div>
@@ -1067,7 +1067,7 @@ function MasterPage() {
                                             {c.tenant_domain}
                                           </>
                                         ) : (
-                                          `${c.tenant_domain}.capoasis.com`
+                                          `${c.tenant_domain}.teamstuff.com`
                                         )
                                       ) : (
                                         "default"
@@ -1219,7 +1219,7 @@ function MasterPage() {
                             </span>
                           ) : (
                             <span>
-                              🏢 <b>Subdomain:</b> https://{form.tenantDomain}.capoasis.com
+                              🏢 <b>Subdomain:</b> https://{form.tenantDomain}.teamstuff.com
                             </span>
                           )
                         ) : (
@@ -1474,7 +1474,7 @@ function MasterPage() {
                       </span>
                     ) : (
                       <span>
-                        🏢 <b>Subdomain:</b> https://{form.tenantDomain}.capoasis.com
+                        🏢 <b>Subdomain:</b> https://{form.tenantDomain}.teamstuff.com
                       </span>
                     )
                   ) : (
