@@ -14,6 +14,8 @@ import {
   checkUserCanCreatePoll,
   deleteForumPost,
   ForumPost,
+  FORUM_CATEGORIES,
+  ForumCategory,
 } from "../lib/forum";
 import { sanitizeProfilePhoto } from "../lib/profile-photo";
 import { toast } from "sonner";
@@ -82,7 +84,7 @@ function InternalForumPage() {
   const [isComposerExpanded, setIsComposerExpanded] = useState(false);
   const [postTitle, setPostTitle] = useState("");
   const [postBody, setPostBody] = useState("");
-  const [postCategory, setPostCategory] = useState<string>("Updates");
+  const [postCategory, setPostCategory] = useState<ForumCategory>("General");
   const [selectedImageBase64, setSelectedImageBase64] = useState<string | null>(null);
 
   // Poll modal state
@@ -90,7 +92,7 @@ function InternalForumPage() {
   const [canCreatePoll, setCanCreatePoll] = useState(false);
   const [pollQuestion, setPollQuestion] = useState("");
   const [pollDescription, setPollDescription] = useState("");
-  const [pollCategory, setPollCategory] = useState<string>("Discussions");
+  const [pollCategory, setPollCategory] = useState<ForumCategory>("General");
   const [pollOptions, setPollOptions] = useState<string[]>(["", ""]);
 
   // Feed threads state
@@ -268,13 +270,14 @@ function InternalForumPage() {
         authorId: userProfile.id,
         title: postTitle.trim(),
         content: postBody.trim(),
-        category: postCategory as any,
+        category: postCategory,
         imageUrl: selectedImageBase64 || undefined,
       });
 
       if (ok) {
         setPostTitle("");
         setPostBody("");
+        setPostCategory("General");
         setSelectedImageBase64(null);
         setIsComposerExpanded(false);
         await fetchInitialData();
@@ -304,13 +307,14 @@ function InternalForumPage() {
         authorId: userProfile.id,
         question: pollQuestion.trim(),
         description: pollDescription.trim() || undefined,
-        category: pollCategory as any,
+        category: pollCategory,
         options: validOptions,
       });
 
       if (created?.success) {
         setPollQuestion("");
         setPollDescription("");
+        setPollCategory("General");
         setPollOptions(["", ""]);
         setIsPollModalOpen(false);
         await fetchInitialData();
@@ -478,6 +482,31 @@ function InternalForumPage() {
             {/* Composer Action Buttons Bar */}
             <div className="forum-composer-bottom-bar">
               <div className="forum-composer-tools-group">
+                {/* Category Selector */}
+                <select
+                  value={postCategory}
+                  onChange={(e) => setPostCategory(e.target.value as ForumCategory)}
+                  aria-label="Post category"
+                  style={{
+                    height: 30,
+                    padding: "0 8px",
+                    fontSize: 12,
+                    fontWeight: 500,
+                    borderRadius: 6,
+                    border: "1px solid #e4e4e7",
+                    background: "#f4f4f5",
+                    color: "#27272a",
+                    cursor: "pointer",
+                    outline: "none",
+                  }}
+                >
+                  {FORUM_CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+
                 {/* Photo Upload */}
                 <input
                   type="file"
@@ -857,6 +886,23 @@ function InternalForumPage() {
                 className="form-input"
                 style={{ fontWeight: 600, fontSize: 14 }}
               />
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <label style={{ fontSize: 12.5, fontWeight: 500, color: "#52525b" }}>Category</label>
+                <select
+                  value={pollCategory}
+                  onChange={(e) => setPollCategory(e.target.value as ForumCategory)}
+                  disabled={isPublishing}
+                  className="form-input"
+                  style={{ height: 34, fontSize: 13, background: "#fff" }}
+                >
+                  {FORUM_CATEGORIES.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <textarea
                 placeholder="Add optional description or context..."

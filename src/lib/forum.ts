@@ -41,13 +41,30 @@ export interface ForumPoll {
   createdAt: string;
 }
 
+export const FORUM_CATEGORIES = [
+  "General",
+  "Announcements",
+  "Tech",
+  "HR",
+  "Events",
+] as const;
+
+export type ForumCategory = (typeof FORUM_CATEGORIES)[number];
+
+export function normalizeCategory(category?: string | null): ForumCategory {
+  if (!category) return "General";
+  const trimmed = category.trim().toLowerCase();
+  const match = FORUM_CATEGORIES.find((c) => c.toLowerCase() === trimmed);
+  return match || "General";
+}
+
 export interface ForumPost {
   id: string;
   companyId: string;
   authorId: string;
   title: string;
   content: string;
-  category: "Announcements" | "General" | "Tech" | "HR" | "Events";
+  category: ForumCategory;
   imageUrl?: string;
   createdAt: string;
   updatedAt: string;
@@ -259,7 +276,7 @@ export async function createForumPost(post: {
   authorId?: string;
   title: string;
   content: string;
-  category: "Announcements" | "General" | "Tech" | "HR" | "Events";
+  category?: ForumCategory | string;
   imageUrl?: string;
   isPinned?: boolean;
 }): Promise<boolean> {
@@ -273,13 +290,15 @@ export async function createForumPost(post: {
       throw new Error("You must be logged in to create a post.");
     }
 
+    const safeCategory = normalizeCategory(post.category);
+
     const { error } = await supabase.from("forum_posts").insert([
       {
         company_id: post.companyId,
         author_id: authorId,
         title: post.title,
         content: post.content,
-        category: post.category,
+        category: safeCategory,
         image_url: post.imageUrl || null,
         is_pinned: post.isPinned || false,
       },
@@ -288,21 +307,21 @@ export async function createForumPost(post: {
     if (error) throw error;
 
     // Announcements are broadcast to every member of the company.
-    if (post.category === "Announcements") {
+    if (safeCategory === "Announcements") {
       try {
-        const authorName = await getProfileName(post.authorId);
+        const authorName = await getProfileName(authorId);
         const { data: members } = await supabase
           .from("profiles")
           .select("id")
           .eq("company_id", post.companyId);
         const targets = (members || [])
           .map((m: any) => m.id)
-          .filter((id: string) => id !== post.authorId);
+          .filter((id: string) => id !== authorId);
         if (targets.length > 0) {
           await supabase.from("notifications").insert(
             targets.map((userId: string) => ({
               user_id: userId,
-              actor_id: post.authorId,
+              actor_id: authorId,
               type: "announcement",
               title: "Company announcement",
               description: `${authorName} posted "${post.title}".`,
@@ -428,7 +447,7 @@ export async function createForumPoll(poll: {
   question: string;
   description?: string;
   options: string[];
-  category: "Announcements" | "General" | "Tech" | "HR" | "Events";
+  category?: ForumCategory | string;
 }): Promise<{ success: boolean; error?: string }> {
   try {
     let authorId = poll.authorId;
@@ -444,6 +463,8 @@ export async function createForumPoll(poll: {
     if (validOptions.length < 2) {
       return { success: false, error: "A poll must have at least 2 options." };
     }
+
+    const safeCategory = normalizeCategory(poll.category);
 
     const optionsJson = validOptions.map((text, idx) => ({
       id: `opt-${idx + 1}-${Math.random().toString(36).substring(2, 7)}`,
@@ -475,10 +496,10 @@ export async function createForumPoll(poll: {
     const { error: postError } = await supabase.from("forum_posts").insert([
       {
         company_id: poll.companyId,
-        author_id: poll.authorId,
+        author_id: authorId,
         title: poll.question.trim(),
         content: poll.description?.trim() || `Poll: ${poll.question.trim()}`,
-        category: poll.category,
+        category: safeCategory,
         poll_id: pollRow.id,
         post_type: "poll",
       },
@@ -487,21 +508,21 @@ export async function createForumPoll(poll: {
     if (postError) throw postError;
 
     // If category is Announcements, broadcast notification
-    if (poll.category === "Announcements") {
+    if (safeCategory === "Announcements") {
       try {
-        const authorName = await getProfileName(poll.authorId);
+        const authorName = await getProfileName(authorId);
         const { data: members } = await supabase
           .from("profiles")
           .select("id")
           .eq("company_id", poll.companyId);
         const targets = (members || [])
           .map((m: any) => m.id)
-          .filter((id: string) => id !== poll.authorId);
+          .filter((id: string) => id !== authorId);
         if (targets.length > 0) {
           await supabase.from("notifications").insert(
             targets.map((userId: string) => ({
               user_id: userId,
-              actor_id: poll.authorId,
+              actor_id: authorId,
               type: "announcement",
               title: "New company poll",
               description: `${authorName} posted a poll: "${poll.question.trim()}".`,
