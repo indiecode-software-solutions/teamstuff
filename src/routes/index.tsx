@@ -430,43 +430,43 @@ function LandingPage() {
             <h1 className="landing-hero-h1">
               <span style={{ display: "inline-block" }}>
                 <span className="hero-word-wrap" style={{ animationDelay: "0.12s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "0s", color: "#09090B" }}>Work</span>
+                  <span className="hero-float-inner" style={{ animationDelay: "0s", color: "#09090B", fontWeight: 600 }}>Work</span>
                 </span>
                 <span className="hero-word-wrap" style={{ animationDelay: "0.20s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "0.35s" }}>has</span>
+                  <span className="hero-float-inner" style={{ animationDelay: "0.35s", color: "#71717A" }}>has</span>
                 </span>
                 <span className="hero-word-wrap" style={{ animationDelay: "0.28s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "0.7s" }}>a</span>
+                  <span className="hero-float-inner" style={{ animationDelay: "0.7s", color: "#71717A" }}>a</span>
                 </span>
                 <span className="hero-word-wrap" style={{ animationDelay: "0.36s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "1.05s" }}>lot</span>
+                  <span className="hero-float-inner" style={{ animationDelay: "1.05s", color: "#71717A" }}>lot</span>
                 </span>
                 <span className="hero-word-wrap" style={{ animationDelay: "0.44s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "1.4s" }}>of</span>
+                  <span className="hero-float-inner" style={{ animationDelay: "1.4s", color: "#71717A" }}>of</span>
                 </span>
                 <span className="hero-word-wrap" style={{ animationDelay: "0.52s" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "1.75s", color: "#71717A", fontWeight: 500 }}>stuff.</span>
+                  <span className="hero-float-inner" style={{ animationDelay: "1.75s", color: "#71717A" }}>stuff.</span>
                 </span>
               </span>
               <br />
               <span style={{ display: "inline-block" }}>
                 <span className="hero-word-wrap" style={{ animationDelay: "0.62s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "2.1s" }}>We</span>
+                  <span className="hero-float-inner" style={{ animationDelay: "2.1s", color: "#71717A" }}>We</span>
                 </span>
                 <span className="hero-word-wrap" style={{ animationDelay: "0.70s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "2.45s" }}>put</span>
+                  <span className="hero-float-inner" style={{ animationDelay: "2.45s", color: "#71717A" }}>put</span>
                 </span>
                 <span className="hero-word-wrap" style={{ animationDelay: "0.78s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "2.8s" }}>it</span>
+                  <span className="hero-float-inner" style={{ animationDelay: "2.8s", color: "#71717A" }}>it</span>
                 </span>
                 <span className="hero-word-wrap" style={{ animationDelay: "0.86s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "3.15s" }}>in</span>
+                  <span className="hero-float-inner" style={{ animationDelay: "3.15s", color: "#71717A" }}>in</span>
                 </span>
                 <span className="hero-word-wrap" style={{ animationDelay: "0.94s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "3.5s" }}>one</span>
+                  <span className="hero-float-inner" style={{ animationDelay: "3.5s", color: "#71717A" }}>one</span>
                 </span>
                 <span className="hero-word-wrap" style={{ animationDelay: "1.02s" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "3.85s", color: "#09090B" }}>place.</span>
+                  <span className="hero-float-inner" style={{ animationDelay: "3.85s", color: "#09090B", fontWeight: 600 }}>place.</span>
                 </span>
               </span>
             </h1>
