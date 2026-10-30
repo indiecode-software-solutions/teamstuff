@@ -406,42 +406,24 @@ function InductionPage() {
     if (block.type === "team") {
       return (
         <div key={key} className="induction-team-container">
-          <h4 className="induction-team-title">
-            {block.caption || "Meet the Team & Key Contacts"}
-          </h4>
+          <div className="induction-team-header-row">
+            <h4 className="induction-team-title">
+              {block.caption || "Meet the Team & Key Contacts"}
+            </h4>
+            <span className="induction-team-count-badge">
+              {teamMembers.length} {teamMembers.length === 1 ? "member" : "members"}
+            </span>
+          </div>
 
           {teamMembers.length === 0 ? (
-            <div style={{ padding: "20px", border: "1px dashed var(--color-border)", borderRadius: "10px", textAlign: "center", fontSize: "12.5px", color: "var(--color-text-muted)" }}>
+            <div style={{ padding: "24px", border: "1px dashed var(--color-border)", borderRadius: "10px", textAlign: "center", fontSize: "12.5px", color: "var(--color-text-muted)" }}>
               No active team profiles found yet.
             </div>
           ) : (
             <div className="induction-team-grid">
-              {teamMembers.map((member) => {
-                const initials = getInitials(member.name || "Colleague");
-                const roleTitle = member.job_title || member.role || "Team Member";
-
-                return (
-                  <div key={member.id} className="induction-team-card">
-                    <div className="induction-team-header">
-                      <div className="induction-team-avatar">
-                        {member.profile_photo ? (
-                          <img src={member.profile_photo} alt={member.name} />
-                        ) : (
-                          initials
-                        )}
-                      </div>
-                      <div style={{ minWidth: 0, flex: 1 }}>
-                        <p className="induction-team-name">{member.name}</p>
-                        <p className="induction-team-role">{roleTitle}</p>
-                      </div>
-                    </div>
-
-                    {member.notes && (
-                      <p className="induction-team-notes">{member.notes}</p>
-                    )}
-                  </div>
-                );
-              })}
+              {teamMembers.map((member) => (
+                <InductionTeamMemberCard key={member.id} member={member} />
+              ))}
             </div>
           )}
         </div>
@@ -808,3 +790,54 @@ function InductionPage() {
     </div>
   );
 }
+
+function InductionTeamMemberCard({ member }: { member: any }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+  const initials = getInitials(member.name || "Colleague");
+  const roleTitle = member.job_title || member.role || "Team Member";
+  const notes = (member.notes || "").trim();
+  const isLong = notes.length > 140;
+
+  return (
+    <div className="induction-team-card">
+      <div className="induction-team-header">
+        <div className="induction-team-avatar">
+          {member.profile_photo ? (
+            <img src={member.profile_photo} alt={member.name} />
+          ) : (
+            initials
+          )}
+        </div>
+        <div className="induction-team-info">
+          <p className="induction-team-name">{member.name}</p>
+          <p className="induction-team-role">{roleTitle}</p>
+          {member.department && (
+            <span className="induction-team-dept">{member.department}</span>
+          )}
+        </div>
+      </div>
+
+      {notes && (
+        <div className="induction-team-notes-wrap">
+          <p
+            className={`induction-team-notes ${
+              !isExpanded && isLong ? "is-clamped" : ""
+            }`}
+          >
+            {notes}
+          </p>
+          {isLong && (
+            <button
+              type="button"
+              onClick={() => setIsExpanded((prev) => !prev)}
+              className="induction-team-readmore-btn"
+            >
+              {isExpanded ? "Show less" : "Read full bio"}
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
