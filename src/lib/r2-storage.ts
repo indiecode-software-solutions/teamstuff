@@ -20,7 +20,7 @@ const R2_ENDPOINT = getEnvVar("VITE_R2_ENDPOINT");
 const R2_ACCESS_KEY_ID = getEnvVar("VITE_R2_ACCESS_KEY_ID");
 const R2_SECRET_ACCESS_KEY = getEnvVar("VITE_R2_SECRET_ACCESS_KEY");
 export const R2_BUCKET_NAME = getEnvVar("VITE_R2_BUCKET_NAME", "teamstuff");
-export const R2_PUBLIC_URL = getEnvVar("VITE_R2_PUBLIC_URL", "");
+export const R2_PUBLIC_URL = getEnvVar("VITE_R2_PUBLIC_URL", "https://pub-aeb807502f3742f3a65b5548424606e3.r2.dev");
 
 export const r2Client = new S3Client({
   region: "auto",
@@ -179,14 +179,9 @@ export async function deleteR2Object(key: string): Promise<{ success: boolean; e
  * Otherwise, generates an authenticated presigned URL (1 year expiration) as seamless fallback.
  */
 export function getR2PublicUrl(key: string): string {
-  if (R2_PUBLIC_URL) {
-    const base = R2_PUBLIC_URL.replace(/\/+$/, "");
-    const cleanKey = key.replace(/^\/+/, "");
-    return `${base}/${cleanKey}`;
-  }
-  // If no public domain is connected, return formatted endpoint URL
-  const endpointBase = R2_ENDPOINT.replace(/\/+$/, "");
-  return `${endpointBase}/${R2_BUCKET_NAME}/${key}`;
+  const base = (R2_PUBLIC_URL || "https://pub-aeb807502f3742f3a65b5548424606e3.r2.dev").replace(/\/+$/, "");
+  const cleanKey = key.replace(/^\/+/, "");
+  return `${base}/${cleanKey}`;
 }
 
 /**

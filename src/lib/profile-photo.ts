@@ -30,6 +30,12 @@ export function isUploadedProfileImage(url?: string | null): boolean {
 export function sanitizeProfilePhoto(url?: string | null): string | null {
   if (!url || typeof url !== "string") return null;
   if (url.includes("dicebear") || url.includes("api.dicebear.com")) return null;
+  if (url.includes(".r2.cloudflarestorage.com/")) {
+    const match = url.match(/(?:companies\/[^\s?#]+|system\/[^\s?#]+)/);
+    if (match && match[0]) {
+      return `https://pub-aeb807502f3742f3a65b5548424606e3.r2.dev/${match[0]}`;
+    }
+  }
   return url;
 }
 

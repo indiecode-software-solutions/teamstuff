@@ -11,6 +11,7 @@ import {
 } from "@tanstack/react-router";
 import React, { useEffect, type ReactNode } from "react";
 import { supabase } from "../lib/supabase";
+import { isMasterAdmin } from "../lib/master";
 import {
   ImagePlus as UploadPhotoIcon,
   X as CloseIcon,
