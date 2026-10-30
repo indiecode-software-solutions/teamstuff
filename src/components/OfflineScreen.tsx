@@ -17,7 +17,7 @@ export function OfflineScreen({ onRetry, message }: OfflineScreenProps) {
         No Internet Connection
       </h2>
       <p >
-        {message || "You are currently offline. Indiecode HRMS requires an active internet connection to load and sync data."}
+        {message || "You are currently offline. indiecode HRMS requires an active internet connection to load and sync data."}
       </p>
       <button
         type="button"

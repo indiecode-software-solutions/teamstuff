@@ -67,7 +67,7 @@ export function getCachedCompanyBranding(): CompanyBranding | null {
 
 /**
  * Load the signed-in user's company branding (name, short name, logo URL and
- * the sidebar display preference). Falls back to a neutral Indiecode brand.
+ * the sidebar display preference). Falls back to a neutral indiecode brand.
  */
 export async function getCompanyBranding(): Promise<CompanyBranding | null> {
   let targetCompanyId: string | null = null;
@@ -118,8 +118,8 @@ export async function getCompanyBranding(): Promise<CompanyBranding | null> {
 
     const branding: CompanyBranding | null = comp
       ? {
-          name: comp.name || "Indiecode HRMS",
-          shortName: comp.short_name || comp.name || "Indiecode",
+          name: comp.name || "indiecode HRMS",
+          shortName: comp.short_name || comp.name || "indiecode",
           logoUrl: comp.logo_url || null,
           logoDisplay: (comp.logo_display as CompanyLogoDisplay) || null,
           brandColor: comp.brand_color || "#059669",
@@ -149,8 +149,8 @@ export async function getCompanyBranding(): Promise<CompanyBranding | null> {
           .maybeSingle();
         if (fallbackComp) {
           const branding: CompanyBranding = {
-            name: fallbackComp.name || "Indiecode HRMS",
-            shortName: fallbackComp.short_name || fallbackComp.name || "Indiecode",
+            name: fallbackComp.name || "indiecode HRMS",
+            shortName: fallbackComp.short_name || fallbackComp.name || "indiecode",
             logoUrl: fallbackComp.logo_url || null,
             logoDisplay: (fallbackComp.logo_display as CompanyLogoDisplay) || null,
             brandColor: fallbackComp.brand_color || "#059669",

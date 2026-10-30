@@ -756,7 +756,7 @@ export default function Layout({
                   />
                 ) : (
                   <span className="mobile-header-title">
-                    {branding?.shortName || "Indiecode"}
+                    {branding?.shortName || "indiecode"}
                   </span>
                 )
               ) : activeMobileTab === "AI Workplace" || location.pathname.startsWith("/ai-workplace") ? (
@@ -1315,7 +1315,7 @@ export default function Layout({
                         if ("url" in result) {
                           const a = document.createElement("a");
                           a.href = result.url;
-                          a.download = "Indiecode-HRMS.apk";
+                          a.download = "indiecode-HRMS.apk";
                           document.body.appendChild(a);
                           a.click();
                           document.body.removeChild(a);
@@ -1401,13 +1401,13 @@ export default function Layout({
                       />
                       {branding.logoDisplay === "logo_only" ? null : (
                         <span className="app-brand-title">
-                          {branding?.shortName || "Indiecode"}
+                          {branding?.shortName || "indiecode"}
                         </span>
                       )}
                     </>
                   ) : (
                     <span className="app-brand-title">
-                      {branding?.shortName || "Indiecode"}
+                      {branding?.shortName || "indiecode"}
                     </span>
                   )}
                 </button>

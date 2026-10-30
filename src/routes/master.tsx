@@ -675,7 +675,7 @@ function MasterPage() {
         <div className="master-sidebar-header">
           <div className="master-sidebar-brand">
             <div>
-              <h2 className="master-sidebar-title">Indiecode</h2>
+              <h2 className="master-sidebar-title">indiecode</h2>
               <p className="master-sidebar-tag">Master Console</p>
             </div>
           </div>

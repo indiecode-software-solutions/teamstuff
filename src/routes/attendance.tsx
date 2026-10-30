@@ -661,7 +661,7 @@ function AttendancePage() {
               setIsOnline(navigator.onLine);
               if (navigator.onLine) initAttendance();
             }}
-            message="You are currently offline. Indiecode HRMS requires an active internet connection to load and log your attendance."
+            message="You are currently offline. indiecode HRMS requires an active internet connection to load and log your attendance."
           />
         ) : (
           <>

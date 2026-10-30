@@ -2,7 +2,7 @@ import type { CapacitorConfig } from "@capacitor/cli";
 
 const config: CapacitorConfig = {
   appId: "com.corporate.intranet",
-  appName: "Indiecode HRMS",
+  appName: "indiecode HRMS",
   webDir: "dist",
   server: {
     // Point the Android WebView to the live Cloudflare Workers deployment.

@@ -46,7 +46,7 @@ export const Route = createFileRoute("/pricing")({
 function BrandLogo() {
   return (
     <a href="/" className="pricing-brand-link">
-      <span className="pricing-brand-text">Indiecode HRMS</span>
+      <span className="pricing-brand-text">indiecode HRMS</span>
     </a>
   );
 }
@@ -376,7 +376,7 @@ function PricingPage() {
                       <tr>
                         <th style={{ width: "36%" }}>Features & Capabilities</th>
                         <th style={{ width: "30%" }}>Traditional HRMS</th>
-                        <th className="th-teamstuff">Indiecode HRMS</th>
+                        <th className="th-teamstuff">indiecode HRMS</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -633,7 +633,7 @@ function PricingPage() {
                 Frequently Asked Questions
               </h2>
               <p className="pricing-faq-subtitle">
-                Clear answers to common questions about Indiecode HRMS pricing.
+                Clear answers to common questions about indiecode HRMS pricing.
               </p>
             </div>
           </RevealOnScroll>
@@ -707,7 +707,7 @@ function PricingPage() {
         <div className="pricing-footer-content">
           <BrandLogo />
           <p className="pricing-footer-copy">
-            © 2026 Indiecode Software Solutions. All rights reserved.
+            © 2026 indiecode. All rights reserved.
           </p>
         </div>
       </footer>

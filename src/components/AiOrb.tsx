@@ -21,7 +21,7 @@ const INITIAL_MESSAGES: Message[] = [
   {
     id: "welcome-1",
     sender: "assistant",
-    text: "Hello! I'm your Indiecode Copilot. How can I assist you with your tasks, HR policies, files, or approvals today?",
+    text: "Hello! I'm your indiecode Copilot. How can I assist you with your tasks, HR policies, files, or approvals today?",
     timestamp: "Just now",
   },
 ];
@@ -219,13 +219,13 @@ export const AiOrb: React.FC<AiOrbProps> = ({
           </label>
 
           {/* Floating Chat Window */}
-          <div className="container-chat-ia" role="dialog" aria-label="Indiecode Copilot">
+          <div className="container-chat-ia" role="dialog" aria-label="indiecode Copilot">
             {/* Header */}
             <div className="container-title">
               <div className="ai-copilot-title-left">
                 <Bot size={15} />
                 <p className="text-title">
-                  <span>Indiecode</span>
+                  <span>indiecode</span>
                   <span>Copilot</span>
                 </p>
                 <span className="ai-copilot-status-dot" title="Online" />

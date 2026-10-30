@@ -74,7 +74,7 @@ export const Route = createFileRoute("/")({
 function BrandLogo() {
   return (
     <a href="/" className="landing-brand-link">
-      <span className="landing-brand-text">Indiecode HRMS</span>
+      <span className="landing-brand-text">indiecode HRMS</span>
     </a>
   );
 }
@@ -120,7 +120,7 @@ function VerticalTextTicker() {
 
       {/* Brand suffix */}
       <span className="landing-ticker-brand-text">
-        Indiecode HRMS.
+        indiecode HRMS.
       </span>
     </div>
   );
@@ -686,7 +686,7 @@ function LandingPage() {
           <RevealOnScroll direction="up" distance={25}>
             <div className="landing-section-header">
               <h3 className="landing-section-title">
-                All features included in Indiecode HRMS
+                All features included in indiecode HRMS
               </h3>
               <p className="landing-section-subtitle">
                 The complete set of workspace tools available out of the box.
@@ -775,7 +775,7 @@ function LandingPage() {
             </h2>
 
             <p className="landing-bottom-cta-subtitle">
-              Join teams using Indiecode HRMS to bring attendance, payroll, tasks, files and discussions into one unified workspace.
+              Join teams using indiecode HRMS to bring attendance, payroll, tasks, files and discussions into one unified workspace.
             </p>
 
             <div className="landing-bottom-cta-actions">
@@ -807,7 +807,7 @@ function LandingPage() {
             <div>
               <BrandLogo />
               <p className="landing-footer-brand-desc">
-                Indiecode connects your people, tasks, and information in one clean place.
+                indiecode connects your people, tasks, and information in one clean place.
               </p>
 
               <div className="landing-footer-socials">
@@ -922,7 +922,7 @@ function LandingPage() {
           {/* Bottom Copyright Bar */}
           <div className="landing-footer-bottom">
             <p className="landing-copyright-text">
-              © 2026 Indiecode Software Solutions. All rights reserved.
+              © 2026 indiecode. All rights reserved.
             </p>
           </div>
         </div>

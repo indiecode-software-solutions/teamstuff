@@ -172,15 +172,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { title: "Indiecode HRMS" },
+        { title: "indiecode HRMS" },
         {
           name: "description",
-          content: "Indiecode HRMS — Corporate Operations & Workforce Management Platform",
+          content: "indiecode HRMS — Corporate Operations & Workforce Management Platform",
         },
-        { property: "og:title", content: "Indiecode HRMS" },
+        { property: "og:title", content: "indiecode HRMS" },
         {
           property: "og:description",
-          content: "Indiecode HRMS — Corporate Operations & Workforce Management Platform",
+          content: "indiecode HRMS — Corporate Operations & Workforce Management Platform",
         },
         { property: "og:type", content: "website" },
       ],
@@ -248,7 +248,7 @@ const instantBrandScript = `(function() {
     if (displayBrandName) {
       document.title = displayBrandName + ' HRMS';
     } else {
-      document.title = 'Indiecode HRMS';
+      document.title = 'indiecode HRMS';
     }
 
     // Intercept document.title assignments so route hydration cannot revert custom tenant titles
@@ -268,7 +268,7 @@ const instantBrandScript = `(function() {
             var newVal = val;
             if (typeof newVal === 'string') {
               if (displayBrandName) {
-                newVal = newVal.replace(/Indiecode\s*\|\s*/gi, displayBrandName + ' | ');
+                newVal = newVal.replace(/indiecode\s*\|\s*/gi, displayBrandName + ' | ');
                 newVal = newVal.replace(/Teamstuff\s*\|\s*/gi, displayBrandName + ' | ');
                 newVal = newVal.replace(/Teamstuff/gi, displayBrandName);
               }
@@ -1012,7 +1012,7 @@ function RootComponent() {
               ) : null}
               <div>
                 <h2 className="onboard-sidebar-title">
-                  {branding?.shortName || branding?.name || "Indiecode"}
+                  {branding?.shortName || branding?.name || "indiecode"}
                 </h2>
                 <p className="onboard-sidebar-tag">Employee Onboarding</p>
               </div>

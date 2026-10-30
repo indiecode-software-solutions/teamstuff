@@ -257,8 +257,8 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
       if (!data) return null;
       return {
         id: data.id,
-        name: data.name || "Indiecode HRMS",
-        shortName: data.short_name || data.name || "Indiecode",
+        name: data.name || "indiecode HRMS",
+        shortName: data.short_name || data.name || "indiecode",
         tenantDomain: data.tenant_domain || null,
         brandColor: data.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: data.logo_url || null,
@@ -292,8 +292,8 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
     if (comp) {
       return {
         id: comp.id,
-        name: comp.name || "Indiecode HRMS",
-        shortName: comp.short_name || comp.name || "Indiecode",
+        name: comp.name || "indiecode HRMS",
+        shortName: comp.short_name || comp.name || "indiecode",
         tenantDomain: comp.tenant_domain || null,
         brandColor: comp.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: comp.logo_url || null,
@@ -338,8 +338,8 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
     if (match) {
       return {
         id: match.id,
-        name: match.name || "Indiecode HRMS",
-        shortName: match.short_name || match.name || "Indiecode",
+        name: match.name || "indiecode HRMS",
+        shortName: match.short_name || match.name || "indiecode",
         tenantDomain: match.tenant_domain || null,
         brandColor: match.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: match.logo_url || null,
@@ -385,8 +385,8 @@ export async function fetchTenantBranding(tenantSlug: string): Promise<TenantBra
     if (data) {
       const brand: TenantBranding = {
         id: data.id,
-        name: data.name || "Indiecode HRMS",
-        shortName: data.short_name || data.name || "Indiecode",
+        name: data.name || "indiecode HRMS",
+        shortName: data.short_name || data.name || "indiecode",
         tenantDomain: data.tenant_domain || null,
         brandColor: data.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: data.logo_url || null,
@@ -500,7 +500,7 @@ export function getDynamicPageTitle(pageName?: string): string {
       // Fallback below
     }
   }
-  return pageName ? `${pageName} | Indiecode HRMS` : "Indiecode HRMS";
+  return pageName ? `${pageName} | indiecode HRMS` : "indiecode HRMS";
 }
 
 /**
@@ -531,9 +531,9 @@ export function applyBrowserWhiteLabel(
   if (isCustomCompany) {
     title = pageTitle ? `${rawShortName} | ${pageTitle}` : `${rawShortName} HRMS`;
   } else if (pageTitle) {
-    title = `${pageTitle} | Indiecode HRMS`;
+    title = `${pageTitle} | indiecode HRMS`;
   } else {
-    title = "Indiecode HRMS";
+    title = "indiecode HRMS";
   }
 
   let favicon: string;

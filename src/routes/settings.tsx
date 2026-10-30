@@ -248,7 +248,7 @@ export function SettingsPageContent({
   const [newLocRadius, setNewLocRadius] = useState("100");
 
   // Company Details
-  const [companyName, setCompanyName] = useState("Indiecode");
+  const [companyName, setCompanyName] = useState("indiecode");
   const [companyShortName, setCompanyShortName] = useState("");
   const [companyLogo, setCompanyLogo] = useState<string | null>(null);
   const [logoDisplay, setLogoDisplay] = useState<CompanyLogoDisplay>("logo_and_name");
@@ -358,7 +358,7 @@ export function SettingsPageContent({
           .eq("id", targetCompanyId)
           .maybeSingle();
         if (comp) {
-          setCompanyName(comp.name || "Indiecode");
+          setCompanyName(comp.name || "indiecode");
           setCompanyDomain(comp.tenant_domain || "hrms.indiecode.in");
           setWorkStartTime(comp.default_work_start_time || "09:30");
           setWorkEndTime(comp.default_work_end_time || "18:30");
@@ -450,7 +450,7 @@ export function SettingsPageContent({
           // Table is empty. Auto-create a default company tenant
           const { data: newCompany, error: compErr } = await supabase
             .from("companies")
-            .insert({ name: "Indiecode", tenant_domain: "hrms.indiecode.in" })
+            .insert({ name: "indiecode", tenant_domain: "hrms.indiecode.in" })
             .select()
             .single();
 
@@ -458,7 +458,7 @@ export function SettingsPageContent({
           if (compErr) {
             const { data: retryCompany, error: retryErr } = await supabase
               .from("companies")
-              .insert({ name: "Indiecode" })
+              .insert({ name: "indiecode" })
               .select()
               .single();
             if (retryErr)
