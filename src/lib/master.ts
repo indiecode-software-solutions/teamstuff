@@ -25,7 +25,9 @@ async function sendCredentialsEmail(
   const resendKey = process.env["RESEND_API"];
   if (!resendKey) return;
   try {
-    const { url: portalUrl, displayUrl: portalDisplayUrl } = resolveTenantPortalUrl(tenantDomain);
+    const { url: baseUrl, displayUrl: baseDisplayUrl } = resolveTenantPortalUrl(tenantDomain);
+    const portalUrl = `${baseUrl.replace(/\/+$/, "")}/login`;
+    const portalDisplayUrl = `${baseDisplayUrl.replace(/\/+$/, "")}/login`;
     const from = process.env["EMAIL_FROM"] || "CapOasis Intranet <noreply@capoasis.com>";
     const resp = await fetch("https://api.resend.com/emails", {
       method: "POST",

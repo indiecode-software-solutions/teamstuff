@@ -165,7 +165,9 @@ export const adminOnboardEmployee = createServerFn({ method: "POST" })
         .maybeSingle();
 
       const resolvedTenant = data.tenantDomain || comp?.tenant_domain || null;
-      const { url: portalUrl, displayUrl: portalDisplayUrl } = resolveTenantPortalUrl(resolvedTenant);
+      const { url: baseUrl, displayUrl: baseDisplayUrl } = resolveTenantPortalUrl(resolvedTenant);
+      const portalUrl = `${baseUrl.replace(/\/+$/, "")}/login`;
+      const portalDisplayUrl = `${baseDisplayUrl.replace(/\/+$/, "")}/login`;
       const appName = companyName || comp?.name || "CapOasis";
       const brandColor = comp?.brand_color || "#d97706";
 
