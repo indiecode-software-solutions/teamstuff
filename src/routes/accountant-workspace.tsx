@@ -2,16 +2,11 @@ import React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import Layout from "../components/Layout";
 import RequireWorkspaceRole from "../components/RequireWorkspaceRole";
-import {
-  FileText as Description,
-  Landmark as AccountBalance,
-  ReceiptText as ReceiptLong,
-  CalendarCheck as EventAvailable,
-} from "lucide-react";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/accountant-workspace")({
   head: () => ({
-    title: "Teamstuff | Finance Workspace",
+    title: getDynamicPageTitle("Finance Workspace"),
     meta: [{ name: "description", content: "Financial & Payroll Management Workspace." }],
   }),
   component: AccountantWorkspacePage,

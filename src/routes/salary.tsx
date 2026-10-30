@@ -30,10 +30,11 @@ import {
 } from "lucide-react";
 import { SafeLockGuard } from "../components/SafeLockGuard";
 import { SafeLockConfig, getSafeLockConfig } from "../lib/safelock";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/salary")({
   head: () => ({
-    title: "Teamstuff | Salary & Payslips",
+    title: getDynamicPageTitle("Salary & Payslips"),
     meta: [
       {
         name: "description",
@@ -1043,7 +1044,7 @@ function SalaryPage() {
                                   Authorized Signatory
                                 </div>
                                 <div className="payslip-footer-sign-for">
-                                  For {userInfo?.company || "Teamstuff Inc."}
+                                  For {userInfo?.company || "CapOasis Inc."}
                                 </div>
                               </div>
                             ) : (

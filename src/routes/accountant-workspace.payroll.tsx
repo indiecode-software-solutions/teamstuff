@@ -3,10 +3,11 @@ import { createFileRoute } from "@tanstack/react-router";
 import Layout from "../components/Layout";
 import RequireWorkspaceRole from "../components/RequireWorkspaceRole";
 import { Search, Download } from "lucide-react";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/accountant-workspace/payroll")({
   head: () => ({
-    title: "Teamstuff | Payroll Management",
+    title: getDynamicPageTitle("Payroll Management"),
     meta: [
       {
         name: "description",

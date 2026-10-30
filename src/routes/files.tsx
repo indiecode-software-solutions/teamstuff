@@ -23,6 +23,7 @@ import {
   VIRTUAL_FOLDER_PREFIX,
 } from "../lib/cloud-drive";
 import { SafeLockGuard } from "../components/SafeLockGuard";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 import { SafeLockConfig, getSafeLockConfig } from "../lib/safelock";
 import { toast } from "sonner";
 import {
@@ -80,7 +81,7 @@ import {
 
 export const Route = createFileRoute("/files")({
   head: () => ({
-    title: "Teamstuff | Cloud Drive",
+    title: getDynamicPageTitle("Cloud Drive"),
     meta: [
       {
         name: "description",

@@ -28,11 +28,13 @@ import {
 } from "../lib/teams";
 import { CreateTeamDialog } from "../components/teams/CreateTeamDialog";
 
+import { getDynamicPageTitle } from "../lib/tenant-brand";
+
 export const Route = createFileRoute("/teams/")({
   head: () => ({
     meta: [
       {
-        title: "Teamstuff | Teams",
+        title: getDynamicPageTitle("Teams"),
       },
       {
         name: "description",
@@ -86,6 +88,8 @@ export const getTeamIcon = (iconName?: string) => {
   }
 };
 
+
+
 function TeamsDirectoryPage() {
   const navigate = useNavigate();
 
@@ -98,6 +102,11 @@ function TeamsDirectoryPage() {
   // Create Modal
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [companyEmployees, setCompanyEmployees] = useState<TeamMemberProfile[]>([]);
+  const [templatePreload, setTemplatePreload] = useState<{
+    name: string;
+    description: string;
+    icon: string;
+  } | null>(null);
 
   const loadData = async () => {
     try {
@@ -135,9 +144,18 @@ function TeamsDirectoryPage() {
     }
   };
 
-  const handleOpenCreateModal = () => {
+  const handleOpenCreateModal = (presetName?: string) => {
     if (companyEmployees.length === 0 && companyId) {
       fetchCompanyEmployees(companyId).then(setCompanyEmployees);
+    }
+    if (presetName) {
+      setTemplatePreload({
+        name: presetName,
+        description: `${presetName} department workspace`,
+        icon: "Users",
+      });
+    } else {
+      setTemplatePreload(null);
     }
     setCreateModalOpen(true);
   };
@@ -201,21 +219,41 @@ function TeamsDirectoryPage() {
         </div>
       )}
 
-      {/* Empty State */}
+      {/* Clean & Minimal Empty State */}
       {!loading && teams.length === 0 && (
-        <div className="teams-empty-state">
-          <div className="teams-empty-icon">
-            <Users size={36} strokeWidth={1.4} />
+        <div className="teams-empty-state-clean">
+          <div className="teams-empty-icon-box">
+            <Users size={24} strokeWidth={1.5} />
           </div>
-          <h3 className="teams-empty-title">No Teams Provisioned Yet</h3>
+          <h3 className="teams-empty-title">No teams yet</h3>
           <p className="teams-empty-subtitle">
-            Create your first department workspace to start collaborating on tasks, files, and channels.
+            Create department workspaces to organize channels, files, and members in one place.
           </p>
+
           {canManageTeams && (
-            <button onClick={handleOpenCreateModal} className="teams-create-btn" style={{ marginTop: "16px" }}>
-              <Plus size={16} strokeWidth={1.4} />
-              Create First Team
+            <button
+              onClick={() => handleOpenCreateModal()}
+              className="teams-create-btn"
+            >
+              <Plus size={16} strokeWidth={1.5} />
+              Create team
             </button>
+          )}
+
+          {canManageTeams && (
+            <div className="teams-empty-suggestions">
+              <span>Quick start:</span>
+              {["Engineering", "Design", "Sales", "Marketing", "HR", "Operations"].map((dept) => (
+                <button
+                  key={dept}
+                  type="button"
+                  onClick={() => handleOpenCreateModal(dept)}
+                  className="teams-empty-chip-btn"
+                >
+                  + {dept}
+                </button>
+              ))}
+            </div>
           )}
         </div>
       )}
@@ -295,8 +333,12 @@ function TeamsDirectoryPage() {
       {/* Create Team Dialog */}
       <CreateTeamDialog
         open={createModalOpen}
+        onClose={() => setCreateModalOpen(false)}
         onOpenChange={setCreateModalOpen}
         companyEmployees={companyEmployees}
+        initialName={templatePreload?.name}
+        initialDescription={templatePreload?.description}
+        initialIcon={templatePreload?.icon}
         onTeamCreated={(newTeam: Team) => {
           setTeams((prev) => [...prev, newTeam]);
           navigate({ to: `/teams/${slugifyTeamName(newTeam.name)}` });

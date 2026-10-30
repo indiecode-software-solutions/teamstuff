@@ -76,7 +76,7 @@ function BrandLogo() {
     <a href="/" className="landing-brand-link">
       <img
         src="/teamstuff_logo.png"
-        alt="Teamstuff"
+        alt="CapOasis"
         className="landing-brand-img"
       />
     </a>
@@ -124,7 +124,7 @@ function VerticalTextTicker() {
 
       {/* Brand suffix */}
       <span className="landing-ticker-brand-text">
-        Teamstuff.
+        CapOasis.
       </span>
     </div>
   );
@@ -690,7 +690,7 @@ function LandingPage() {
           <RevealOnScroll direction="up" distance={25}>
             <div className="landing-section-header">
               <h3 className="landing-section-title">
-                All features included in Teamstuff
+                All features included in CapOasis
               </h3>
               <p className="landing-section-subtitle">
                 The complete set of workspace tools available out of the box.
@@ -779,7 +779,7 @@ function LandingPage() {
             </h2>
 
             <p className="landing-bottom-cta-subtitle">
-              Join teams using Teamstuff to bring attendance, payroll, tasks, files and discussions into one unified workspace.
+              Join teams using CapOasis to bring attendance, payroll, tasks, files and discussions into one unified workspace.
             </p>
 
             <div className="landing-bottom-cta-actions">
@@ -811,7 +811,7 @@ function LandingPage() {
             <div>
               <BrandLogo />
               <p className="landing-footer-brand-desc">
-                Teamstuff connects your people, tasks, and information in one clean place.
+                CapOasis connects your people, tasks, and information in one clean place.
               </p>
 
               <div className="landing-footer-socials">
@@ -926,7 +926,7 @@ function LandingPage() {
           {/* Bottom Copyright Bar */}
           <div className="landing-footer-bottom">
             <p className="landing-copyright-text">
-              © 2026 Teamstuff. All rights reserved.
+              © 2026 CapOasis. All rights reserved.
             </p>
           </div>
         </div>

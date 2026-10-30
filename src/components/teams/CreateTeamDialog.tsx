@@ -12,25 +12,37 @@ import { sanitizeProfilePhoto } from "../../lib/profile-photo";
 
 interface CreateTeamDialogProps {
   open: boolean;
-  onClose: () => void;
+  onClose?: () => void;
+  onOpenChange?: (open: boolean) => void;
   onCreated?: (team: Team) => void;
+  onTeamCreated?: (team: Team) => void;
   companyId?: string | null;
   currentUserId?: string | null;
   employees?: TeamMemberProfile[];
+  companyEmployees?: TeamMemberProfile[];
+  initialName?: string;
+  initialDescription?: string;
+  initialIcon?: string;
 }
 
 export function CreateTeamDialog({
   open,
   onClose,
+  onOpenChange,
   onCreated,
+  onTeamCreated,
   companyId: propCompanyId,
   currentUserId: propCurrentUserId,
   employees: propEmployees,
+  companyEmployees,
+  initialName,
+  initialDescription,
+  initialIcon,
 }: CreateTeamDialogProps) {
   const [creating, setCreating] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(propCurrentUserId || null);
   const [companyId, setCompanyId] = useState<string | null>(propCompanyId || null);
-  const [employees, setEmployees] = useState<TeamMemberProfile[]>(propEmployees || []);
+  const [employees, setEmployees] = useState<TeamMemberProfile[]>(propEmployees || companyEmployees || []);
 
   const [teamName, setTeamName] = useState("");
   const [teamDescription, setTeamDescription] = useState("");
@@ -39,8 +51,29 @@ export function CreateTeamDialog({
   const [memberSearchQuery, setMemberSearchQuery] = useState("");
   const [showMemberDropdown, setShowMemberDropdown] = useState(false);
 
+  const handleClose = () => {
+    if (onClose) onClose();
+    if (onOpenChange) onOpenChange(false);
+  };
+
+  const handleCreated = (t: Team) => {
+    if (onCreated) onCreated(t);
+    if (onTeamCreated) onTeamCreated(t);
+  };
+
   useEffect(() => {
-    if (!open) return;
+    if (!open) {
+      setTeamName("");
+      setTeamDescription("");
+      setTeamLeadId("");
+      setSelectedMembers([]);
+      setMemberSearchQuery("");
+      return;
+    }
+
+    setTeamName(initialName || "");
+    setTeamDescription(initialDescription || "");
+
 
     (async () => {
       try {
@@ -149,15 +182,15 @@ export function CreateTeamDialog({
         lead_id: teamLeadId || currentUserId,
         is_private: true,
         color: "var(--color-primary)",
-        icon: "Users",
+        icon: initialIcon || "Users",
         company_id: companyId,
         created_by: currentUserId,
         member_ids: finalMemberIds,
       });
 
       if (created) {
-        onClose();
-        onCreated?.(created);
+        handleClose();
+        handleCreated(created);
       }
     } catch (err: any) {
       console.error("Error creating team:", err);
@@ -179,7 +212,7 @@ export function CreateTeamDialog({
   });
 
   return (
-    <Dialog.Root open={open} onOpenChange={(val) => !creating && !val && onClose()}>
+    <Dialog.Root open={open} onOpenChange={(val) => !creating && !val && handleClose()}>
       <Dialog.Portal>
         <Dialog.Overlay className="hub-modal-overlay" />
         <Dialog.Content className="hub-modal-content">
@@ -191,7 +224,7 @@ export function CreateTeamDialog({
               </Dialog.Title>
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 disabled={creating}
                 className="btn-icon"
                 aria-label="Close"
@@ -399,7 +432,7 @@ export function CreateTeamDialog({
             <div style={{ padding: "var(--space-4) 0 0", borderTop: "1px solid var(--color-border)", display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "var(--space-2)", flexShrink: 0 }}>
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 disabled={creating}
                 className="btn btn-secondary"
               >

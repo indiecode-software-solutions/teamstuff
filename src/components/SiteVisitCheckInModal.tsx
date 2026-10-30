@@ -197,7 +197,7 @@ export default function SiteVisitCheckInModal({
         if (uploadRes.success && uploadRes.url) {
           uploadedUrl = uploadRes.url;
         } else {
-          console.warn("Cloudinary upload issue, continuing with fallback:", uploadRes.error);
+          console.warn("R2 upload issue, continuing with fallback:", uploadRes.error);
           uploadedUrl = photoDataUrl;
         }
       }

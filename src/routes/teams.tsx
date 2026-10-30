@@ -1,10 +1,11 @@
 import React from "react";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import Layout from "../components/Layout";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/teams")({
   head: () => ({
-    title: "Teamstuff | Teams Workspaces",
+    title: getDynamicPageTitle("Teams Workspaces"),
     meta: [
       {
         name: "description",

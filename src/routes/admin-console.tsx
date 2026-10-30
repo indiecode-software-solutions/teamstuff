@@ -2,10 +2,11 @@ import React from "react";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import Layout from "../components/Layout";
 import RequireWorkspaceRole from "../components/RequireWorkspaceRole";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/admin-console")({
   head: () => ({
-    title: "Teamstuff | Admin Settings",
+    title: getDynamicPageTitle("Admin Settings"),
     meta: [
       {
         name: "description",

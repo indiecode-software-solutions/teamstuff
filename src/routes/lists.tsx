@@ -86,14 +86,15 @@ import {
   Loader2,
   Flame,
 } from "lucide-react";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/lists")({
   head: () => ({
-    title: "Teamstuff | TO-DO List",
+    title: getDynamicPageTitle("TO-DO List"),
     meta: [
       {
         name: "description",
-        content: "Organize tasks, projects, ideas, and checklists within Teamstuff.",
+        content: "Organize tasks, projects, ideas, and checklists.",
       },
     ],
   }),

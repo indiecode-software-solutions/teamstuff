@@ -36,10 +36,11 @@ import {
   RegularizationType,
 } from "../lib/attendance-helpers";
 import { getCurrentCoordinates } from "../lib/geolocation";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/attendance")({
   head: () => ({
-    title: "Teamstuff | Attendance",
+    title: getDynamicPageTitle("Attendance"),
     meta: [{ name: "description", content: "Track your daily attendance with GPS verification." }],
   }),
   component: AttendancePage,
@@ -660,7 +661,7 @@ function AttendancePage() {
               setIsOnline(navigator.onLine);
               if (navigator.onLine) initAttendance();
             }}
-            message="You are currently offline. Teamstuff requires an active internet connection to load and log your attendance."
+            message="You are currently offline. CapOasis requires an active internet connection to load and log your attendance."
           />
         ) : (
           <>

@@ -162,25 +162,26 @@ import { getBrandConfig } from "../lib/brand-config";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => {
-    const brand = getBrandConfig();
+    const neutralFavicon =
+      "data:image/svg+xml;utf8," +
+      encodeURIComponent(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><rect width="64" height="64" rx="14" fill="#18181B"/><text x="50%" y="54%" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="34" font-weight="600" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">I</text></svg>'
+      );
     return {
       meta: [
         { charSet: "utf-8" },
         { name: "viewport", content: "width=device-width, initial-scale=1" },
-        { title: brand.appName },
+        { title: "CapOasis Intranet" },
         {
           name: "description",
-          content: brand.metaDescription,
+          content: "CapOasis Corporate Operations & Intranet Portal",
         },
-        { name: "author", content: brand.companyName },
-        { property: "og:title", content: brand.appName },
+        { property: "og:title", content: "CapOasis Intranet" },
         {
           property: "og:description",
-          content: brand.metaDescription,
+          content: "CapOasis Corporate Operations & Intranet Portal",
         },
         { property: "og:type", content: "website" },
-        { name: "twitter:card", content: "summary_large_image" },
-        { name: "twitter:site", content: `@${brand.shortName.toLowerCase()}` },
       ],
       links: [
         {
@@ -199,11 +200,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         {
           rel: "icon",
-          href: brand.favicon,
-          type: "image/png",
+          href: neutralFavicon,
+          type: "image/svg+xml",
         },
-        { rel: "apple-touch-icon", href: brand.appleTouchIcon },
-        { rel: "shortcut icon", href: brand.favicon },
+        { rel: "apple-touch-icon", href: neutralFavicon },
+        { rel: "shortcut icon", href: neutralFavicon },
       ],
     };
   },
@@ -239,29 +240,66 @@ const instantBrandScript = `(function() {
       if (coRaw) brand = JSON.parse(coRaw);
     }
 
-    if (brand) {
-      var s = (brand.shortName || brand.name || '').trim();
-      if (s && s.toLowerCase() !== 'teamstuff' && s.toLowerCase() !== 'capoasis') {
-        document.title = s + ' Intranet';
+    var tenantName = brand ? (brand.shortName || brand.name || '').trim() : '';
+    var isCustom = tenantName && tenantName.toLowerCase() !== 'teamstuff' && tenantName.toLowerCase() !== 'capoasis';
+    var displayBrandName = isCustom ? tenantName : '';
+
+    if (displayBrandName) {
+      document.title = displayBrandName + ' Intranet';
+    } else {
+      document.title = 'CapOasis Intranet';
+    }
+
+    // Intercept document.title assignments so route hydration cannot revert to "Teamstuff"
+    try {
+      var proto = Document.prototype;
+      var descriptor = Object.getOwnPropertyDescriptor(proto, 'title');
+      if (descriptor && descriptor.set) {
+        var originalSet = descriptor.set;
+        var originalGet = descriptor.get;
+        Object.defineProperty(document, 'title', {
+          configurable: true,
+          enumerable: true,
+          get: function() {
+            return originalGet.call(document);
+          },
+          set: function(val) {
+            var newVal = val;
+            if (typeof newVal === 'string') {
+              if (displayBrandName) {
+                newVal = newVal.replace(/Teamstuff\s*\|\s*/gi, displayBrandName + ' | ');
+                newVal = newVal.replace(/Teamstuff/gi, displayBrandName);
+                newVal = newVal.replace(/CapOasis\s*\|\s*/gi, displayBrandName + ' | ');
+                newVal = newVal.replace(/CapOasis/gi, displayBrandName);
+              } else {
+                newVal = newVal.replace(/Teamstuff\s*\|\s*/gi, '');
+                newVal = newVal.replace(/Teamstuff/gi, 'CapOasis');
+              }
+            }
+            originalSet.call(document, newVal);
+          }
+        });
       }
-      var bg = brand.brandColor || '#18181B';
-      if (brand.brandColor) {
-        document.documentElement.style.setProperty('--brand-primary', brand.brandColor);
-        document.documentElement.style.setProperty('--brand-primary-lighter', brand.brandColor + '1A');
-        document.documentElement.style.setProperty('--brand-primary-border', brand.brandColor + '40');
+    } catch(e) {}
+
+    var bg = (brand && brand.brandColor) || '#18181B';
+    if (brand && brand.brandColor) {
+      document.documentElement.style.setProperty('--brand-primary', brand.brandColor);
+      document.documentElement.style.setProperty('--brand-primary-lighter', brand.brandColor + '1A');
+      document.documentElement.style.setProperty('--brand-primary-border', brand.brandColor + '40');
+    }
+
+    var fav = (brand && brand.faviconUrl) || (displayBrandName ? 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><rect width="64" height="64" rx="14" fill="' + bg + '"/><text x="50%" y="54%" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="34" font-weight="600" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">' + displayBrandName.charAt(0).toUpperCase() + '</text></svg>') : null);
+    if (fav) {
+      var l = document.querySelector("link[rel~='icon']");
+      if (l) {
+        l.href = fav;
+        if (fav.indexOf('data:image/svg') === 0) l.type = 'image/svg+xml';
       }
-      var fav = brand.faviconUrl || (s && s.toLowerCase() !== 'teamstuff' && s.toLowerCase() !== 'capoasis' ? 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64"><rect width="64" height="64" rx="14" fill="' + bg + '"/><text x="50%" y="54%" font-family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif" font-size="34" font-weight="600" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">' + s.charAt(0).toUpperCase() + '</text></svg>') : null);
-      if (fav) {
-        var l = document.querySelector("link[rel~='icon']");
-        if (l) {
-          l.href = fav;
-          if (fav.indexOf('data:image/svg') === 0) l.type = 'image/svg+xml';
-        }
-        var sL = document.querySelector("link[rel='shortcut icon']");
-        if (sL) sL.href = fav;
-        var aL = document.querySelector("link[rel='apple-touch-icon']");
-        if (aL) aL.href = fav;
-      }
+      var sL = document.querySelector("link[rel='shortcut icon']");
+      if (sL) sL.href = fav;
+      var aL = document.querySelector("link[rel='apple-touch-icon']");
+      if (aL) aL.href = fav;
     }
   } catch(e) {}
 })();`;
@@ -270,8 +308,8 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
-        <script dangerouslySetInnerHTML={{ __html: instantBrandScript }} />
         <HeadContent />
+        <script dangerouslySetInnerHTML={{ __html: instantBrandScript }} />
       </head>
       <body>
         {children}
@@ -324,8 +362,15 @@ function RootComponent() {
 
   // Onboarding blocker states
   const [sessionUser, setSessionUser] = React.useState<any>(null);
-  const [profileStatus, setProfileStatus] = React.useState<string | null>(null);
-  const [checkingStatus, setCheckingStatus] = React.useState(true);
+  const [profileStatus, setProfileStatus] = React.useState<string | null>(() => {
+    if (typeof window === "undefined") return null;
+    return sessionStorage.getItem("cached_onboarding_status");
+  });
+  const [checkingStatus, setCheckingStatus] = React.useState(() => {
+    if (typeof window === "undefined") return true;
+    if (isPublicPath(window.location.pathname, window.location.search)) return false;
+    return sessionStorage.getItem("cached_onboarding_status") !== "Completed";
+  });
   const [onboardStep, setOnboardStep] = React.useState(1);
   const [showInduction, setShowInduction] = React.useState(false);
   const [inductionSlide, setInductionSlide] = React.useState(0);
@@ -496,6 +541,9 @@ function RootComponent() {
         .single();
       if (!error && data) {
         setProfileStatus(data.onboarding_status);
+        try {
+          sessionStorage.setItem("cached_onboarding_status", data.onboarding_status);
+        } catch (e) {}
         if (data.company_id) {
           if (data.onboarding_status === "Pending") {
             setOnboardDocsLoading(true);
@@ -625,6 +673,9 @@ function RootComponent() {
       if (!session) {
         setSessionUser(null);
         setProfileStatus(null);
+        try {
+          sessionStorage.removeItem("cached_onboarding_status");
+        } catch (e) {}
         setCheckingStatus(false);
         const currentPath = window.location.pathname;
         if (!isPublicPath(currentPath, window.location.search)) {
@@ -964,13 +1015,13 @@ function RootComponent() {
               ) : (
                 <img
                   src="/teamstuff_icon_logo.png"
-                  alt="Teamstuff"
+                  alt="CapOasis"
                   className="onboard-sidebar-logo"
                 />
               )}
               <div>
                 <h2 className="onboard-sidebar-title">
-                  {branding?.shortName || branding?.name || "Teamstuff"}
+                  {branding?.shortName || branding?.name || "CapOasis"}
                 </h2>
                 <p className="onboard-sidebar-tag">Employee Onboarding</p>
               </div>
@@ -2091,7 +2142,16 @@ function RootComponent() {
   if (!isPublicView && checkingStatus) {
     return (
       <div className="global-app-loader">
-        <Loader2 className="global-app-spinner" />
+        <div className="global-app-loader-card">
+          {branding?.logoUrl ? (
+            <img
+              src={branding.logoUrl}
+              alt={branding.name || "Company Logo"}
+              style={{ maxHeight: 38, maxWidth: 140, objectFit: "contain" }}
+            />
+          ) : null}
+          <Loader2 className="global-app-spinner" size={26} />
+        </div>
       </div>
     );
   }

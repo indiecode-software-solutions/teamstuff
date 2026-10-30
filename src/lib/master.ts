@@ -5,6 +5,7 @@ import {
   isUploadedProfileImage,
   extractCloudinaryPublicId,
 } from "./profile-photo";
+import { getR2Path, uploadR2Base64, extractR2Key, deleteR2Object } from "./r2-storage";
 import { resolveTenantPortalUrl } from "./tenant-brand";
 
 const GB = 1024 * 1024 * 1024;
@@ -25,7 +26,7 @@ async function sendCredentialsEmail(
   if (!resendKey) return;
   try {
     const { url: portalUrl, displayUrl: portalDisplayUrl } = resolveTenantPortalUrl(tenantDomain);
-    const from = process.env["EMAIL_FROM"] || "teamstuff intranet <noreply@teamstuff.com>";
+    const from = process.env["EMAIL_FROM"] || "CapOasis Intranet <noreply@capoasis.com>";
     const resp = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -642,11 +643,13 @@ export const masterDeleteCompany = createServerFn({ method: "POST" })
       // Clean up uploaded profile photos before the profile rows are deleted
       for (const p of profileRows || []) {
         if (isUploadedProfileImage(p.profile_photo)) {
-          const publicId = extractCloudinaryPublicId(p.profile_photo);
-          if (publicId) {
-            const removed = await destroyCloudinaryAsset(publicId);
-            if (!removed.success) {
-              console.warn(`Master delete: profile photo ${publicId} not removed:`, removed.error);
+          const r2Key = extractR2Key(p.profile_photo);
+          if (r2Key) {
+            await deleteR2Object(r2Key).catch(() => {});
+          } else {
+            const publicId = extractCloudinaryPublicId(p.profile_photo);
+            if (publicId) {
+              await destroyCloudinaryAsset(publicId).catch(() => {});
             }
           }
         }
@@ -672,133 +675,85 @@ export const masterDeleteCompany = createServerFn({ method: "POST" })
   });
 
 /**
- * Master Admin server function to upload a company's Login Hero Image directly to Cloudinary
- * (Stored in: Intranet/companies/<companyId>/assets/login_hero)
+ * Master Admin server function to upload a company's Login Hero Image directly to Cloudflare R2
+ * (Stored in: companies/<companyId>/branding/login_hero_<timestamp>.webp)
  */
 export const masterUploadCompanyLoginHero = createServerFn({ method: "POST" })
   .validator((d: { base64Data: string; companyId?: string }) => d)
   .handler(async ({ data }): Promise<{ success: boolean; secure_url?: string; error?: string }> => {
     const { base64Data, companyId } = data;
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const folder = `Intranet/companies/${companyId || "general"}/assets/login_hero`;
-    const apiSecret = "TqdPN3VMRk_eQbUjnC1mz-4MwI0";
-    const apiKey = "122886755481348";
-    const cloudName = "dfqyaawjv";
-
-    const { createHash } = await import("node:crypto");
-    const signatureStr = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
-    const signature = createHash("sha1").update(signatureStr).digest("hex");
-
-    const formData = new FormData();
-    formData.append("file", base64Data);
-    formData.append("api_key", apiKey);
-    formData.append("timestamp", timestamp.toString());
-    formData.append("folder", folder);
-    formData.append("signature", signature);
+    const key = getR2Path.loginHero(companyId || "general", "webp");
 
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-        method: "POST",
-        body: formData,
+      const res = await uploadR2Base64({
+        key,
+        base64Data,
+        contentType: "image/webp",
       });
 
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Cloudinary API returned status ${res.status}: ${errText}`);
+      if (!res.success) {
+        throw new Error(res.error || "R2 company login hero upload failed");
       }
 
-      const json = await res.json();
-      return { success: true, secure_url: json.secure_url as string };
+      return { success: true, secure_url: res.url };
     } catch (err: any) {
-      console.error("Cloudinary company login hero upload error:", err.message);
+      console.error("R2 company login hero upload error:", err.message);
       return { success: false, error: err.message };
     }
   });
 
 /**
- * Master Admin server function to upload a company's Logo directly to Cloudinary
- * (Stored in: Intranet/companies/<companyId>/assets/logo)
+ * Master Admin server function to upload a company's Logo directly to Cloudflare R2
+ * (Stored in: companies/<companyId>/branding/logo_<timestamp>.webp)
  */
 export const masterUploadCompanyLogo = createServerFn({ method: "POST" })
   .validator((d: { base64Data: string; companyId?: string }) => d)
   .handler(async ({ data }): Promise<{ success: boolean; secure_url?: string; error?: string }> => {
     const { base64Data, companyId } = data;
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const folder = `Intranet/companies/${companyId || "general"}/assets/logo`;
-    const apiSecret = "TqdPN3VMRk_eQbUjnC1mz-4MwI0";
-    const apiKey = "122886755481348";
-    const cloudName = "dfqyaawjv";
-
-    const { createHash } = await import("node:crypto");
-    const signatureStr = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
-    const signature = createHash("sha1").update(signatureStr).digest("hex");
-
-    const formData = new FormData();
-    formData.append("file", base64Data);
-    formData.append("api_key", apiKey);
-    formData.append("timestamp", timestamp.toString());
-    formData.append("folder", folder);
-    formData.append("signature", signature);
+    const key = getR2Path.companyLogo(companyId || "general", "webp");
 
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-        method: "POST",
-        body: formData,
+      const res = await uploadR2Base64({
+        key,
+        base64Data,
+        contentType: "image/webp",
       });
 
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Cloudinary API returned status ${res.status}: ${errText}`);
+      if (!res.success) {
+        throw new Error(res.error || "R2 company logo upload failed");
       }
 
-      const json = await res.json();
-      return { success: true, secure_url: json.secure_url as string };
+      return { success: true, secure_url: res.url };
     } catch (err: any) {
-      console.error("Cloudinary company logo upload error:", err.message);
+      console.error("R2 company logo upload error:", err.message);
       return { success: false, error: err.message };
     }
   });
 
 /**
- * Master Admin server function to upload a company's Favicon directly to Cloudinary
- * (Stored in: Intranet/companies/<companyId>/assets/favicon)
+ * Master Admin server function to upload a company's Favicon directly to Cloudflare R2
+ * (Stored in: system/master/favicon/<timestamp>_favicon.ico)
  */
 export const masterUploadCompanyFavicon = createServerFn({ method: "POST" })
   .validator((d: { base64Data: string; companyId?: string }) => d)
   .handler(async ({ data }): Promise<{ success: boolean; secure_url?: string; error?: string }> => {
     const { base64Data, companyId } = data;
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const folder = `Intranet/companies/${companyId || "general"}/assets/favicon`;
-    const apiSecret = "TqdPN3VMRk_eQbUjnC1mz-4MwI0";
-    const apiKey = "122886755481348";
-    const cloudName = "dfqyaawjv";
-
-    const { createHash } = await import("node:crypto");
-    const signatureStr = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
-    const signature = createHash("sha1").update(signatureStr).digest("hex");
-
-    const formData = new FormData();
-    formData.append("file", base64Data);
-    formData.append("api_key", apiKey);
-    formData.append("timestamp", timestamp.toString());
-    formData.append("folder", folder);
-    formData.append("signature", signature);
+    const key = getR2Path.masterAdminAsset("favicon", `favicon_${companyId || "general"}.ico`);
 
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-        method: "POST",
-        body: formData,
+      const res = await uploadR2Base64({
+        key,
+        base64Data,
+        contentType: "image/x-icon",
       });
 
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Cloudinary API returned status ${res.status}: ${errText}`);
+      if (!res.success) {
+        throw new Error(res.error || "R2 company favicon upload failed");
       }
 
-      const json = await res.json();
-      return { success: true, secure_url: json.secure_url as string };
+      return { success: true, secure_url: res.url };
     } catch (err: any) {
-      console.error("Cloudinary company favicon upload error:", err.message);
+      console.error("R2 company favicon upload error:", err.message);
       return { success: false, error: err.message };
     }
   });
@@ -915,9 +870,14 @@ export const masterDeleteEmployee = createServerFn({ method: "POST" })
       if (!profile) return { success: false, error: "Employee not found." };
 
       if (isUploadedProfileImage(profile.profile_photo)) {
-        const publicId = extractCloudinaryPublicId(profile.profile_photo);
-        if (publicId) {
-          await destroyCloudinaryAsset(publicId).catch(() => {});
+        const r2Key = extractR2Key(profile.profile_photo);
+        if (r2Key) {
+          await deleteR2Object(r2Key).catch(() => {});
+        } else {
+          const publicId = extractCloudinaryPublicId(profile.profile_photo);
+          if (publicId) {
+            await destroyCloudinaryAsset(publicId).catch(() => {});
+          }
         }
       }
 

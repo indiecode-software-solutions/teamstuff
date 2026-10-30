@@ -86,10 +86,11 @@ import {
 } from "../lib/cloud-drive";
 import { sanitizeProfilePhoto } from "../lib/profile-photo";
 import { getTeamIcon } from "./teams.index";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/teams/$teamId")({
   head: () => ({
-    title: "Teamstuff | Team Workspace",
+    title: getDynamicPageTitle("Team Workspace"),
     meta: [
       {
         name: "description",

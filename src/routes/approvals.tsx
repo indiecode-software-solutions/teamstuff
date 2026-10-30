@@ -73,10 +73,11 @@ import {
   DropdownMenuItem,
 } from "../components/ui/dropdown-menu";
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "../components/ui/tooltip";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/approvals")({
   head: () => ({
-    title: "Teamstuff | Approvals Center",
+    title: getDynamicPageTitle("Approvals Center"),
     meta: [
       {
         name: "description",

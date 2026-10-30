@@ -39,14 +39,15 @@ import {
   type AssetRequest,
   type RequestPriority,
 } from "../lib/assets";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/resources/assets")({
   head: () => ({
-    title: "Teamstuff | My Assets & Requisitions",
+    title: getDynamicPageTitle("My Assets & Requisitions"),
     meta: [
       {
         name: "description",
-        content: "Track company hardware in your custody and submit equipment requisitions at Teamstuff.",
+        content: "Track company hardware in your custody and submit equipment requisitions.",
       },
     ],
   }),

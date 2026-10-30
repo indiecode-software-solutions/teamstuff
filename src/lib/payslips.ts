@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import crypto from "node:crypto";
 import { supabase } from "./supabase";
+import { getR2Path, uploadR2Base64 } from "./r2-storage";
 
 /**
  * A configurable earnings/deductions column as defined by the company.
@@ -179,133 +180,85 @@ export const savePayslipColumns = createServerFn({ method: "POST" })
   });
 
 /**
- * Upload a dedicated payslip company logo to the company's asset folder on Cloudinary
- * (Intranet/companies/<companyId>/assets/payslip_logo).
+ * Upload a dedicated payslip company logo to the company's branding folder on Cloudflare R2
+ * (companies/<companyId>/branding/payslip_logo_<timestamp>.webp).
  */
 export const uploadPayslipLogo = createServerFn({ method: "POST" })
   .validator((d: { base64Data: string; companyId: string }) => d)
   .handler(async ({ data }) => {
     const { base64Data, companyId } = data;
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const folder = `Intranet/companies/${companyId}/assets/payslip_logo`;
-    const apiSecret = "TqdPN3VMRk_eQbUjnC1mz-4MwI0";
-    const apiKey = "122886755481348";
-    const cloudName = "dfqyaawjv";
-
-    const signatureStr = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
-    const signature = crypto.createHash("sha1").update(signatureStr).digest("hex");
-
-    const formData = new FormData();
-    formData.append("file", base64Data);
-    formData.append("api_key", apiKey);
-    formData.append("timestamp", timestamp.toString());
-    formData.append("folder", folder);
-    formData.append("signature", signature);
+    const key = getR2Path.payslipLogo(companyId, "webp");
 
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-        method: "POST",
-        body: formData,
+      const res = await uploadR2Base64({
+        key,
+        base64Data,
+        contentType: "image/webp",
       });
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error("Cloudinary payslip logo upload failed:", errorText);
-        return { success: false, error: errorText };
+      if (!res.success) {
+        return { success: false, error: res.error || "R2 payslip logo upload failed" };
       }
 
-      const json = await res.json();
-      return { success: true, secure_url: json.secure_url };
+      return { success: true, secure_url: res.url };
     } catch (err: any) {
-      console.error("Cloudinary payslip logo upload error:", err);
+      console.error("R2 payslip logo upload error:", err);
       return { success: false, error: err.message };
     }
   });
 
 /**
- * Upload a dedicated payslip company stamp to Cloudinary
- * (Intranet/companies/<companyId>/assets/payslip_stamp).
+ * Upload a dedicated payslip company stamp to Cloudflare R2
+ * (companies/<companyId>/branding/payslip_stamp_<timestamp>.png).
  */
 export const uploadPayslipStamp = createServerFn({ method: "POST" })
   .validator((d: { base64Data: string; companyId: string }) => d)
   .handler(async ({ data }) => {
     const { base64Data, companyId } = data;
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const folder = `Intranet/companies/${companyId}/assets/payslip_stamp`;
-    const apiSecret = "TqdPN3VMRk_eQbUjnC1mz-4MwI0";
-    const apiKey = "122886755481348";
-    const cloudName = "dfqyaawjv";
-
-    const signatureStr = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
-    const signature = crypto.createHash("sha1").update(signatureStr).digest("hex");
-
-    const formData = new FormData();
-    formData.append("file", base64Data);
-    formData.append("api_key", apiKey);
-    formData.append("timestamp", timestamp.toString());
-    formData.append("folder", folder);
-    formData.append("signature", signature);
+    const key = getR2Path.payslipStamp(companyId, "png");
 
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-        method: "POST",
-        body: formData,
+      const res = await uploadR2Base64({
+        key,
+        base64Data,
+        contentType: "image/png",
       });
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error("Cloudinary payslip stamp upload failed:", errorText);
-        return { success: false, error: errorText };
+      if (!res.success) {
+        return { success: false, error: res.error || "R2 payslip stamp upload failed" };
       }
 
-      const json = await res.json();
-      return { success: true, secure_url: json.secure_url };
+      return { success: true, secure_url: res.url };
     } catch (err: any) {
-      console.error("Cloudinary payslip stamp upload error:", err);
+      console.error("R2 payslip stamp upload error:", err);
       return { success: false, error: err.message };
     }
   });
 
 /**
- * Upload a dedicated authorized signature to Cloudinary
- * (Intranet/companies/<companyId>/assets/payslip_signature).
+ * Upload a dedicated authorized signature to Cloudflare R2
+ * (companies/<companyId>/branding/payslip_signature_<timestamp>.png).
  */
 export const uploadPayslipSignature = createServerFn({ method: "POST" })
   .validator((d: { base64Data: string; companyId: string }) => d)
   .handler(async ({ data }) => {
     const { base64Data, companyId } = data;
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const folder = `Intranet/companies/${companyId}/assets/payslip_signature`;
-    const apiSecret = "TqdPN3VMRk_eQbUjnC1mz-4MwI0";
-    const apiKey = "122886755481348";
-    const cloudName = "dfqyaawjv";
-
-    const signatureStr = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
-    const signature = crypto.createHash("sha1").update(signatureStr).digest("hex");
-
-    const formData = new FormData();
-    formData.append("file", base64Data);
-    formData.append("api_key", apiKey);
-    formData.append("timestamp", timestamp.toString());
-    formData.append("folder", folder);
-    formData.append("signature", signature);
+    const key = getR2Path.payslipSignature(companyId, "png");
 
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-        method: "POST",
-        body: formData,
+      const res = await uploadR2Base64({
+        key,
+        base64Data,
+        contentType: "image/png",
       });
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        console.error("Cloudinary payslip signature upload failed:", errorText);
-        return { success: false, error: errorText };
+      if (!res.success) {
+        return { success: false, error: res.error || "R2 payslip signature upload failed" };
       }
 
-      const json = await res.json();
-      return { success: true, secure_url: json.secure_url };
+      return { success: true, secure_url: res.url };
     } catch (err: any) {
-      console.error("Cloudinary payslip signature upload error:", err);
+      console.error("R2 payslip signature upload error:", err);
       return { success: false, error: err.message };
     }
   });

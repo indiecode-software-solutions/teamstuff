@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import crypto from "node:crypto";
 import { supabase } from "./supabase";
+import { getR2Path, uploadR2Base64 } from "./r2-storage";
 
 export { getMyCompanyId } from "./policies";
 
@@ -54,44 +55,28 @@ export async function getCompanyTrainingSections(companyId: string): Promise<Tra
 }
 
 /**
- * Upload an image asset to the company's induction asset folder on Cloudinary
- * (auto-created: Intranet/companies/<companyId>/assets/induction).
+ * Upload an image/audio asset to the company's induction folder on Cloudflare R2
+ * (companies/<companyId>/induction/<moduleId>/<timestamp>_asset).
  */
 export const uploadTrainingAsset = createServerFn({ method: "POST" })
   .validator((d: { base64Data: string; companyId: string }) => d)
   .handler(async ({ data }) => {
     const { base64Data, companyId } = data;
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const folder = `Intranet/companies/${companyId}/assets/induction`;
-    const apiSecret = "TqdPN3VMRk_eQbUjnC1mz-4MwI0";
-    const apiKey = "122886755481348";
-    const cloudName = "dfqyaawjv";
-
-    const signatureStr = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
-    const signature = crypto.createHash("sha1").update(signatureStr).digest("hex");
-
-    const formData = new FormData();
-    formData.append("file", base64Data);
-    formData.append("api_key", apiKey);
-    formData.append("timestamp", timestamp.toString());
-    formData.append("folder", folder);
-    formData.append("signature", signature);
+    const key = getR2Path.inductionAsset(companyId, "modules", "training_asset.webp");
 
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
-        method: "POST",
-        body: formData,
+      const res = await uploadR2Base64({
+        key,
+        base64Data,
       });
 
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Cloudinary API returned status ${res.status}: ${errText}`);
+      if (!res.success) {
+        throw new Error(res.error || "R2 training asset upload failed");
       }
 
-      const json = await res.json();
-      return { success: true, secure_url: json.secure_url as string };
+      return { success: true, secure_url: res.url };
     } catch (err: any) {
-      console.error("Cloudinary training asset upload error:", err.message);
+      console.error("R2 training asset upload error:", err.message);
       return { success: false, error: err.message };
     }
   });

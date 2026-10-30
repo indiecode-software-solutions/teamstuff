@@ -22,14 +22,15 @@ import {
 
 import { supabase } from "../lib/supabase";
 import { sanitizeProfilePhoto } from "../lib/profile-photo";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/resources/team")({
   head: () => ({
-    title: "Teamstuff | Team Directory",
+    title: getDynamicPageTitle("Team Directory"),
     meta: [
       {
         name: "description",
-        content: "Explore the team directory, connect with colleagues, and view organization contact profiles at Teamstuff.",
+        content: "Explore the team directory, connect with colleagues, and view organization contact profiles.",
       },
     ],
   }),

@@ -26,14 +26,15 @@ import {
 } from "lucide-react";
 import { getMyCompanyId, getCompanyMemories, toggleMemoryLike } from "../lib/memories";
 import { supabase } from "../lib/supabase";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/resources/memories")({
   head: () => ({
-    title: "Teamstuff | Company Memories & Photo Gallery",
+    title: getDynamicPageTitle("Company Memories & Photo Gallery"),
     meta: [
       {
         name: "description",
-        content: "Showcasing company milestones, celebrations, offsites, and team memories at Teamstuff.",
+        content: "Showcasing company milestones, celebrations, offsites, and team memories.",
       },
     ],
   }),

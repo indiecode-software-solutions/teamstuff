@@ -78,14 +78,15 @@ import { getCurrentCoordinates } from "../lib/geolocation";
 import { WhosOutWidget, type OutEmployee } from "../components/dashboard/WhosOutWidget";
 import { MyRequestsWidget } from "../components/dashboard/MyRequestsWidget";
 import { calculateIsLate } from "../lib/attendance-helpers";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
-    title: "Teamstuff | Employee Dashboard",
+    title: getDynamicPageTitle("Dashboard"),
     meta: [
       {
         name: "description",
-        content: "Professional HRMS for modern enterprises built with Material UI.",
+        content: "Professional HRMS for modern enterprises.",
       },
     ],
   }),

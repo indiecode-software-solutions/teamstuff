@@ -182,7 +182,7 @@ function LoginPage() {
 
   const brandName = isTenantCustom
     ? (branding?.shortName || branding?.name || activeTenant?.toUpperCase())
-    : "Teamstuff";
+    : "CapOasis";
   const heroImage = (isTenantCustom && branding?.loginHeroUrl)
     ? branding.loginHeroUrl
     : "/login_hero_minimal.jpg";

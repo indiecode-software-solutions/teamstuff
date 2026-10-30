@@ -211,7 +211,7 @@ export async function getAuthenticatedUserContext(): Promise<CurrentUserContext 
       .eq("id", user.id)
       .maybeSingle();
 
-    let companyName = "Teamstuff";
+    let companyName = "CapOasis";
     if (profile?.company_id) {
       const { data: company } = await supabase
         .from("companies")
@@ -230,9 +230,9 @@ export async function getAuthenticatedUserContext(): Promise<CurrentUserContext 
       return {
         userId: user.id,
         companyId: "c1111111-1111-1111-1111-111111111111", // Default demo tenant
-        companyName: "Teamstuff",
+        companyName: "CapOasis",
         name: profile?.name || user.email?.split("@")[0] || "User",
-        email: user.email || "user@teamstuff.com",
+        email: user.email || "user@capoasis.com",
         photoUrl: photoUrl || null,
       };
     }
@@ -1441,7 +1441,7 @@ export async function deleteFolder(
 }
 
 /**
- * Generates a short-lived presigned download URL for the Teamstuff Android APK.
+ * Generates a short-lived presigned download URL for the CapOasis Android APK.
  * Called client-side when user taps "Download App" — generates a fresh link each time.
  */
 export const getAppDownloadUrl = createServerFn({ method: "POST" })
@@ -1452,7 +1452,7 @@ export const getAppDownloadUrl = createServerFn({ method: "POST" })
         new GetObjectCommand({
           Bucket: BUCKET_NAME,
           Key: "capoasis-app.apk",
-          ResponseContentDisposition: 'attachment; filename="Teamstuff.apk"',
+          ResponseContentDisposition: 'attachment; filename="CapOasis.apk"',
         }),
         { expiresIn: 900 } // 15 minutes — enough time to download
       );

@@ -109,7 +109,7 @@ export default function EndVisitModal({
           uploadedUrl = photoDataUrl;
         }
       } catch (uploadErr) {
-        console.warn("Cloudinary upload fallback:", uploadErr);
+        console.warn("R2 upload fallback:", uploadErr);
         uploadedUrl = photoDataUrl;
       }
 

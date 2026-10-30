@@ -12,10 +12,11 @@ import {
   Star,
   CheckCircle,
 } from "lucide-react";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/performance")({
   head: () => ({
-    title: "Performance & KRA Reports | Teamstuff",
+    title: getDynamicPageTitle("Performance & KRA"),
     meta: [
       { name: "description", content: "KRA Reports." },
       { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1" },

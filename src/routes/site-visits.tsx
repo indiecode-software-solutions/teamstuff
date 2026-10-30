@@ -28,10 +28,11 @@ import { sanitizeProfilePhoto } from "../lib/profile-photo";
 import StartVisitModal from "../components/StartVisitModal";
 import EndVisitModal from "../components/EndVisitModal";
 import VisitDetailsModal from "../components/VisitDetailsModal";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/site-visits")({
   head: () => ({
-    title: "Teamstuff | Field Visits",
+    title: getDynamicPageTitle("Field Visits"),
     meta: [
       {
         name: "description",

@@ -9,10 +9,11 @@ import {
   StorageLedger,
   FileAuditLog,
 } from "../lib/cloud-drive";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/admin-console/settings")({
   head: () => ({
-    title: "Teamstuff | Admin Settings",
+    title: getDynamicPageTitle("Admin Settings"),
     meta: [{ name: "description", content: "System administration settings." }],
   }),
   component: AdminConsoleSettingsPage,

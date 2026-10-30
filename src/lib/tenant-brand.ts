@@ -41,17 +41,49 @@ const RESERVED_SUBDOMAINS = new Set([
   "corporate-intranet",
 ]);
 
+export const PLATFORM_ROOT_DOMAINS = [
+  "teamstuff.com",
+  "teamstuff.in",
+  "yoovaventures.com",
+  "capoasis.in",
+  "capoasis.com",
+];
+
+export const PLATFORM_PREVIEW_SUFFIXES = [
+  ".vercel.app",
+  ".lovable.app",
+  ".pages.dev",
+  ".netlify.app",
+  ".onrender.com",
+  ".railway.app",
+];
+
 /**
- * Extract tenant slug from a plain hostname string (no window required).
+ * Extract tenant slug or custom domain from a plain hostname string (no window required).
  * Works on both server (SSR) and client.
  * Supports:
- * - Subdomain: acme.yoovaventures.com -> "acme"
+ * - Subdomain: acme.teamstuff.com -> "acme"
+ * - Subdomain: acme.teamstuff.in -> "acme"
  * - Localhost subdomain: acme.localhost -> "acme"
+ * - Custom White-Label Domain: internals.salado.in -> "internals.salado.in"
+ * - Custom White-Label Subdomain: app.salado.in -> "app.salado.in"
  */
 export function extractTenantSlugFromHostStr(host: string): string | null {
   try {
-    // Strip port if present (e.g. localhost:3000)
-    const hostname = host.split(":")[0].toLowerCase();
+    // Strip port if present (e.g. localhost:3000, internals.salado.in:8080)
+    let hostname = host.split(":")[0].toLowerCase().trim();
+    if (!hostname) return null;
+
+    // Strip leading www. if present (e.g. www.internals.salado.in -> internals.salado.in)
+    if (hostname.startsWith("www.")) {
+      hostname = hostname.slice(4);
+    }
+
+    // Direct localhost or loopback IP -> not a tenant
+    if (hostname === "localhost" || hostname === "127.0.0.1" || hostname === "0.0.0.0") {
+      return null;
+    }
+
     const parts = hostname.split(".");
 
     // Case: acme.localhost
@@ -60,18 +92,14 @@ export function extractTenantSlugFromHostStr(host: string): string | null {
       return RESERVED_SUBDOMAINS.has(sub) ? null : sub;
     }
 
-    // Platform deployment domains: *.vercel.app, *.lovable.app, *.pages.dev, *.netlify.app, etc.
+    // Platform deployment domains: *.vercel.app, *.lovable.app, *.pages.dev, etc.
     // e.g. teamstuff.vercel.app has 3 parts (project.vercel.app) where the first part is the app name, NOT a tenant.
     // A tenant on a platform domain would require 4+ parts (e.g. acme.teamstuff.vercel.app).
-    const isPlatformHost =
-      hostname.endsWith(".vercel.app") ||
-      hostname.endsWith(".lovable.app") ||
-      hostname.endsWith(".pages.dev") ||
-      hostname.endsWith(".netlify.app") ||
-      hostname.endsWith(".onrender.com") ||
-      hostname.endsWith(".railway.app");
+    const isPlatformPreview = PLATFORM_PREVIEW_SUFFIXES.some((suffix) =>
+      hostname.endsWith(suffix)
+    );
 
-    if (isPlatformHost) {
+    if (isPlatformPreview) {
       if (parts.length >= 4) {
         const sub = parts[0];
         return RESERVED_SUBDOMAINS.has(sub) ? null : sub;
@@ -79,10 +107,27 @@ export function extractTenantSlugFromHostStr(host: string): string | null {
       return null;
     }
 
-    // Case: acme.yoovaventures.com or acme.domain.com (3+ parts)
-    if (parts.length >= 3) {
-      const sub = parts[0];
+    // Check platform root domains (e.g. teamstuff.com, teamstuff.in, yoovaventures.com)
+    const matchingPlatformRoot = PLATFORM_ROOT_DOMAINS.find(
+      (root) => hostname === root || hostname.endsWith("." + root)
+    );
+
+    if (matchingPlatformRoot) {
+      // If visiting root domain directly (e.g. teamstuff.com or teamstuff.in), not a tenant
+      if (hostname === matchingPlatformRoot) {
+        return null;
+      }
+      // Extract tenant subdomain prefix before the platform root (e.g. "salado" from "salado.teamstuff.com")
+      const subPrefix = hostname.slice(0, -(matchingPlatformRoot.length + 1));
+      const subParts = subPrefix.split(".");
+      const sub = subParts[0];
       return RESERVED_SUBDOMAINS.has(sub) ? null : sub;
+    }
+
+    // If it has at least 2 domain segments and is NOT a platform host, it is an external custom domain!
+    // Examples: "internals.salado.in", "hrms.salado.in", "portal.salado.com", "mycompany.org"
+    if (parts.length >= 2) {
+      return hostname;
     }
   } catch (err) {
     console.warn("Failed to extract tenant from host string:", err);
@@ -214,8 +259,8 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
       if (!data) return null;
       return {
         id: data.id,
-        name: data.name || "Teamstuff",
-        shortName: data.short_name || data.name || "Teamstuff",
+        name: data.name || "CapOasis",
+        shortName: data.short_name || data.name || "CapOasis",
         tenantDomain: data.tenant_domain || null,
         brandColor: data.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: data.logo_url || null,
@@ -230,7 +275,7 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
     const compRes = await admin
       .from("companies")
       .select("id, name, short_name, tenant_domain, brand_color, logo_url, brand_tagline, login_hero_url, favicon_url, status")
-      .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.teamstuff.com,tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
+      .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.teamstuff.com,tenant_domain.ilike.${cleanSlug}.teamstuff.in,tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
       .eq("status", "active")
       .maybeSingle();
 
@@ -238,7 +283,7 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
       const fb = await admin
         .from("companies")
         .select("id, name, short_name, tenant_domain, brand_color, logo_url, brand_tagline, login_hero_url, status")
-        .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.teamstuff.com,tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
+        .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.teamstuff.com,tenant_domain.ilike.${cleanSlug}.teamstuff.in,tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
         .eq("status", "active")
         .maybeSingle();
       comp = fb.data;
@@ -249,8 +294,8 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
     if (comp) {
       return {
         id: comp.id,
-        name: comp.name || "Teamstuff",
-        shortName: comp.short_name || comp.name || "Teamstuff",
+        name: comp.name || "CapOasis",
+        shortName: comp.short_name || comp.name || "CapOasis",
         tenantDomain: comp.tenant_domain || null,
         brandColor: comp.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: comp.logo_url || null,
@@ -279,17 +324,24 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
 
     const slugNormalized = cleanSlug.replace(/[^a-z0-9]/g, "");
     const match = (allActive || []).find((c: any) => {
-      const d = (c.tenant_domain || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+      const rawDomain = (c.tenant_domain || "").toLowerCase().trim();
+      const d = rawDomain.replace(/[^a-z0-9]/g, "");
       const s = (c.short_name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
       const n = (c.name || "").toLowerCase().replace(/[^a-z0-9]/g, "");
-      return d === slugNormalized || s === slugNormalized || n === slugNormalized || d.startsWith(slugNormalized);
+      return (
+        rawDomain === cleanSlug ||
+        d === slugNormalized ||
+        s === slugNormalized ||
+        n === slugNormalized ||
+        d.startsWith(slugNormalized)
+      );
     });
 
     if (match) {
       return {
         id: match.id,
-        name: match.name || "Teamstuff",
-        shortName: match.short_name || match.name || "Teamstuff",
+        name: match.name || "CapOasis",
+        shortName: match.short_name || match.name || "CapOasis",
         tenantDomain: match.tenant_domain || null,
         brandColor: match.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: match.logo_url || null,
@@ -316,7 +368,7 @@ export async function fetchTenantBranding(tenantSlug: string): Promise<TenantBra
     const res = await supabase
       .from("companies")
       .select("id, name, short_name, tenant_domain, brand_color, logo_url, brand_tagline, login_hero_url, favicon_url")
-      .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.teamstuff.com,tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
+      .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.teamstuff.com,tenant_domain.ilike.${cleanSlug}.teamstuff.in,tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
       .eq("status", "active")
       .maybeSingle();
 
@@ -324,7 +376,7 @@ export async function fetchTenantBranding(tenantSlug: string): Promise<TenantBra
       const fallback = await supabase
         .from("companies")
         .select("id, name, short_name, tenant_domain, brand_color, logo_url, brand_tagline, login_hero_url")
-        .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.teamstuff.com,tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
+        .or(`tenant_domain.ilike.${cleanSlug},tenant_domain.ilike.${cleanSlug}.teamstuff.com,tenant_domain.ilike.${cleanSlug}.teamstuff.in,tenant_domain.ilike.${cleanSlug}.yoovaventures.com,short_name.ilike.${cleanSlug},name.ilike.${cleanSlug}`)
         .eq("status", "active")
         .maybeSingle();
       data = fallback.data;
@@ -335,8 +387,8 @@ export async function fetchTenantBranding(tenantSlug: string): Promise<TenantBra
     if (data) {
       const brand: TenantBranding = {
         id: data.id,
-        name: data.name || "Teamstuff",
-        shortName: data.short_name || data.name || "Teamstuff",
+        name: data.name || "CapOasis",
+        shortName: data.short_name || data.name || "CapOasis",
         tenantDomain: data.tenant_domain || null,
         brandColor: data.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: data.logo_url || null,
@@ -425,10 +477,38 @@ export function generateLetterFaviconSvg(
 }
 
 /**
+/**
+ * Resolves a dynamic white-label page title.
+ * - For a company tenant: "Salado | Cloud Drive"
+ * - Fallback / Loading: "Cloud Drive | Intranet" (never flashes "Teamstuff")
+ */
+export function getDynamicPageTitle(pageName?: string): string {
+  if (typeof window !== "undefined") {
+    try {
+      const tenantSlug = getTenantFromHost();
+      let brand: any = tenantSlug ? getCachedTenantBranding(tenantSlug) : null;
+      if (!brand) brand = getCachedCompanyBranding();
+      const rawShortName = (brand?.shortName || brand?.name || "").trim();
+      const isCustomCompany =
+        rawShortName.length > 0 &&
+        rawShortName.toLowerCase() !== "teamstuff" &&
+        rawShortName.toLowerCase() !== "capoasis";
+
+      if (isCustomCompany) {
+        return pageName ? `${rawShortName} | ${pageName}` : `${rawShortName} Intranet`;
+      }
+    } catch {
+      // Fallback below
+    }
+  }
+  return pageName ? `${pageName} | Intranet` : "Intranet";
+}
+
+/**
  * Dynamically updates document.title and <link rel="icon"> / <link rel="apple-touch-icon"> in the DOM.
  * - If custom faviconUrl is provided, uses that.
  * - If not provided for a company, generates a letter-based favicon (e.g. "S" for Salado).
- * - For unbranded / root domain: title is "Teamstuff", favicon is "/teamstuff_icon_logo.png".
+ * - Never forces "Teamstuff" on tenant subdomains or company views.
  */
 export function applyBrowserWhiteLabel(
   brand?: {
@@ -437,25 +517,33 @@ export function applyBrowserWhiteLabel(
     faviconUrl?: string | null;
     brandColor?: string | null;
   } | null,
+  pageTitle?: string,
 ) {
   if (typeof document === "undefined") return;
 
-  const defaultTitle = "Teamstuff";
-  const defaultFavicon = "/teamstuff_icon_logo.png";
-
   const rawShortName = (brand?.shortName || brand?.name || "").trim();
   const isCustomCompany =
-    rawShortName.length > 0 && rawShortName.toLowerCase() !== "teamstuff" && rawShortName.toLowerCase() !== "capoasis";
+    rawShortName.length > 0 &&
+    rawShortName.toLowerCase() !== "teamstuff" &&
+    rawShortName.toLowerCase() !== "capoasis";
 
-  const title = isCustomCompany ? `${rawShortName} Intranet` : defaultTitle;
-  
+  let title: string;
+  if (isCustomCompany) {
+    title = pageTitle ? `${rawShortName} | ${pageTitle}` : `${rawShortName} Intranet`;
+  } else if (pageTitle) {
+    title = `${pageTitle} | Intranet`;
+  } else {
+    title = "Intranet";
+  }
+
   let favicon: string;
   if (brand?.faviconUrl?.trim()) {
     favicon = brand.faviconUrl.trim();
   } else if (isCustomCompany) {
     favicon = generateLetterFaviconSvg(rawShortName, brand?.brandColor || undefined);
   } else {
-    favicon = defaultFavicon;
+    // Generate a sleek neutral corporate favicon or use default
+    favicon = generateLetterFaviconSvg("I", brand?.brandColor || "#18181B");
   }
 
   // Update title

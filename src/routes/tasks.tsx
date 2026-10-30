@@ -97,6 +97,8 @@ function formatRelativeDue(dateStr?: string): { text: string; className: string 
   }
 }
 
+import { getDynamicPageTitle } from "../lib/tenant-brand";
+
 export const Route = createFileRoute("/tasks")({
   validateSearch: (search: Record<string, unknown>) => {
     return {
@@ -104,11 +106,11 @@ export const Route = createFileRoute("/tasks")({
     };
   },
   head: () => ({
-    title: "Teamstuff | Tasks",
+    title: getDynamicPageTitle("Tasks"),
     meta: [
       {
         name: "description",
-        content: "Kanban Task Workspace for Teamstuff.",
+        content: "Kanban Task Workspace.",
       },
     ],
   }),

@@ -674,9 +674,9 @@ function MasterPage() {
         {/* Sidebar Header */}
         <div className="master-sidebar-header">
           <div className="master-sidebar-brand">
-            <img src="/teamstuff_icon_logo.png" alt="Teamstuff" className="master-sidebar-logo" />
+            <img src="/teamstuff_icon_logo.png" alt="CapOasis" className="master-sidebar-logo" />
             <div>
-              <h2 className="master-sidebar-title">Teamstuff</h2>
+              <h2 className="master-sidebar-title">CapOasis</h2>
               <p className="master-sidebar-tag">Master Console</p>
             </div>
           </div>
@@ -1059,8 +1059,19 @@ function MasterPage() {
                                     </div>
                                   </td>
                                   <td>
-                                    <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "#52525b" }}>
-                                      {c.tenant_domain ? (c.tenant_domain.includes(".") ? c.tenant_domain : `${c.tenant_domain}.teamstuff.com`) : "default"}
+                                    <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.75rem", color: "#52525b", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}>
+                                      {c.tenant_domain ? (
+                                        c.tenant_domain.includes(".") ? (
+                                          <>
+                                            <span style={{ fontSize: "0.6875rem", padding: "1px 5px", background: "#f0fdf4", color: "#166534", border: "1px solid #bbf7d0", borderRadius: 3 }}>Custom</span>
+                                            {c.tenant_domain}
+                                          </>
+                                        ) : (
+                                          `${c.tenant_domain}.capoasis.com`
+                                        )
+                                      ) : (
+                                        "default"
+                                      )}
                                     </span>
                                   </td>
                                   <td>
@@ -1192,15 +1203,29 @@ function MasterPage() {
                     </div>
 
                     <div className="master-field">
-                      <label className="master-label">Tenant Subdomain Slug</label>
+                      <label className="master-label">Tenant Subdomain or Custom Domain</label>
                       <input
                         type="text"
-                        placeholder="acme"
+                        placeholder="e.g. acme or internals.salado.in"
                         value={form.tenantDomain}
                         onChange={(e) => setForm((f) => ({ ...f, tenantDomain: e.target.value.toLowerCase().replace(/[^a-z0-9-.]/g, "") }))}
                         className="master-input"
                       />
-                      <span className="master-field-hint">{form.tenantDomain ? `${form.tenantDomain}.teamstuff.com` : "Default domain fallback"}</span>
+                      <span className="master-field-hint" style={{ lineHeight: 1.4 }}>
+                        {form.tenantDomain ? (
+                          form.tenantDomain.includes(".") ? (
+                            <span style={{ color: "#166534" }}>
+                              🌐 <b>Custom White-Label Domain:</b> https://{form.tenantDomain} (Client sets CNAME &rarr; your deployment host)
+                            </span>
+                          ) : (
+                            <span>
+                              🏢 <b>Subdomain:</b> https://{form.tenantDomain}.capoasis.com
+                            </span>
+                          )
+                        ) : (
+                          "Default domain fallback (or enter custom domain like internals.salado.in)"
+                        )}
+                      </span>
                     </div>
 
                     <div className="master-field">
@@ -1428,10 +1453,10 @@ function MasterPage() {
               />
 
               <div className="master-field">
-                <label className="master-label">Tenant Subdomain Slug</label>
+                <label className="master-label">Tenant Subdomain or Custom Domain</label>
                 <input
                   type="text"
-                  placeholder="acme"
+                  placeholder="e.g. acme or internals.salado.in"
                   value={form.tenantDomain}
                   onChange={(e) =>
                     setForm((f) => ({
@@ -1441,6 +1466,21 @@ function MasterPage() {
                   }
                   className="master-input"
                 />
+                <span className="master-field-hint" style={{ lineHeight: 1.4, marginTop: 4 }}>
+                  {form.tenantDomain ? (
+                    form.tenantDomain.includes(".") ? (
+                      <span style={{ color: "#166534" }}>
+                        🌐 <b>Custom White-Label Domain:</b> https://{form.tenantDomain} (Client sets CNAME &rarr; your deployment host)
+                      </span>
+                    ) : (
+                      <span>
+                        🏢 <b>Subdomain:</b> https://{form.tenantDomain}.capoasis.com
+                      </span>
+                    )
+                  ) : (
+                    "Default domain fallback (or enter custom domain like internals.salado.in)"
+                  )}
+                </span>
               </div>
 
               <div className="master-field">

@@ -30,10 +30,11 @@ import {
   type CompanyHoliday,
 } from "../lib/leave";
 import { formatApprovalAmount } from "../lib/approvals";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/calendar")({
   head: () => ({
-    title: "Teamstuff | Calendar",
+    title: getDynamicPageTitle("Calendar"),
     meta: [
       {
         name: "description",

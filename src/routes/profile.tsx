@@ -68,11 +68,12 @@ import {
 } from "../lib/safelock";
 import { SafeLockSetupModal } from "../components/SafeLockSetupModal";
 import { ProfileExitSection } from "../components/hr/ProfileExitSection";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Teamstuff | My Profile" },
+      { title: getDynamicPageTitle("My Profile") },
       { name: "description", content: "Executive employee profile overview." },
     ],
   }),

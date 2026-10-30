@@ -12,10 +12,11 @@ import {
   TooltipTrigger,
 } from "../components/ui/tooltip";
 import { supabase } from "../lib/supabase";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/admin-console/attendance")({
   head: () => ({
-    title: "Teamstuff | Company Attendance Logs",
+    title: getDynamicPageTitle("Attendance Logs"),
     meta: [{ name: "description", content: "Review and track company employee attendance logs." }],
   }),
   component: AdminAttendanceLogs,

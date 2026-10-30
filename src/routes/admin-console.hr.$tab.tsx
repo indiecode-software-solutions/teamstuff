@@ -2,10 +2,11 @@ import React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import HRWorkspaceSection, { HR_TABS, hrTabFromSlug } from "../components/hr/HRWorkspaceSection";
 import type { HRTabKey } from "../components/hr/HRWorkspaceTabs";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/admin-console/hr/$tab")({
   head: () => ({
-    title: "Teamstuff | Admin Console — HR",
+    title: getDynamicPageTitle("Admin Console — HR"),
     meta: [{ name: "description", content: "HR management inside the admin console." }],
   }),
   component: AdminConsoleHrTab,

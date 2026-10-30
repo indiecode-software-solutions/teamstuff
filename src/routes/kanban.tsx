@@ -128,6 +128,8 @@ interface KanbanSearchParams {
   shareToken?: string | undefined;
 }
 
+import { getDynamicPageTitle } from "../lib/tenant-brand";
+
 export const Route = createFileRoute("/kanban")({
   validateSearch: (search: Record<string, unknown>): KanbanSearchParams => {
     return {
@@ -137,7 +139,7 @@ export const Route = createFileRoute("/kanban")({
     };
   },
   head: () => ({
-    title: "Teamstuff | Kanban Workspace",
+    title: getDynamicPageTitle("Kanban Workspace"),
     meta: [
       {
         name: "description",

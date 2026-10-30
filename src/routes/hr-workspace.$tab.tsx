@@ -2,10 +2,11 @@ import React from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import HRWorkspaceSection, { HR_TABS, hrTabFromSlug } from "../components/hr/HRWorkspaceSection";
 import type { HRTabKey } from "../components/hr/HRWorkspaceTabs";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/hr-workspace/$tab")({
   head: () => ({
-    title: "Teamstuff | HR Workspace",
+    title: getDynamicPageTitle("HR Workspace"),
     meta: [{ name: "description", content: "Human Resources Management Workspace." }],
   }),
   component: HRWorkspaceTabPage,

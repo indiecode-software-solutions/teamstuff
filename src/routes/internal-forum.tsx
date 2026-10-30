@@ -53,6 +53,8 @@ import {
   Compass,
 } from "lucide-react";
 
+import { getDynamicPageTitle } from "../lib/tenant-brand";
+
 export const Route = createFileRoute("/internal-forum")({
   validateSearch: (search: Record<string, unknown>): { post?: string } => {
     const raw = search["post"];
@@ -60,7 +62,7 @@ export const Route = createFileRoute("/internal-forum")({
     return typeof post === "string" ? { post } : {};
   },
   head: () => ({
-    title: "Teamstuff | Forum",
+    title: getDynamicPageTitle("Company Forum"),
     meta: [
       {
         name: "description",

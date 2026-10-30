@@ -36,14 +36,15 @@ import {
   type PolicyCategory,
 } from "../lib/policies";
 import { supabase } from "../lib/supabase";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/resources/hr-policies")({
   head: () => ({
-    title: "Teamstuff | HR Policies & Handbook",
+    title: getDynamicPageTitle("HR Policies & Handbook"),
     meta: [
       {
         name: "description",
-        content: "Official guidelines, leave policies, code of conduct, and employee compliance handbook at Teamstuff.",
+        content: "Official guidelines, leave policies, code of conduct, and employee compliance handbook.",
       },
     ],
   }),

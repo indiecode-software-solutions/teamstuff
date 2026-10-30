@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import crypto from "node:crypto";
 import { supabase } from "./supabase";
 import { migrateCompanyR2Prefix } from "./cloud-drive";
+import { getR2Path, uploadR2Base64 } from "./r2-storage";
 
 export type CompanyLogoDisplay = "logo_and_name" | "logo_only";
 
@@ -66,7 +67,7 @@ export function getCachedCompanyBranding(): CompanyBranding | null {
 
 /**
  * Load the signed-in user's company branding (name, short name, logo URL and
- * the sidebar display preference). Falls back to a neutral Teamstuff brand.
+ * the sidebar display preference). Falls back to a neutral CapOasis brand.
  */
 export async function getCompanyBranding(): Promise<CompanyBranding | null> {
   let targetCompanyId: string | null = null;
@@ -117,8 +118,8 @@ export async function getCompanyBranding(): Promise<CompanyBranding | null> {
 
     const branding: CompanyBranding | null = comp
       ? {
-          name: comp.name || "Teamstuff",
-          shortName: comp.short_name || comp.name || "Teamstuff",
+          name: comp.name || "CapOasis",
+          shortName: comp.short_name || comp.name || "CapOasis",
           logoUrl: comp.logo_url || null,
           logoDisplay: (comp.logo_display as CompanyLogoDisplay) || null,
           brandColor: comp.brand_color || "#059669",
@@ -148,8 +149,8 @@ export async function getCompanyBranding(): Promise<CompanyBranding | null> {
           .maybeSingle();
         if (fallbackComp) {
           const branding: CompanyBranding = {
-            name: fallbackComp.name || "Teamstuff",
-            shortName: fallbackComp.short_name || fallbackComp.name || "Teamstuff",
+            name: fallbackComp.name || "CapOasis",
+            shortName: fallbackComp.short_name || fallbackComp.name || "CapOasis",
             logoUrl: fallbackComp.logo_url || null,
             logoDisplay: (fallbackComp.logo_display as CompanyLogoDisplay) || null,
             brandColor: fallbackComp.brand_color || "#059669",
@@ -170,44 +171,29 @@ export async function getCompanyBranding(): Promise<CompanyBranding | null> {
 }
 
 /**
- * Upload the company logo to the company's asset folder on Cloudinary
- * (auto-created: Intranet/companies/<companyId>/assets/logo).
+ * Upload the company logo to the company's branding folder on Cloudflare R2
+ * (companies/<companyId>/branding/logo_<timestamp>.webp).
  */
 export const uploadCompanyLogo = createServerFn({ method: "POST" })
   .validator((d: { base64Data: string; companyId: string }) => d)
   .handler(async ({ data }) => {
     const { base64Data, companyId } = data;
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const folder = `Intranet/companies/${companyId}/assets/logo`;
-    const apiSecret = process.env["CLOUDINARY_API_SECRET"] || "TqdPN3VMRk_eQbUjnC1mz-4MwI0";
-    const apiKey = process.env["CLOUDINARY_API_KEY"] || "122886755481348";
-    const cloudName = process.env["CLOUDINARY_CLOUD_NAME"] || "dfqyaawjv";
-
-    const signatureStr = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
-    const signature = crypto.createHash("sha1").update(signatureStr).digest("hex");
-
-    const formData = new FormData();
-    formData.append("file", base64Data);
-    formData.append("api_key", apiKey);
-    formData.append("timestamp", timestamp.toString());
-    formData.append("folder", folder);
-    formData.append("signature", signature);
+    const key = getR2Path.companyLogo(companyId, "webp");
 
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-        method: "POST",
-        body: formData,
+      const res = await uploadR2Base64({
+        key,
+        base64Data,
+        contentType: "image/webp",
       });
 
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Cloudinary API returned status ${res.status}: ${errText}`);
+      if (!res.success) {
+        throw new Error(res.error || "R2 company logo upload failed");
       }
 
-      const json = await res.json();
-      return { success: true, secure_url: json.secure_url as string };
+      return { success: true, secure_url: res.url };
     } catch (err: any) {
-      console.error("Cloudinary company logo upload error:", err.message);
+      console.error("R2 company logo upload error:", err.message);
       return { success: false, error: err.message };
     }
   });

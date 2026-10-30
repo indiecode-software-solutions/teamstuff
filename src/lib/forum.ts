@@ -4,6 +4,7 @@ import { sanitizeProfilePhoto } from "./profile-photo";
 import { createServerFn } from "@tanstack/react-start";
 import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
+import { getR2Path, uploadR2Base64 } from "./r2-storage";
 
 export interface ForumComment {
   id: string;
@@ -65,44 +66,29 @@ export interface ForumPost {
 }
 
 /**
- * Server function to securely upload post attachments to Cloudinary
+ * Server function to securely upload post attachments to Cloudflare R2
+ * (companies/<companyId>/forum/<userId>/<timestamp>_post_attachment.webp)
  */
 export const uploadForumImage = createServerFn({ method: "POST" })
   .validator((d: { base64Data: string; companyId: string; userId: string }) => d)
   .handler(async ({ data }) => {
     const { base64Data, companyId, userId } = data;
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const folder = `Intranet/companies/${companyId}/users/${userId}/posts`;
-    const apiSecret = "TqdPN3VMRk_eQbUjnC1mz-4MwI0";
-    const apiKey = "122886755481348";
-    const cloudName = "dfqyaawjv";
-
-    // Sort parameters alphabetically to sign
-    const signatureStr = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
-    const signature = crypto.createHash("sha1").update(signatureStr).digest("hex");
-
-    const formData = new FormData();
-    formData.append("file", base64Data);
-    formData.append("api_key", apiKey);
-    formData.append("timestamp", timestamp.toString());
-    formData.append("folder", folder);
-    formData.append("signature", signature);
+    const key = getR2Path.forumAttachment(companyId, userId, "post_attachment.webp");
 
     try {
-      const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
-        method: "POST",
-        body: formData,
+      const res = await uploadR2Base64({
+        key,
+        base64Data,
+        contentType: "image/webp",
       });
 
-      if (!res.ok) {
-        const errText = await res.text();
-        throw new Error(`Cloudinary API returned status ${res.status}: ${errText}`);
+      if (!res.success) {
+        throw new Error(res.error || "R2 forum image upload failed");
       }
 
-      const json = await res.json();
-      return { success: true, secure_url: json.secure_url };
+      return { success: true, secure_url: res.url };
     } catch (err: any) {
-      console.error("❌ Cloudinary Upload Error:", err.message);
+      console.error("❌ R2 Forum Upload Error:", err.message);
       return { success: false, error: err.message };
     }
   });

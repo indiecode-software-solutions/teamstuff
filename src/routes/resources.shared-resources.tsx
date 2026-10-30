@@ -25,14 +25,15 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/resources/shared-resources")({
   head: () => ({
-    title: "Teamstuff | Shared Resources & Credentials Vault",
+    title: getDynamicPageTitle("Shared Resources & Credentials Vault"),
     meta: [
       {
         name: "description",
-        content: "Access and manage company-wide credentials, tool accounts, and internal services at Teamstuff.",
+        content: "Access and manage company-wide credentials, tool accounts, and internal services.",
       },
     ],
   }),

@@ -25,14 +25,15 @@ import {
 import { getMyCompanyId, getCompanyTrainingSections, type TrainingBlock } from "../lib/induction";
 import { supabase } from "../lib/supabase";
 import { sanitizeProfilePhoto } from "../lib/profile-photo";
+import { getDynamicPageTitle } from "../lib/tenant-brand";
 
 export const Route = createFileRoute("/resources/induction")({
   head: () => ({
-    title: "Teamstuff | Onboarding & Induction Journey",
+    title: getDynamicPageTitle("Onboarding & Induction"),
     meta: [
       {
         name: "description",
-        content: "Complete your employee onboarding journey, company orientation, and training modules at Teamstuff.",
+        content: "Complete your employee onboarding journey, company orientation, and training modules.",
       },
     ],
   }),

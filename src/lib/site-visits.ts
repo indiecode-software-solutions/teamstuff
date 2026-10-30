@@ -2,6 +2,7 @@ import { supabase } from "./supabase";
 import { getCurrentCoordinates } from "./geolocation";
 import { createServerFn } from "@tanstack/react-start";
 import crypto from "crypto";
+import { getR2Path, uploadR2Base64 } from "./r2-storage";
 
 export type TravelModeKey = "two_wheeler" | "four_wheeler" | "public_transport" | "walking" | "other";
 
@@ -155,45 +156,29 @@ export async function reverseGeocodeCoords(lat: number, lng: number): Promise<st
 }
 
 /**
- * Server function to securely upload site visit photos to Cloudinary
+ * Server function to securely upload site visit photos to Cloudflare R2
+ * (companies/<companyId>/site_visits/<userId>/<visitId>_<type>_<timestamp>.jpg)
  */
 export const uploadVisitPhoto = createServerFn({ method: "POST" })
   .validator((d: { base64Data: string; companyId: string; userId: string; visitId?: string }) => d)
   .handler(async ({ data }) => {
     const { base64Data, companyId, userId, visitId } = data;
-    const timestamp = Math.round(new Date().getTime() / 1000);
-    const folder = `Intranet/companies/${companyId}/users/${userId}/site_visits`;
-    const apiSecret = "TqdPN3VMRk_eQbUjnC1mz-4MwI0";
-    const apiKey = "122886755481348";
-    const cloudName = "dfqyaawjv";
-
-    // Sort parameters alphabetically to sign
-    const signatureStr = `folder=${folder}&timestamp=${timestamp}${apiSecret}`;
-    const signature = crypto.createHash("sha1").update(signatureStr).digest("hex");
-
-    const formData = new FormData();
-    formData.append("file", base64Data);
-    formData.append("api_key", apiKey);
-    formData.append("timestamp", timestamp.toString());
-    formData.append("signature", signature);
-    formData.append("folder", folder);
+    const key = getR2Path.siteVisitPhoto(companyId, userId, visitId || "active", "selfie", "jpg");
 
     try {
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const res = await uploadR2Base64({
+        key,
+        base64Data,
+        contentType: "image/jpeg",
+      });
 
-      const resData = await response.json();
-      if (resData.secure_url) {
-        return { success: true, url: resData.secure_url };
+      if (!res.success) {
+        return { success: false, error: res.error || "R2 site visit photo upload failed" };
       }
-      return { success: false, error: resData.error?.message || "Upload failed" };
+
+      return { success: true, url: res.url };
     } catch (e: any) {
-      console.error("Cloudinary upload failed for site visit:", e);
+      console.error("R2 upload failed for site visit:", e);
       return { success: false, error: e.message || "Failed to upload photo" };
     }
   });
