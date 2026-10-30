@@ -46,11 +46,7 @@ export const Route = createFileRoute("/pricing")({
 function BrandLogo() {
   return (
     <a href="/" className="pricing-brand-link">
-      <img
-        src="/teamstuff_logo.png"
-        alt="CapOasis"
-        className="pricing-brand-img"
-      />
+      <span className="pricing-brand-text">CapOasis Intranet</span>
     </a>
   );
 }
