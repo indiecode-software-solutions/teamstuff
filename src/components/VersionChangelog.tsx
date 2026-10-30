@@ -102,7 +102,7 @@ export default function VersionChangelogDialog({
                 Changelog
               </Dialog.Title>
               <p className="modal-desc">
-                Teamstuff · What's new, version by version
+                Indiecode HRMS · What's new, version by version
               </p>
             </div>
             <button

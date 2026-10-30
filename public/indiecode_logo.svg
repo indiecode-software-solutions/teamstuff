@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 48" width="240" height="48" fill="none">
+  <!-- Icon Mark -->
+  <rect x="2" y="6" width="36" height="36" rx="9" fill="#18181b" stroke="#27272a" stroke-width="1" />
+  <rect x="18" y="15" width="4.5" height="18" rx="2" fill="#ffffff" />
+  <circle cx="20.25" cy="12" r="1.5" fill="#3b82f6" />
+  
+  <!-- "Indiecode" Wordmark -->
+  <text x="48" y="27" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif" font-size="18" font-weight="600" fill="#09090b" letter-spacing="-0.02em">
+    Indiecode
+  </text>
+  
+  <!-- "HRMS" Badge -->
+  <rect x="156" y="15" width="54" height="18" rx="4" fill="#f4f4f5" stroke="#e4e4e7" stroke-width="0.8" />
+  <text x="183" y="27.5" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif" font-size="10" font-weight="600" fill="#71717a" text-anchor="middle" letter-spacing="0.05em">
+    HRMS
+  </text>
+</svg>

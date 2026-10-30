@@ -756,7 +756,7 @@ export default function Layout({
                   />
                 ) : (
                   <span className="mobile-header-title">
-                    {branding?.shortName || "Teamstuff"}
+                    {branding?.shortName || "Indiecode"}
                   </span>
                 )
               ) : activeMobileTab === "AI Workplace" || location.pathname.startsWith("/ai-workplace") ? (
@@ -1315,7 +1315,7 @@ export default function Layout({
                         if ("url" in result) {
                           const a = document.createElement("a");
                           a.href = result.url;
-                          a.download = "Teamstuff.apk";
+                          a.download = "Indiecode-HRMS.apk";
                           document.body.appendChild(a);
                           a.click();
                           document.body.removeChild(a);
@@ -1383,7 +1383,7 @@ export default function Layout({
                   title={branding?.shortName || "Dashboard"}
                 >
                   <div className="app-brand-badge">
-                    {(branding?.shortName || "T").charAt(0).toUpperCase()}
+                    {(branding?.shortName || "I").charAt(0).toUpperCase()}
                   </div>
                 </button>
               ) : (
@@ -1401,13 +1401,13 @@ export default function Layout({
                       />
                       {branding.logoDisplay === "logo_only" ? null : (
                         <span className="app-brand-title">
-                          {branding?.shortName || "Teamstuff"}
+                          {branding?.shortName || "Indiecode"}
                         </span>
                       )}
                     </>
                   ) : (
                     <span className="app-brand-title">
-                      {branding?.shortName || "Teamstuff"}
+                      {branding?.shortName || "Indiecode"}
                     </span>
                   )}
                 </button>

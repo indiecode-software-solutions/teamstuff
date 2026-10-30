@@ -43,6 +43,8 @@ const RESERVED_SUBDOMAINS = new Set([
 ]);
 
 export const PLATFORM_ROOT_DOMAINS = [
+  "hrms.indiecode.in",
+  "indiecode.in",
   "teamstuff.com",
   "teamstuff.in",
   "yoovaventures.com",
@@ -178,31 +180,26 @@ export function resolveTenantPortalUrl(tenantDomain?: string | null): {
   url: string;
   displayUrl: string;
 } {
-  const rootDomain = "teamstuff.com";
+  const rootDomain = "hrms.indiecode.in";
   const raw = (tenantDomain || "")
     .trim()
     .toLowerCase()
     .replace(/^https?:\/\//, "")
     .replace(/\/+$/, "");
 
-  if (!raw || raw === rootDomain) {
-    return {
-      url: `https://${rootDomain}`,
-      displayUrl: rootDomain,
-    };
-  }
-
-  if (raw.includes(".")) {
+  // If a custom white-label domain is configured (e.g. intranet.theircompany.com)
+  if (raw && raw.includes(".")) {
     return {
       url: `https://${raw}`,
       displayUrl: raw,
     };
   }
 
-  const fullDomain = `${raw}.${rootDomain}`;
+  // Pure white-label architecture: no tenant subdomains under indiecode.in
+  // Base platform is hrms.indiecode.in
   return {
-    url: `https://${fullDomain}`,
-    displayUrl: fullDomain,
+    url: `https://${rootDomain}`,
+    displayUrl: rootDomain,
   };
 }
 
@@ -260,8 +257,8 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
       if (!data) return null;
       return {
         id: data.id,
-        name: data.name || "Teamstuff",
-        shortName: data.short_name || data.name || "Teamstuff",
+        name: data.name || "Indiecode HRMS",
+        shortName: data.short_name || data.name || "Indiecode",
         tenantDomain: data.tenant_domain || null,
         brandColor: data.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: data.logo_url || null,
@@ -295,8 +292,8 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
     if (comp) {
       return {
         id: comp.id,
-        name: comp.name || "Teamstuff",
-        shortName: comp.short_name || comp.name || "Teamstuff",
+        name: comp.name || "Indiecode HRMS",
+        shortName: comp.short_name || comp.name || "Indiecode",
         tenantDomain: comp.tenant_domain || null,
         brandColor: comp.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: comp.logo_url || null,
@@ -341,8 +338,8 @@ export const fetchTenantBrandingServerFn = createServerFn({ method: "POST" })
     if (match) {
       return {
         id: match.id,
-        name: match.name || "Teamstuff",
-        shortName: match.short_name || match.name || "Teamstuff",
+        name: match.name || "Indiecode HRMS",
+        shortName: match.short_name || match.name || "Indiecode",
         tenantDomain: match.tenant_domain || null,
         brandColor: match.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: match.logo_url || null,
@@ -388,8 +385,8 @@ export async function fetchTenantBranding(tenantSlug: string): Promise<TenantBra
     if (data) {
       const brand: TenantBranding = {
         id: data.id,
-        name: data.name || "Teamstuff",
-        shortName: data.short_name || data.name || "Teamstuff",
+        name: data.name || "Indiecode HRMS",
+        shortName: data.short_name || data.name || "Indiecode",
         tenantDomain: data.tenant_domain || null,
         brandColor: data.brand_color || DEFAULT_BRAND_COLOR,
         logoUrl: data.logo_url || null,
@@ -492,7 +489,9 @@ export function getDynamicPageTitle(pageName?: string): string {
       const rawShortName = (brand?.shortName || brand?.name || "").trim();
       const isCustomCompany =
         rawShortName.length > 0 &&
-        rawShortName.toLowerCase() !== "teamstuff";
+        rawShortName.toLowerCase() !== "teamstuff" &&
+        rawShortName.toLowerCase() !== "indiecode" &&
+        rawShortName.toLowerCase() !== "indiecode hrms";
 
       if (isCustomCompany) {
         return pageName ? `${rawShortName} | ${pageName}` : `${rawShortName} HRMS`;
@@ -501,7 +500,7 @@ export function getDynamicPageTitle(pageName?: string): string {
       // Fallback below
     }
   }
-  return pageName ? `${pageName} | HRMS` : "HRMS";
+  return pageName ? `${pageName} | Indiecode HRMS` : "Indiecode HRMS";
 }
 
 /**
@@ -524,15 +523,17 @@ export function applyBrowserWhiteLabel(
   const rawShortName = (brand?.shortName || brand?.name || "").trim();
   const isCustomCompany =
     rawShortName.length > 0 &&
-    rawShortName.toLowerCase() !== "teamstuff";
+    rawShortName.toLowerCase() !== "teamstuff" &&
+    rawShortName.toLowerCase() !== "indiecode" &&
+    rawShortName.toLowerCase() !== "indiecode hrms";
 
   let title: string;
   if (isCustomCompany) {
     title = pageTitle ? `${rawShortName} | ${pageTitle}` : `${rawShortName} HRMS`;
   } else if (pageTitle) {
-    title = `${pageTitle} | HRMS`;
+    title = `${pageTitle} | Indiecode HRMS`;
   } else {
-    title = "HRMS";
+    title = "Indiecode HRMS";
   }
 
   let favicon: string;

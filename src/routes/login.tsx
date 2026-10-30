@@ -42,7 +42,11 @@ export const Route = createFileRoute("/login")({
     const brand = getBrandConfig();
     const tenantBrand = loaderData?.branding;
     const rawShortName = (tenantBrand?.shortName || tenantBrand?.name || "").trim();
-    const isCustomCompany = rawShortName.length > 0 && rawShortName.toLowerCase() !== "teamstuff";
+    const isCustomCompany =
+      rawShortName.length > 0 &&
+      rawShortName.toLowerCase() !== "teamstuff" &&
+      rawShortName.toLowerCase() !== "indiecode" &&
+      rawShortName.toLowerCase() !== "indiecode hrms";
     const title = isCustomCompany ? `${rawShortName} HRMS` : brand.appName;
     const favicon = tenantBrand?.faviconUrl?.trim()
       ? tenantBrand.faviconUrl.trim()
@@ -182,7 +186,7 @@ function LoginPage() {
 
   const brandName = isTenantCustom
     ? (branding?.shortName || branding?.name || activeTenant?.toUpperCase())
-    : "Teamstuff";
+    : "Indiecode HRMS";
   const heroImage = (isTenantCustom && branding?.loginHeroUrl)
     ? branding.loginHeroUrl
     : "/login_hero_minimal.jpg";

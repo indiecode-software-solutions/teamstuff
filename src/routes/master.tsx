@@ -674,9 +674,9 @@ function MasterPage() {
         {/* Sidebar Header */}
         <div className="master-sidebar-header">
           <div className="master-sidebar-brand">
-            <img src="/teamstuff_icon_logo.png" alt="Teamstuff" className="master-sidebar-logo" />
+            <img src="/indiecode_icon_logo.svg" alt="Indiecode" className="master-sidebar-logo" />
             <div>
-              <h2 className="master-sidebar-title">Teamstuff</h2>
+              <h2 className="master-sidebar-title">Indiecode</h2>
               <p className="master-sidebar-tag">Master Console</p>
             </div>
           </div>
@@ -1067,10 +1067,10 @@ function MasterPage() {
                                             {c.tenant_domain}
                                           </>
                                         ) : (
-                                          `${c.tenant_domain}.teamstuff.com`
+                                          c.tenant_domain
                                         )
                                       ) : (
-                                        "default"
+                                        "hrms.indiecode.in"
                                       )}
                                     </span>
                                   </td>
@@ -1213,17 +1213,11 @@ function MasterPage() {
                       />
                       <span className="master-field-hint" style={{ lineHeight: 1.4 }}>
                         {form.tenantDomain ? (
-                          form.tenantDomain.includes(".") ? (
-                            <span style={{ color: "#166534" }}>
-                              🌐 <b>Custom White-Label Domain:</b> https://{form.tenantDomain} (Client sets CNAME &rarr; your deployment host)
-                            </span>
-                          ) : (
-                            <span>
-                              🏢 <b>Subdomain:</b> https://{form.tenantDomain}.teamstuff.com
-                            </span>
-                          )
+                          <span style={{ color: "#166534" }}>
+                            🌐 <b>Custom White-Label Domain:</b> https://{form.tenantDomain} (Client sets CNAME &rarr; your deployment host)
+                          </span>
                         ) : (
-                          "Default domain fallback (or enter custom domain like internals.salado.in)"
+                          <span>🏢 <b>Standard Platform Access:</b> https://hrms.indiecode.in</span>
                         )}
                       </span>
                     </div>
@@ -1468,17 +1462,11 @@ function MasterPage() {
                 />
                 <span className="master-field-hint" style={{ lineHeight: 1.4, marginTop: 4 }}>
                   {form.tenantDomain ? (
-                    form.tenantDomain.includes(".") ? (
-                      <span style={{ color: "#166534" }}>
-                        🌐 <b>Custom White-Label Domain:</b> https://{form.tenantDomain} (Client sets CNAME &rarr; your deployment host)
-                      </span>
-                    ) : (
-                      <span>
-                        🏢 <b>Subdomain:</b> https://{form.tenantDomain}.teamstuff.com
-                      </span>
-                    )
+                    <span style={{ color: "#166534" }}>
+                      🌐 <b>Custom White-Label Domain:</b> https://{form.tenantDomain} (Client sets CNAME &rarr; your deployment host)
+                    </span>
                   ) : (
-                    "Default domain fallback (or enter custom domain like internals.salado.in)"
+                    <span>🏢 <b>Standard Platform Access:</b> https://hrms.indiecode.in</span>
                   )}
                 </span>
               </div>

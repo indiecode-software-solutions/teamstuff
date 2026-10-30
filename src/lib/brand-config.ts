@@ -1,4 +1,4 @@
-export type BrandMode = "teamstuff";
+export type BrandMode = "indiecode" | "teamstuff";
 
 export interface BrandConfig {
   brand: BrandMode;
@@ -17,18 +17,18 @@ export interface BrandConfig {
 
 export function getBrandConfig(): BrandConfig {
   return {
-    brand: "teamstuff",
-    appName: "Teamstuff",
-    shortName: "Teamstuff",
-    tagline: "Corporate Internal Operations & HRMS Portal",
-    companyName: "Teamstuff",
-    favicon: "/teamstuff_icon_logo.png",
-    appleTouchIcon: "/teamstuff_icon_logo.png",
-    logo: "/teamstuff_logo.png",
-    logoIcon: "/teamstuff_icon_logo.png",
+    brand: "indiecode",
+    appName: "Indiecode HRMS",
+    shortName: "Indiecode",
+    tagline: "Corporate Operations & HRMS Platform by Indiecode",
+    companyName: "Indiecode Software Solutions",
+    favicon: "/indiecode_icon_logo.svg",
+    appleTouchIcon: "/indiecode_icon_logo.svg",
+    logo: "/indiecode_logo.svg",
+    logoIcon: "/indiecode_icon_logo.svg",
     showMarketingLanding: true,
     showPricing: true,
-    metaDescription: "Teamstuff — secure internal hub for team operations, attendance, tasks, and resources.",
+    metaDescription: "Indiecode HRMS — secure unified workspace for corporate operations, attendance, payroll, and teams.",
   };
 }
 

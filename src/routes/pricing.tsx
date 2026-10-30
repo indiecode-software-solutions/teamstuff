@@ -47,8 +47,8 @@ function BrandLogo() {
   return (
     <a href="/" className="pricing-brand-link">
       <img
-        src="/teamstuff_logo.png"
-        alt="Teamstuff"
+        src="/indiecode_logo.svg"
+        alt="Indiecode HRMS"
         className="pricing-brand-img"
       />
     </a>
@@ -380,7 +380,7 @@ function PricingPage() {
                       <tr>
                         <th style={{ width: "36%" }}>Features & Capabilities</th>
                         <th style={{ width: "30%" }}>Traditional HRMS</th>
-                        <th className="th-teamstuff">Teamstuff</th>
+                        <th className="th-teamstuff">Indiecode HRMS</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -637,7 +637,7 @@ function PricingPage() {
                 Frequently Asked Questions
               </h2>
               <p className="pricing-faq-subtitle">
-                Clear answers to common questions about Teamstuff pricing.
+                Clear answers to common questions about Indiecode HRMS pricing.
               </p>
             </div>
           </RevealOnScroll>
@@ -711,7 +711,7 @@ function PricingPage() {
         <div className="pricing-footer-content">
           <BrandLogo />
           <p className="pricing-footer-copy">
-            © 2026 Teamstuff. All rights reserved.
+            © 2026 Indiecode Software Solutions. All rights reserved.
           </p>
         </div>
       </footer>

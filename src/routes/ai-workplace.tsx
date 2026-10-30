@@ -472,7 +472,7 @@ export function AiWorkplacePage() {
                   </div>
                   <h2 className="ai-wp-hero-title">How can I help you today?</h2>
                   <p className="ai-wp-hero-subtitle">
-                    Ask questions, create content, analyze data, automate workflows or get things done across Teamstuff.
+                    Ask questions, create content, analyze data, automate workflows or get things done across Indiecode HRMS.
                   </p>
                 </div>
 
@@ -713,7 +713,7 @@ export function AiWorkplacePage() {
           <div className="ai-wp-trust-card">
             <Database size={18} className="ai-wp-trust-icon" />
             <div className="ai-wp-trust-texts">
-              <p className="ai-wp-trust-title">Uses Teamstuff internal data</p>
+              <p className="ai-wp-trust-title">Uses Indiecode internal data</p>
               <p className="ai-wp-trust-desc">
                 Answers are based on your company's information, documents, and live data.
               </p>

@@ -248,13 +248,13 @@ export function SettingsPageContent({
   const [newLocRadius, setNewLocRadius] = useState("100");
 
   // Company Details
-  const [companyName, setCompanyName] = useState("Teamstuff");
+  const [companyName, setCompanyName] = useState("Indiecode");
   const [companyShortName, setCompanyShortName] = useState("");
   const [companyLogo, setCompanyLogo] = useState<string | null>(null);
   const [logoDisplay, setLogoDisplay] = useState<CompanyLogoDisplay>("logo_and_name");
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const logoInputRef = useRef<HTMLInputElement | null>(null);
-  const [companyDomain, setCompanyDomain] = useState("teamstuff.com");
+  const [companyDomain, setCompanyDomain] = useState("hrms.indiecode.in");
   const [workStartTime, setWorkStartTime] = useState("09:30");
   const [workEndTime, setWorkEndTime] = useState("18:30");
   const [inductionEnabled, setInductionEnabled] = useState(true);
@@ -358,8 +358,8 @@ export function SettingsPageContent({
           .eq("id", targetCompanyId)
           .maybeSingle();
         if (comp) {
-          setCompanyName(comp.name || "Teamstuff");
-          setCompanyDomain(comp.tenant_domain || "teamstuff.com");
+          setCompanyName(comp.name || "Indiecode");
+          setCompanyDomain(comp.tenant_domain || "hrms.indiecode.in");
           setWorkStartTime(comp.default_work_start_time || "09:30");
           setWorkEndTime(comp.default_work_end_time || "18:30");
           setCompanyShortName(comp.short_name || comp.name || "");
@@ -450,7 +450,7 @@ export function SettingsPageContent({
           // Table is empty. Auto-create a default company tenant
           const { data: newCompany, error: compErr } = await supabase
             .from("companies")
-            .insert({ name: "Teamstuff", tenant_domain: "teamstuff.com" })
+            .insert({ name: "Indiecode", tenant_domain: "hrms.indiecode.in" })
             .select()
             .single();
 
@@ -458,7 +458,7 @@ export function SettingsPageContent({
           if (compErr) {
             const { data: retryCompany, error: retryErr } = await supabase
               .from("companies")
-              .insert({ name: "Teamstuff" })
+              .insert({ name: "Indiecode" })
               .select()
               .single();
             if (retryErr)
@@ -1102,12 +1102,18 @@ export function SettingsPageContent({
                     {loading ? (
                       <div className="skeleton-shimmer" style={{ width: "100%", height: "38px", borderRadius: "6px" }} />
                     ) : (
-                      <input
-                        type="text"
-                        className="settings-input"
-                        value={companyDomain}
-                        onChange={(e) => setCompanyDomain(e.target.value)}
-                      />
+                      <>
+                        <input
+                          type="text"
+                          className="settings-input"
+                          placeholder="e.g. intranet.yourcompany.com or hrms.indiecode.in"
+                          value={companyDomain}
+                          onChange={(e) => setCompanyDomain(e.target.value)}
+                        />
+                        <p style={{ fontSize: "12px", color: "#71717A", marginTop: "4px", fontWeight: 400 }}>
+                          Enter your custom white-labeled domain (e.g. <code style={{ fontSize: "11px", background: "rgba(0,0,0,0.05)", padding: "1px 4px", borderRadius: "3px" }}>intranet.yourcompany.com</code>) or leave as <code style={{ fontSize: "11px", background: "rgba(0,0,0,0.05)", padding: "1px 4px", borderRadius: "3px" }}>hrms.indiecode.in</code> for standard platform access.
+                        </p>
+                      </>
                     )}
                   </div>
 
