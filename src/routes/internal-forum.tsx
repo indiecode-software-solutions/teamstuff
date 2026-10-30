@@ -263,21 +263,24 @@ function InternalForumPage() {
 
     setIsPublishing(true);
     try {
-      const newPost = await createForumPost({
+      const ok = await createForumPost({
         companyId: userProfile.company_id,
+        authorId: userProfile.id,
         title: postTitle.trim(),
         content: postBody.trim(),
         category: postCategory as any,
         imageUrl: selectedImageBase64 || undefined,
       });
 
-      if (newPost) {
-        setThreads((prev) => [newPost, ...prev]);
+      if (ok) {
         setPostTitle("");
         setPostBody("");
         setSelectedImageBase64(null);
         setIsComposerExpanded(false);
+        await fetchInitialData();
         toast.success("Post published!");
+      } else {
+        toast.error("Failed to publish post");
       }
     } catch (err: any) {
       toast.error(err?.message || "Failed to publish post");
@@ -298,19 +301,22 @@ function InternalForumPage() {
     try {
       const created = await createForumPoll({
         companyId: userProfile.company_id,
+        authorId: userProfile.id,
         question: pollQuestion.trim(),
         description: pollDescription.trim() || undefined,
         category: pollCategory as any,
         options: validOptions,
       });
 
-      if (created) {
-        setThreads((prev) => [created, ...prev]);
+      if (created?.success) {
         setPollQuestion("");
         setPollDescription("");
         setPollOptions(["", ""]);
         setIsPollModalOpen(false);
+        await fetchInitialData();
         toast.success("Poll launched!");
+      } else {
+        toast.error(created?.error || "Failed to create poll");
       }
     } catch (err: any) {
       toast.error(err?.message || "Failed to create poll");
@@ -365,7 +371,7 @@ function InternalForumPage() {
     if (!text) return;
 
     setReplyInputs((prev) => ({ ...prev, [postId]: "" }));
-    const ok = await addForumComment(postId, text);
+    const ok = await addForumComment(postId, userProfile?.id, text);
     if (ok) {
       await fetchInitialData();
     }

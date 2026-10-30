@@ -256,7 +256,7 @@ export async function getCompanyForumPosts(
  */
 export async function createForumPost(post: {
   companyId: string;
-  authorId: string;
+  authorId?: string;
   title: string;
   content: string;
   category: "Announcements" | "General" | "Tech" | "HR" | "Events";
@@ -264,10 +264,19 @@ export async function createForumPost(post: {
   isPinned?: boolean;
 }): Promise<boolean> {
   try {
+    let authorId = post.authorId;
+    if (!authorId) {
+      const { data: authData } = await supabase.auth.getUser();
+      authorId = authData?.user?.id;
+    }
+    if (!authorId) {
+      throw new Error("You must be logged in to create a post.");
+    }
+
     const { error } = await supabase.from("forum_posts").insert([
       {
         company_id: post.companyId,
-        author_id: post.authorId,
+        author_id: authorId,
         title: post.title,
         content: post.content,
         category: post.category,
@@ -347,10 +356,29 @@ export async function toggleForumPostLike(
  */
 export async function addForumComment(
   postId: string,
-  authorId: string,
-  content: string,
+  authorIdOrContent: string,
+  maybeContent?: string,
 ): Promise<boolean> {
   try {
+    let authorId: string | undefined;
+    let content: string;
+
+    if (maybeContent !== undefined) {
+      authorId = authorIdOrContent;
+      content = maybeContent;
+    } else {
+      content = authorIdOrContent;
+    }
+
+    if (!authorId) {
+      const { data: authData } = await supabase.auth.getUser();
+      authorId = authData?.user?.id;
+    }
+
+    if (!authorId) {
+      throw new Error("You must be logged in to comment.");
+    }
+
     const { error } = await supabase.from("forum_comments").insert([
       {
         post_id: postId,
@@ -396,13 +424,22 @@ export async function addForumComment(
  */
 export async function createForumPoll(poll: {
   companyId: string;
-  authorId: string;
+  authorId?: string;
   question: string;
   description?: string;
   options: string[];
   category: "Announcements" | "General" | "Tech" | "HR" | "Events";
 }): Promise<{ success: boolean; error?: string }> {
   try {
+    let authorId = poll.authorId;
+    if (!authorId) {
+      const { data: authData } = await supabase.auth.getUser();
+      authorId = authData?.user?.id;
+    }
+    if (!authorId) {
+      return { success: false, error: "You must be logged in to create a poll." };
+    }
+
     const validOptions = poll.options.map((o) => o.trim()).filter(Boolean);
     if (validOptions.length < 2) {
       return { success: false, error: "A poll must have at least 2 options." };
@@ -422,7 +459,7 @@ export async function createForumPoll(poll: {
       .insert([
         {
           company_id: poll.companyId,
-          author_id: poll.authorId,
+          author_id: authorId,
           question: poll.question.trim(),
           description: poll.description?.trim() || null,
           options: optionsJson,
