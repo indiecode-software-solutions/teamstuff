@@ -177,14 +177,14 @@ export function resolveTenantPortalUrl(tenantDomain?: string | null): {
   url: string;
   displayUrl: string;
 } {
-  const rootDomain = "teamstuff.com";
+  const rootDomain = "intranet.capoasis.com";
   const raw = (tenantDomain || "")
     .trim()
     .toLowerCase()
     .replace(/^https?:\/\//, "")
     .replace(/\/+$/, "");
 
-  if (!raw || raw === rootDomain) {
+  if (!raw || raw === rootDomain || raw === "teamstuff.com" || raw === "teamstuff.in") {
     return {
       url: `https://${rootDomain}`,
       displayUrl: rootDomain,
@@ -198,7 +198,7 @@ export function resolveTenantPortalUrl(tenantDomain?: string | null): {
     };
   }
 
-  const fullDomain = `${raw}.${rootDomain}`;
+  const fullDomain = `${raw}.capoasis.com`;
   return {
     url: `https://${fullDomain}`,
     displayUrl: fullDomain,
