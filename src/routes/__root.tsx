@@ -1496,12 +1496,19 @@ function RootComponent() {
 
                           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                             <div>
-                              <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#09090b" }}>
-                                {req.title}
-                              </span>
-                              <span style={{ fontSize: "0.6875rem", color: req.is_mandatory ? "#71717a" : "#a1a1aa", marginLeft: "0.5rem" }}>
-                                {req.is_mandatory ? "(Required)" : "(Optional)"}
-                              </span>
+                              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                                <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#09090b" }}>
+                                  {req.name || (req as any).title || "Document"}
+                                </span>
+                                <span style={{ fontSize: "0.6875rem", color: req.is_mandatory ? "#71717a" : "#a1a1aa" }}>
+                                  {req.is_mandatory ? "(Required)" : "(Optional)"}
+                                </span>
+                              </div>
+                              {req.description && (
+                                <p style={{ fontSize: "0.6875rem", color: "#71717a", margin: "0.125rem 0 0 0", lineHeight: 1.35 }}>
+                                  {req.description}
+                                </p>
+                              )}
                             </div>
                             <button
                               type="button"
