@@ -28,7 +28,7 @@ async function sendCredentialsEmail(
     const { url: baseUrl, displayUrl: baseDisplayUrl } = resolveTenantPortalUrl(tenantDomain);
     const portalUrl = `${baseUrl.replace(/\/+$/, "")}/login`;
     const portalDisplayUrl = `${baseDisplayUrl.replace(/\/+$/, "")}/login`;
-    const from = process.env["EMAIL_FROM"] || "Teamstuff <noreply@teamstuff.com>";
+    const from = process.env["EMAIL_FROM"] || "Teamstuff <noreply@indiecode.in>";
     const resp = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
