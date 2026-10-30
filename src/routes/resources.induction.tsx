@@ -453,87 +453,62 @@ function InductionPage() {
 
   return (
     <div className="induction-page-wrapper">
-      {/* Header & Breadcrumb Card */}
-      <div className="induction-header-card">
-        <div className="induction-breadcrumb-row">
-          <Link to="/resources" className="induction-breadcrumb-link">
-            Resources
+      {/* Streamlined Top Navigation Bar */}
+      <div className="induction-top-bar">
+        <div className="induction-top-bar-left">
+          <Link
+            to="/resources"
+            className="induction-back-link"
+            title="Return to Resources"
+          >
+            <ArrowLeft size={15} />
+            <span>Resources</span>
           </Link>
-          <span className="induction-breadcrumb-sep">/</span>
-          <span className="induction-breadcrumb-current">Onboarding & Induction</span>
+          <span className="induction-top-bar-divider" />
+          <h1 className="induction-top-bar-title">Onboarding & Induction</h1>
+
+          {sections.length > 0 && (
+            <div className="induction-top-bar-progress-pill">
+              <div className="induction-top-bar-progress-stat">
+                <span className="induction-top-bar-progress-text">
+                  {completedTotalCount}/{totalSteps} completed
+                </span>
+                <span className="induction-top-bar-progress-pct">
+                  ({progressPercent}%)
+                </span>
+              </div>
+              <div className="induction-top-bar-mini-track">
+                <div
+                  className="induction-top-bar-mini-fill"
+                  style={{ width: `${progressPercent}%` }}
+                />
+              </div>
+              {progressPercent === 100 && (
+                <ShieldCheck size={13} style={{ color: "#059669" }} />
+              )}
+            </div>
+          )}
         </div>
 
-        <div className="induction-header-main">
-          <div className="induction-title-group">
-            <h1 className="induction-title">Onboarding & Induction Journey</h1>
-            <p className="induction-subtitle">
-              Welcome to the team! Step through essential company modules, review orientation guides, and meet your colleagues.
-            </p>
-          </div>
-
-          <div className="induction-header-actions">
-            {completedIds.length > 0 && (
-              <button
-                type="button"
-                onClick={handleResetJourney}
-                className="btn btn-secondary"
-                style={{ fontSize: "12px", height: "36px", gap: "6px" }}
-                title="Reset completion progress"
-              >
-                <RotateCcw size={13} />
-                Reset Progress
-              </button>
-            )}
-            <Link
-              to="/resources"
-              className="btn btn-secondary"
-              style={{ fontSize: "12px", height: "36px", gap: "6px" }}
+        <div className="induction-top-bar-right">
+          {completedIds.length > 0 && (
+            <button
+              type="button"
+              onClick={handleResetJourney}
+              className="induction-top-action-btn"
+              title="Reset completion progress"
             >
-              <ArrowLeft size={13} />
-              Back to Resources
-            </Link>
-          </div>
+              <RotateCcw size={13} />
+              <span>Reset</span>
+            </button>
+          )}
+          <Link
+            to="/resources"
+            className="induction-top-action-btn"
+          >
+            <span>Exit Journey</span>
+          </Link>
         </div>
-
-        {/* Live Progress Card */}
-        {sections.length > 0 && (
-          <div className="induction-progress-card">
-            <div className="induction-progress-meta-row">
-              <div className="induction-progress-stat">
-                <Compass size={14} style={{ color: "var(--color-text-secondary)" }} />
-                <span>
-                  Module Progress: <strong>{progressPercent}% Completed</strong>
-                </span>
-              </div>
-
-              <div className="induction-progress-stat">
-                <Clock size={14} style={{ color: "var(--color-text-secondary)" }} />
-                <span>
-                  Completed: <strong>{completedTotalCount} of {totalSteps} modules</strong>
-                  {mandatorySteps.length > 0 && (
-                    <span style={{ color: "var(--color-text-muted)", marginLeft: "4px" }}>
-                      ({completedMandatoryCount} of {mandatorySteps.length} required)
-                    </span>
-                  )}
-                </span>
-              </div>
-
-              <div className="induction-progress-stat" style={{ marginLeft: "auto" }}>
-                <ShieldCheck size={14} style={{ color: progressPercent === 100 ? "#059669" : "var(--color-text-secondary)" }} />
-                <span style={{ fontSize: "12px", fontWeight: 500, color: progressPercent === 100 ? "#059669" : "var(--color-text-secondary)" }}>
-                  {progressPercent === 100 ? "All Modules Completed" : "Journey In Progress"}
-                </span>
-              </div>
-            </div>
-
-            <div className="induction-progress-bar-wrap">
-              <div
-                className="induction-progress-bar-fill"
-                style={{ width: `${progressPercent}%` }}
-              />
-            </div>
-          </div>
-        )}
       </div>
 
       {/* Main Content Areas */}
