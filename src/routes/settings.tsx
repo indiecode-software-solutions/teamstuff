@@ -26,8 +26,22 @@ import {
   FileUp,
   Loader2,
   Info,
+  CreditCard,
+  Zap,
+  Check,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
+import {
+  canUserManageBilling,
+  getTrialDaysRemaining,
+  type CompanyContextLike,
+} from "../lib/permissions";
+import {
+  getBillingPortalDataServerFn,
+  startWorkspaceSubscriptionCheckout,
+} from "../lib/billing";
+import { BillingSeatsView } from "../components/billing/BillingSeatsView";
+import "../styles/billing.css";
 import {
   BiometricDevice,
   AttendanceMethod,
@@ -188,8 +202,17 @@ export function SettingsPageContent({
   const [userProfile, setUserProfile] = useState<ProfileData | null>(null);
 
   const [activeCategory, setActiveCategory] = useState<
-    "company" | "geolocation" | "shifts" | "storage" | "audit" | "biometric"
+    "company" | "geolocation" | "shifts" | "storage" | "audit" | "biometric" | "billing"
   >("company");
+
+  // SaaS Billing States
+  const [companyBillingData, setCompanyBillingData] = useState<any | null>(null);
+  const [billingLoading, setBillingLoading] = useState(false);
+  const [billingTransactions, setBillingTransactions] = useState<any[]>([]);
+  const [activeEmployeesCount, setActiveEmployeesCount] = useState(0);
+  const [userFullProfile, setUserFullProfile] = useState<any | null>(null);
+  const [activatingAutopay, setActivatingAutopay] = useState(false);
+  const [billingSeatsToBuy, setBillingSeatsToBuy] = useState(5);
 
   useEffect(() => {
     const labelMap: Record<string, string> = {
@@ -199,6 +222,7 @@ export function SettingsPageContent({
       shifts: "Shifts & Timing",
       storage: "Storage",
       audit: "Audit Logs",
+      billing: "Billing & Plans",
     };
     onCategoryChange?.(labelMap[activeCategory] || "Company Profile");
   }, [activeCategory, onCategoryChange]);
@@ -311,6 +335,43 @@ export function SettingsPageContent({
     loadCompanyData();
   }, []);
 
+  const loadBillingLedger = async (cId: string, uId: string) => {
+    try {
+      setBillingLoading(true);
+      const res = await getBillingPortalDataServerFn({ data: { companyId: cId, userId: uId } });
+      if (res.success) {
+        if (res.company) setCompanyBillingData(res.company);
+        if (res.transactions) setBillingTransactions(res.transactions);
+        if (typeof res.activeEmployeesCount === "number") setActiveEmployeesCount(res.activeEmployeesCount);
+      }
+    } catch (err) {
+      console.error("Error loading billing portal data:", err);
+    } finally {
+      setBillingLoading(false);
+    }
+  };
+
+  const handleStartAutopayCheckout = async (seatsToOrder: number) => {
+    if (!companyId || !user) return;
+    setActivatingAutopay(true);
+    await startWorkspaceSubscriptionCheckout({
+      companyId,
+      userId: user.id,
+      seats: seatsToOrder,
+      onSuccess: () => {
+        setActivatingAutopay(false);
+        showToast("Subscription successfully activated with Razorpay Autopay!", "success");
+        if (companyId && user) {
+          loadBillingLedger(companyId, user.id);
+        }
+      },
+      onError: (err) => {
+        setActivatingAutopay(false);
+        showToast(err, "error");
+      },
+    });
+  };
+
   async function loadCompanyData() {
     setLoading(true);
     try {
@@ -333,7 +394,7 @@ export function SettingsPageContent({
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("name, company_id")
+        .select("id, name, company_id, role, permissions, email")
         .eq("id", user.id)
         .single();
 
@@ -342,6 +403,7 @@ export function SettingsPageContent({
           name: profile.name || "Admin User",
           email: user.email || "",
         });
+        setUserFullProfile(profile);
         if (!targetCompanyId) {
           targetCompanyId = profile.company_id;
         }
@@ -353,7 +415,7 @@ export function SettingsPageContent({
         const { data: comp } = await supabase
           .from("companies")
           .select(
-            "name, tenant_domain, default_work_start_time, default_work_end_time, short_name, logo_url, logo_display, induction_enabled, late_mark_policy_id, late_grace_minutes, attendance_method, chat_mode, allow_team_lead_polls",
+            "id, name, tenant_domain, default_work_start_time, default_work_end_time, short_name, logo_url, logo_display, induction_enabled, late_mark_policy_id, late_grace_minutes, attendance_method, chat_mode, allow_team_lead_polls, subscription_status, trial_starts_at, trial_ends_at, is_billing_exempt, owner_email, owner_phone, price_per_seat_inr, base_price_inr, base_seats_included, seat_limit, current_period_start, current_period_end, razorpay_subscription_id",
           )
           .eq("id", targetCompanyId)
           .maybeSingle();
@@ -371,6 +433,13 @@ export function SettingsPageContent({
           setDefaultPolicyId(comp.late_mark_policy_id || null);
           setLateGraceMinutes(typeof (comp as any).late_grace_minutes === "number" ? (comp as any).late_grace_minutes : 10);
           setAttendanceMethod((comp.attendance_method as AttendanceMethod) || "gps");
+          setCompanyBillingData(comp);
+          setBillingSeatsToBuy(Math.max(5, comp.seat_limit || 5));
+        }
+
+        // Load billing ledger if user has billing access
+        if (profile && canUserManageBilling(profile, comp)) {
+          loadBillingLedger(targetCompanyId, user.id);
         }
 
         // Load locations
@@ -695,14 +764,23 @@ export function SettingsPageContent({
     });
   }
 
-  const categories = [
-    { id: "company", label: "Company Profile", icon: <Building2  />, color: "text-zinc-900" },
-    { id: "geolocation", label: "Geolocation", icon: <MapPin  />, color: "text-zinc-700" },
-    { id: "biometric", label: "Biometric", icon: <Fingerprint  />, color: "text-zinc-900" },
-    { id: "shifts", label: "Shifts", icon: <Clock  />, color: "text-zinc-700" },
-    { id: "storage", label: "Storage", icon: <Database  />, color: "text-zinc-900" },
-    { id: "audit", label: "Audit Logs", icon: <Shield  />, color: "text-zinc-700" },
-  ] as const;
+  const hasBillingAccess = canUserManageBilling(userFullProfile, companyBillingData);
+
+  const baseCategories = [
+    { id: "company" as const, label: "Company Profile", icon: <Building2 size={18} />, color: "text-zinc-900" },
+    { id: "geolocation" as const, label: "Geolocation", icon: <MapPin size={18} />, color: "text-zinc-700" },
+    { id: "biometric" as const, label: "Biometric", icon: <Fingerprint size={18} />, color: "text-zinc-900" },
+    { id: "shifts" as const, label: "Shifts", icon: <Clock size={18} />, color: "text-zinc-700" },
+    { id: "storage" as const, label: "Storage", icon: <Database size={18} />, color: "text-zinc-900" },
+    { id: "audit" as const, label: "Audit Logs", icon: <Shield size={18} />, color: "text-zinc-700" },
+  ];
+
+  const categories = hasBillingAccess
+    ? [
+        ...baseCategories,
+        { id: "billing" as const, label: "Billing & Plans", icon: <CreditCard size={18} />, color: "text-zinc-900" },
+      ]
+    : baseCategories;
 
   function openCreateShiftDialog() {
     setEditingShiftId(null);
@@ -884,7 +962,7 @@ export function SettingsPageContent({
     <div className="settings-page-shell">
       <div className="settings-layout-grid">
         {/* Left Column: Category Sidebar */}
-        <div className="settings-sidebar">
+        <aside className="settings-sidebar">
           <div className="settings-nav-list">
             {categories.map((c) => {
               const isActive = activeCategory === c.id;
@@ -895,39 +973,42 @@ export function SettingsPageContent({
                   onClick={() => setActiveCategory(c.id)}
                   className={`settings-nav-item ${isActive ? "active" : ""}`}
                 >
-                  <span className="settings-nav-icon">
+                  <div className="settings-nav-icon">
                     {c.icon}
-                  </span>
+                  </div>
                   <span className="settings-nav-label">
                     {c.label}
                   </span>
+                  {isActive && <span className="settings-nav-dot" />}
                 </button>
               );
             })}
           </div>
-        </div>
+        </aside>
 
         {/* Right Column: Detailed Pane */}
-        <div className="settings-pane">
+        <main className="settings-pane">
           {/* Category Header */}
-          <div className="settings-pane-header">
-            <h1 className="settings-pane-title">
-              <span>{categories.find((c) => c.id === activeCategory)?.label}</span>
-            </h1>
-            <span className="settings-pane-desc">
-              {activeCategory === "company"
-                ? "Manage company profile and branding settings."
-                : activeCategory === "geolocation"
-                  ? "Manage office geofencing and coordinates."
-                  : activeCategory === "biometric"
-                    ? "Configure biometric ADMS hardware devices."
-                    : activeCategory === "shifts"
-                      ? "Define shift schedules and late arrival rules."
-                      : activeCategory === "storage"
-                        ? "Cloud usage and consumption metrics."
-                        : "System security audit and activity log."}
-            </span>
-          </div>
+          {activeCategory !== "billing" && (
+            <div className="settings-pane-header">
+              <h1 className="settings-pane-title">
+                <span>{categories.find((c) => c.id === activeCategory)?.label}</span>
+              </h1>
+              <span className="settings-pane-desc">
+                {activeCategory === "company"
+                  ? "Manage company profile and branding settings."
+                  : activeCategory === "geolocation"
+                    ? "Manage office geofencing and coordinates."
+                    : activeCategory === "biometric"
+                      ? "Configure biometric ADMS hardware devices."
+                      : activeCategory === "shifts"
+                        ? "Define shift schedules and late arrival rules."
+                        : activeCategory === "storage"
+                          ? "Cloud usage and consumption metrics."
+                          : "System security audit and activity log."}
+              </span>
+            </div>
+          )}
 
           {/* ---------- CATEGORY: COMPANY PROFILE ---------- */}
           {activeCategory === "company" && (
@@ -2192,7 +2273,21 @@ export function SettingsPageContent({
               </div>
             );
           })()}
-        </div>
+
+          {/* ---------- CATEGORY: BILLING & PLANS ---------- */}
+          {activeCategory === "billing" && (
+            <BillingSeatsView
+              currentUser={userFullProfile}
+              companyId={companyId}
+              onNavigateToUsers={() => {
+                navigate({ to: "/hr" });
+              }}
+              onCompanyUpdated={(updatedComp) => {
+                setCompanyBillingData(updatedComp);
+              }}
+            />
+          )}
+        </main>
       </div>
 
       {/* Dialog for adding new geofence location */}

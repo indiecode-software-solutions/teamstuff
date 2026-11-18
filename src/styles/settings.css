@@ -5,13 +5,28 @@
  */
 
 .settings-page-shell {
-  max-width: 1320px;
-  margin: 0 auto;
-  width: 100%;
   display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  padding-bottom: var(--space-12);
+  min-height: calc(100% + 28px);
+  width: calc(100% + 24px);
+  margin-left: -12px;
+  margin-right: -12px;
+  margin-top: -14px;
+  margin-bottom: -14px;
+  background-color: var(--color-background);
+  position: relative;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+@media (min-width: 768px) {
+  .settings-page-shell {
+    min-height: calc(100% + 44px);
+    width: calc(100% + 44px);
+    margin-left: -22px;
+    margin-right: -22px;
+    margin-top: -22px;
+    margin-bottom: -22px;
+  }
 }
 
 /* ==========================================================================
@@ -48,86 +63,82 @@
    Two-Column Layout Grid (Sidebar + Content Pane)
    ========================================================================== */
 .settings-layout-grid {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: var(--space-8);
-  align-items: start;
-}
-
-@media (max-width: 960px) {
-  .settings-layout-grid {
-    grid-template-columns: 1fr;
-    gap: var(--space-6);
-  }
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  align-items: stretch;
 }
 
 /* Left Category Navigation Sidebar */
 .settings-sidebar {
-  position: sticky;
-  top: var(--space-6);
+  width: 16rem;
+  min-width: 16rem;
+  border-right: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  backdrop-filter: blur(8px);
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  padding: var(--space-3);
+  flex-shrink: 0;
+  box-sizing: border-box;
+  align-self: stretch;
 }
 
 .settings-nav-list {
+  position: sticky;
+  top: var(--space-3);
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-  background-color: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  padding: var(--space-2);
-  box-shadow: var(--shadow-2xs);
-}
-
-@media (max-width: 960px) {
-  .settings-nav-list {
-    flex-direction: row;
-    overflow-x: auto;
-    padding: var(--space-1-5);
-    border-radius: var(--radius-lg);
-  }
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
 }
 
 .settings-nav-item {
+  width: 100%;
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: var(--space-2-5) var(--space-3-5);
-  border-radius: var(--radius-md);
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-secondary);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2-5) var(--space-3);
+  text-align: left;
+  transition: all var(--transition-fast);
+  cursor: pointer;
   background: transparent;
   border: 1px solid transparent;
-  cursor: pointer;
-  transition: all var(--transition-fast);
-  text-align: left;
-  width: 100%;
-  white-space: nowrap;
+  color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  box-sizing: border-box;
 }
 
 .settings-nav-item:hover {
-  background-color: var(--color-surface-hover);
   color: var(--color-text-primary);
+  background-color: var(--color-surface-hover);
 }
 
 .settings-nav-item.active {
-  background-color: var(--color-surface-subtle);
+  background-color: var(--color-surface);
   color: var(--color-text-primary);
   font-weight: var(--font-weight-semibold);
   border-color: var(--color-border);
+  box-shadow: var(--shadow-2xs);
 }
 
 .settings-nav-icon {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  transition: color var(--transition-fast);
+  color: var(--color-text-muted);
   width: 18px;
   height: 18px;
-  color: var(--color-text-muted);
-  flex-shrink: 0;
 }
 
 .settings-nav-item.active .settings-nav-icon {
@@ -135,18 +146,39 @@
 }
 
 .settings-nav-label {
+  font-size: var(--font-size-sm);
+  letter-spacing: -0.01em;
   flex: 1;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
+.settings-nav-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background-color: var(--color-primary);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
 /* Right Content Pane */
 .settings-pane {
+  flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
-  min-width: 0;
+  padding: var(--space-4);
+  box-sizing: border-box;
   animation: settingsFadeIn 0.2s ease-out;
+}
+
+@media (min-width: 768px) {
+  .settings-pane {
+    padding: var(--space-6);
+  }
 }
 
 @keyframes settingsFadeIn {
@@ -158,14 +190,13 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-  padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--color-border-subtle);
 }
 
 .settings-pane-title {
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
+  letter-spacing: -0.02em;
   display: flex;
   align-items: center;
   gap: var(--space-2);
@@ -174,6 +205,53 @@
 .settings-pane-desc {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
+  font-weight: var(--font-weight-medium);
+}
+
+@media (max-width: 960px) {
+  .settings-page-shell {
+    width: 100%;
+    margin: 0;
+    min-height: auto;
+  }
+
+  .settings-layout-grid {
+    flex-direction: column;
+  }
+
+  .settings-sidebar {
+    width: 100%;
+    min-width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-2) var(--space-3);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .settings-nav-list {
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: var(--space-1);
+    padding: 0;
+    scrollbar-width: none;
+  }
+
+  .settings-nav-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .settings-nav-item {
+    flex-shrink: 0;
+    width: auto;
+    white-space: nowrap;
+  }
+
+  .settings-pane {
+    padding: var(--space-4);
+  }
 }
 
 /* ==========================================================================

@@ -27,6 +27,8 @@ import {
   Globe,
   Loader2,
   Check,
+  Mail,
+  Phone,
 } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import {
@@ -42,7 +44,10 @@ import {
   masterGetCompanyEmployees,
   masterDeleteEmployee,
   masterResetEmployeePassword,
+  masterUpdateSubscription,
+  masterImpersonateCompanyUser,
   type MasterEmployee,
+  type MasterTrialEnrollment,
 } from "../lib/master";
 import { BRAND_COLOR_PRESETS, DEFAULT_BRAND_COLOR } from "../lib/tenant-brand";
 
@@ -114,11 +119,12 @@ function MasterPage() {
     totalUsedBytes: number;
   } | null>(null);
   const [companies, setCompanies] = useState<MasterCompany[]>([]);
+  const [trialEnrollments, setTrialEnrollments] = useState<MasterTrialEnrollment[]>([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
 
   // Sidebar navigation view state
-  const [activeSection, setActiveSection] = useState<"tenants" | "onboarding" | "analytics" | "admins">(
+  const [activeSection, setActiveSection] = useState<"tenants" | "signups" | "onboarding" | "analytics" | "admins">(
     "tenants",
   );
   const [activeNavTab, setActiveNavTab] = useState<"all" | "active" | "suspended" | "enterprise">(
@@ -129,6 +135,8 @@ function MasterPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [planFilter, setPlanFilter] = useState("all");
+  const [signupSearch, setSignupSearch] = useState("");
+  const [signupStatusFilter, setSignupStatusFilter] = useState("all");
 
   const [form, setForm] = useState({ ...emptyForm });
   const [formMode, setFormMode] = useState<"create" | "edit">("create");
@@ -330,6 +338,7 @@ function MasterPage() {
     setAdminName(res.adminName || "Super Admin");
     setStats(res.stats || null);
     setCompanies(res.companies || []);
+    setTrialEnrollments(res.trialEnrollments || []);
     setLoading(false);
   };
 
@@ -453,8 +462,26 @@ function MasterPage() {
     });
   };
 
-  const handleImpersonate = (c: MasterCompany) => {
+  const handleImpersonate = async (c: MasterCompany) => {
     try {
+      const session = await supabase.auth.getSession();
+      const uid = session.data.session?.user?.id;
+      if (uid) {
+        const res = await masterImpersonateCompanyUser({ data: { userId: uid, companyId: c.id } });
+        if (res.success && res.session?.access_token) {
+          await supabase.auth.setSession(res.session);
+          setToast({
+            open: true,
+            message: `Entering ${c.name} as ${res.impersonatedUser?.name || "admin"}...`,
+            severity: "success",
+          });
+          setTimeout(() => {
+            navigate({ to: "/dashboard" });
+          }, 300);
+          return;
+        }
+      }
+
       sessionStorage.setItem(
         "impersonated_company",
         JSON.stringify({
@@ -474,6 +501,31 @@ function MasterPage() {
       }, 300);
     } catch (e) {
       console.error(e);
+    }
+  };
+
+  const handleUpdateSubscription = async (
+    companyId: string,
+    action: "extend_7d" | "extend_14d" | "expire" | "activate_30d" | "toggle_exempt" | "update_seats",
+    seats?: number,
+  ) => {
+    const session = await supabase.auth.getSession();
+    const uid = session.data.session?.user?.id;
+    if (!uid) return;
+    const res = await masterUpdateSubscription({ data: { userId: uid, companyId, action, seats } });
+    if (res.success) {
+      setToast({
+        open: true,
+        message: "Subscription updated successfully!",
+        severity: "success",
+      });
+      await loadDashboard(uid);
+    } else {
+      setToast({
+        open: true,
+        message: res.error || "Failed to update subscription",
+        severity: "error",
+      });
     }
   };
 
@@ -659,6 +711,24 @@ function MasterPage() {
     });
   }, [companies, searchQuery, statusFilter, planFilter, activeNavTab]);
 
+  const filteredSignups = useMemo(() => {
+    return trialEnrollments.filter((t) => {
+      const q = signupSearch.trim().toLowerCase();
+      const matchesQuery =
+        !q ||
+        (t.full_name && t.full_name.toLowerCase().includes(q)) ||
+        (t.work_email && t.work_email.toLowerCase().includes(q)) ||
+        (t.company_name && t.company_name.toLowerCase().includes(q)) ||
+        (t.phone && t.phone.toLowerCase().includes(q));
+
+      const matchesStatus =
+        signupStatusFilter === "all" ||
+        (t.status && t.status.toLowerCase() === signupStatusFilter.toLowerCase());
+
+      return matchesQuery && matchesStatus;
+    });
+  }, [trialEnrollments, signupSearch, signupStatusFilter]);
+
   if (checking) {
     return (
       <div className="master-shell" style={{ alignItems: "center", justifyContent: "center" }}>
@@ -699,6 +769,23 @@ function MasterPage() {
             </div>
             <span className="master-nav-count">
               {companies.length}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setActiveSection("signups");
+              setMobileDrawerOpen(false);
+            }}
+            className={`master-nav-item ${activeSection === "signups" ? "active" : ""}`}
+          >
+            <div className="master-nav-item-content">
+              <Sparkles size={15} />
+              <span>Trial Signups</span>
+            </div>
+            <span className="master-nav-count">
+              {trialEnrollments.length}
             </span>
           </button>
 
@@ -825,6 +912,8 @@ function MasterPage() {
                         : activeNavTab === "suspended"
                         ? "Suspended Companies"
                         : "Enterprise Plans")
+                    : activeSection === "signups"
+                    ? "Trial Signups & Intake Leads"
                     : activeSection === "onboarding"
                     ? "Onboard New Tenant"
                     : activeSection === "analytics"
@@ -995,6 +1084,7 @@ function MasterPage() {
                             <th>Subdomain</th>
                             <th>Plan</th>
                             <th>Status</th>
+                            <th>Subscription</th>
                             <th>Seats</th>
                             <th>Storage</th>
                             <th>Onboarded</th>
@@ -1004,14 +1094,14 @@ function MasterPage() {
                         <tbody>
                           {loading ? (
                             <tr>
-                              <td colSpan={8} style={{ textAlign: "center", padding: "2.5rem 1rem", color: "#71717a" }}>
+                              <td colSpan={9} style={{ textAlign: "center", padding: "2.5rem 1rem", color: "#71717a" }}>
                                 <Loader2 size={20} className="animate-spin" style={{ margin: "0 auto 0.5rem auto", display: "block" }} />
                                 <span>Loading companies...</span>
                               </td>
                             </tr>
                           ) : filteredCompanies.length === 0 ? (
                             <tr>
-                              <td colSpan={8}>
+                              <td colSpan={9}>
                                 <div className="master-empty-state">
                                   <Business size={24} style={{ color: "#a1a1aa" }} />
                                   <p className="master-empty-title">
@@ -1091,6 +1181,54 @@ function MasterPage() {
                                     </button>
                                   </td>
                                   <td>
+                                    <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                      <div>
+                                        {c.is_billing_exempt ? (
+                                          <span style={{ fontSize: "0.6875rem", padding: "2px 6px", background: "#f5f3ff", color: "#6d28d9", border: "1px solid #ddd6fe", borderRadius: 3, fontWeight: 600 }}>
+                                            Exempt
+                                          </span>
+                                        ) : c.subscription_status === "active" ? (
+                                          <span style={{ fontSize: "0.6875rem", padding: "2px 6px", background: "#f0fdf4", color: "#166534", border: "1px solid #bbf7d0", borderRadius: 3, fontWeight: 600 }}>
+                                            Paid Active
+                                          </span>
+                                        ) : (
+                                          (() => {
+                                            const daysLeft = c.trial_ends_at
+                                              ? Math.ceil((new Date(c.trial_ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+                                              : 0;
+                                            return daysLeft > 0 ? (
+                                              <span style={{ fontSize: "0.6875rem", padding: "2px 6px", background: "#eff6ff", color: "#1d4ed8", border: "1px solid #bfdbfe", borderRadius: 3, fontWeight: 600 }}>
+                                                Trial ({daysLeft}d left)
+                                              </span>
+                                            ) : (
+                                              <span style={{ fontSize: "0.6875rem", padding: "2px 6px", background: "#fef2f2", color: "#b91c1c", border: "1px solid #fecaca", borderRadius: 3, fontWeight: 600 }}>
+                                                Trial Expired
+                                              </span>
+                                            );
+                                          })()
+                                        )}
+                                      </div>
+                                      <div style={{ display: "flex", gap: "4px" }}>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleUpdateSubscription(c.id, "extend_7d")}
+                                          title="Extend trial by 7 days"
+                                          style={{ background: "#f4f4f5", border: "1px solid #e4e4e7", borderRadius: 3, padding: "1px 5px", cursor: "pointer", color: "#3f3f46", fontSize: "0.6875rem", fontWeight: 500 }}
+                                        >
+                                          +7d
+                                        </button>
+                                        <button
+                                          type="button"
+                                          onClick={() => handleUpdateSubscription(c.id, "toggle_exempt")}
+                                          title={c.is_billing_exempt ? "Remove billing exemption" : "Make billing exempt"}
+                                          style={{ background: "#f4f4f5", border: "1px solid #e4e4e7", borderRadius: 3, padding: "1px 5px", cursor: "pointer", color: "#3f3f46", fontSize: "0.6875rem", fontWeight: 500 }}
+                                        >
+                                          {c.is_billing_exempt ? "Paid" : "Exempt"}
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td>
                                     <button
                                       type="button"
                                       onClick={() => openCompanyEmployees(c)}
@@ -1151,6 +1289,223 @@ function MasterPage() {
                                         className="master-row-btn danger"
                                       >
                                         <Delete size={13} />
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              );
+                            })
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* SECTION: TRIAL SIGNUPS & LEADS */}
+              {activeSection === "signups" && (
+                <>
+                  {/* Summary Stat Cards */}
+                  <div className="master-stats-grid">
+                    {[
+                      {
+                        label: "Total Trial Signups",
+                        value: trialEnrollments.length,
+                      },
+                      {
+                        label: "Workspaces Provisioned",
+                        value: trialEnrollments.filter((t) => t.status === "provisioned").length,
+                      },
+                      {
+                        label: "Total Requested Seats",
+                        value: trialEnrollments.reduce((acc, t) => acc + (t.requested_seats || 0), 0),
+                      },
+                      {
+                        label: "Pending Review",
+                        value: trialEnrollments.filter((t) => t.status === "pending").length,
+                      },
+                    ].map((stat, i) => (
+                      <div key={i} className="master-stat-card">
+                        <span className="master-stat-label">{stat.label}</span>
+                        <span className="master-stat-value">{stat.value}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Signups Table Card */}
+                  <div className="master-card">
+                    <div className="master-card-header">
+                      <div className="master-search-bar" style={{ maxWidth: 360 }}>
+                        <Search size={14} className="master-search-icon" />
+                        <input
+                          type="text"
+                          placeholder="Search lead, email, phone, company..."
+                          value={signupSearch}
+                          onChange={(e) => setSignupSearch(e.target.value)}
+                          className="master-search-input"
+                        />
+                      </div>
+
+                      <div className="master-filter-row">
+                        <select
+                          value={signupStatusFilter}
+                          onChange={(e) => setSignupStatusFilter(e.target.value)}
+                          className="master-select"
+                        >
+                          <option value="all">All Statuses</option>
+                          <option value="provisioned">Provisioned</option>
+                          <option value="pending">Pending</option>
+                          <option value="contacted">Contacted</option>
+                          <option value="converted">Converted</option>
+                        </select>
+
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const uid = await authGuard();
+                            if (uid) loadDashboard(uid);
+                          }}
+                          disabled={loading}
+                          title="Refresh signups"
+                          className="master-icon-btn"
+                        >
+                          <RefreshCw size={14} className={loading ? "animate-spin" : ""} />
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="master-table-wrapper">
+                      <table className="master-table">
+                        <thead>
+                          <tr>
+                            <th>Lead & Company</th>
+                            <th>Contact Info</th>
+                            <th>Requested Seats</th>
+                            <th>Status</th>
+                            <th>Signed Up</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {loading ? (
+                            <tr>
+                              <td colSpan={6} style={{ textAlign: "center", padding: "2.5rem 1rem", color: "#71717a" }}>
+                                <Loader2 size={20} className="animate-spin" style={{ margin: "0 auto 0.5rem auto", display: "block" }} />
+                                <span>Loading signups...</span>
+                              </td>
+                            </tr>
+                          ) : filteredSignups.length === 0 ? (
+                            <tr>
+                              <td colSpan={6}>
+                                <div className="master-empty-state">
+                                  <Group size={24} style={{ color: "#a1a1aa" }} />
+                                  <p className="master-empty-title">
+                                    {signupSearch || signupStatusFilter !== "all"
+                                      ? "No matching trial signups found"
+                                      : "No trial signups recorded yet"}
+                                  </p>
+                                </div>
+                              </td>
+                            </tr>
+                          ) : (
+                            filteredSignups.map((t) => {
+                              const company = companies.find((c) => c.id === t.provisioned_company_id);
+                              return (
+                                <tr key={t.id}>
+                                  <td>
+                                    <div>
+                                      <span style={{ fontWeight: 600, color: "#09090b", display: "block" }}>
+                                        {t.full_name}
+                                      </span>
+                                      <span style={{ fontSize: "0.6875rem", color: "#71717a" }}>
+                                        {t.company_name || "—"}
+                                      </span>
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <div style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+                                      <a
+                                        href={`mailto:${t.work_email}`}
+                                        style={{ fontSize: "0.75rem", color: "#18181b", display: "inline-flex", alignItems: "center", gap: "4px", textDecoration: "none" }}
+                                      >
+                                        <Mail size={12} color="#71717a" />
+                                        <span>{t.work_email}</span>
+                                      </a>
+                                      {t.phone && (
+                                        <a
+                                          href={`tel:${t.phone}`}
+                                          style={{ fontSize: "0.6875rem", color: "#71717a", display: "inline-flex", alignItems: "center", gap: "4px", textDecoration: "none" }}
+                                        >
+                                          <Phone size={11} color="#71717a" />
+                                          <span>{t.phone}</span>
+                                        </a>
+                                      )}
+                                    </div>
+                                  </td>
+                                  <td>
+                                    <span style={{ fontSize: "0.8125rem", fontWeight: 600, color: "#09090b" }}>
+                                      {t.requested_seats || 5} seats
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <span
+                                      style={{
+                                        fontSize: "0.6875rem",
+                                        padding: "2px 6px",
+                                        borderRadius: 3,
+                                        fontWeight: 600,
+                                        background: t.status === "provisioned" ? "#f0fdf4" : "#fef3c7",
+                                        color: t.status === "provisioned" ? "#166534" : "#92400e",
+                                        border: `1px solid ${t.status === "provisioned" ? "#bbf7d0" : "#fde68a"}`,
+                                      }}
+                                    >
+                                      {t.status === "provisioned" ? "Active Trial Provisioned" : t.status}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <span style={{ fontSize: "0.75rem", color: "#71717a" }}>
+                                      {t.created_at
+                                        ? new Date(t.created_at).toLocaleDateString("en-IN", {
+                                            day: "2-digit",
+                                            month: "short",
+                                            year: "numeric",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                          })
+                                        : "—"}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <div className="master-action-row">
+                                      {company && (
+                                        <button
+                                          type="button"
+                                          onClick={() => handleImpersonate(company)}
+                                          title={`Enter ${company.name} Workspace`}
+                                          className="master-row-btn"
+                                          style={{ padding: "4px 8px", width: "auto", fontSize: "0.75rem", gap: "4px" }}
+                                        >
+                                          <ExternalLink size={12} />
+                                          <span>Enter Workspace</span>
+                                        </button>
+                                      )}
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          navigator.clipboard.writeText(
+                                            `Name: ${t.full_name}\nEmail: ${t.work_email}\nPhone: ${t.phone}\nCompany: ${t.company_name || ""}\nSeats: ${t.requested_seats}`
+                                          );
+                                          setToast({
+                                            open: true,
+                                            message: `Lead details copied to clipboard.`,
+                                            severity: "success",
+                                          });
+                                        }}
+                                        title="Copy lead details"
+                                        className="master-row-btn"
+                                      >
+                                        <ContentCopy size={13} />
                                       </button>
                                     </div>
                                   </td>

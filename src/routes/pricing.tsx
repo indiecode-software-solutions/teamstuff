@@ -1,18 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
-import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useLocation, redirect } from "@tanstack/react-router";
 import { BookDemoModal } from "../components/BookDemoModal";
 import {
   CheckCircle2,
   ChevronDown,
   ChevronUp,
-  ShieldCheck,
   Lock,
   Headphones,
   Users,
   Loader2,
+  ArrowRight,
+  Copy,
+  Check,
 } from "lucide-react";
 import { getBrandConfig } from "../lib/brand-config";
 import { getTenantFromHost } from "../lib/tenant-brand";
+import { supabase } from "../lib/supabase";
+import { enrollTrialServerFn } from "../lib/trial";
 
 export const Route = createFileRoute("/pricing")({
   beforeLoad: () => {
@@ -128,6 +132,7 @@ function RevealOnScroll({
 
 function PricingPage() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const brand = getBrandConfig();
@@ -137,7 +142,36 @@ function PricingPage() {
     }
   }, [navigate]);
 
-  const [teamSize, setTeamSize] = useState<number>(30);
+  useEffect(() => {
+    const scrollToHashTarget = () => {
+      const currentHash = (location.hash || window.location.hash || "").replace(/^#/, "");
+      if (currentHash !== "trial-form") return;
+
+      const target = document.getElementById("trial-form");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    };
+
+    const currentHash = (location.hash || window.location.hash || "").replace(/^#/, "");
+    let timerId: number | undefined;
+    let rafId: number | undefined;
+
+    if (currentHash === "trial-form") {
+      rafId = window.requestAnimationFrame(() => {
+        timerId = window.setTimeout(scrollToHashTarget, 100);
+      });
+    }
+
+    window.addEventListener("hashchange", scrollToHashTarget);
+    return () => {
+      if (rafId !== undefined) window.cancelAnimationFrame(rafId);
+      if (timerId !== undefined) window.clearTimeout(timerId);
+      window.removeEventListener("hashchange", scrollToHashTarget);
+    };
+  }, [location.hash]);
+
+  const [teamSize, setTeamSize] = useState<number>(20);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   // Lead Form State
@@ -145,10 +179,21 @@ function PricingPage() {
     name: "",
     workEmail: "",
     phone: "",
+    companyName: "",
   });
   const [leadErrors, setLeadErrors] = useState<Record<string, string>>({});
   const [isSubmittingLead, setIsSubmittingLead] = useState<boolean>(false);
   const [leadSubmitted, setLeadSubmitted] = useState<boolean>(false);
+  const [isEnteringWorkspace, setIsEnteringWorkspace] = useState<boolean>(false);
+  const [copiedPass, setCopiedPass] = useState<boolean>(false);
+  const [trialResult, setTrialResult] = useState<{
+    provisioned: boolean;
+    company: { id: string; name: string; slug: string; trial_ends_at: string; seat_limit: number } | null;
+    adminEmail: string;
+    tempPassword?: string;
+    session?: { access_token: string; refresh_token: string } | null;
+    emailSent: boolean;
+  } | null>(null);
 
   const validateEmail = (email: string): boolean => {
     const trimmed = email.trim().toLowerCase();
@@ -156,7 +201,7 @@ function PricingPage() {
     return emailRegex.test(trimmed);
   };
 
-  const handleLeadSubmit = (e: React.FormEvent) => {
+  const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const errors: Record<string, string> = {};
 
@@ -176,6 +221,10 @@ function PricingPage() {
       errors.phone = "Please enter a valid phone number";
     }
 
+    if (!leadFormData.companyName.trim()) {
+      errors.companyName = "Please enter your company or workspace name";
+    }
+
     if (Object.keys(errors).length > 0) {
       setLeadErrors(errors);
       return;
@@ -184,10 +233,64 @@ function PricingPage() {
     setLeadErrors({});
     setIsSubmittingLead(true);
 
-    setTimeout(() => {
-      setIsSubmittingLead(false);
+    try {
+      const res = await enrollTrialServerFn({
+        data: {
+          name: leadFormData.name.trim(),
+          companyName: leadFormData.companyName.trim(),
+          workEmail: leadFormData.workEmail.trim().toLowerCase(),
+          phone: leadFormData.phone.trim(),
+          seats: teamSize,
+        },
+      });
+
+      if (!res.ok) {
+        if (res.code === "EMAIL_EXISTS") {
+          setLeadErrors({
+            workEmail: res.error || "An account with this email already exists.",
+            form: res.error || "An account with this email already exists. Please sign in instead.",
+          });
+        } else {
+          setLeadErrors({
+            form: res.error || "Could not provision your trial. Please try again.",
+          });
+        }
+        return;
+      }
+
+      setTrialResult({
+        provisioned: Boolean(res.provisioned),
+        company: res.company || null,
+        adminEmail: res.adminEmail || leadFormData.workEmail.trim(),
+        tempPassword: res.tempPassword,
+        session: res.session || null,
+        emailSent: Boolean(res.emailSent),
+      });
       setLeadSubmitted(true);
-    }, 900);
+    } catch (err: any) {
+      setLeadErrors({
+        form: err?.message || "Network error while provisioning workspace. Please try again.",
+      });
+    } finally {
+      setIsSubmittingLead(false);
+    }
+  };
+
+  const handleEnterWorkspace = async () => {
+    if (trialResult?.session?.access_token) {
+      try {
+        setIsEnteringWorkspace(true);
+        await supabase.auth.setSession(trialResult.session);
+        navigate({ to: "/dashboard" });
+      } catch (err) {
+        console.error("Direct session navigation error:", err);
+        navigate({ to: "/login" });
+      } finally {
+        setIsEnteringWorkspace(false);
+      }
+    } else {
+      navigate({ to: "/login" });
+    }
   };
 
   // Demo Booking Modal State
@@ -197,19 +300,27 @@ function PricingPage() {
     setDemoModalOpen(true);
   };
 
-  const pricePerEmployee = 59;
+  const basePlanPrice = 2499;
+  const baseEmployeesIncluded = 10;
+  const additionalPricePerEmployee = 149;
   const traditionalAvgPrice = 250;
-  const monthlyTotal = teamSize * pricePerEmployee;
+
+  const isEnterprise = teamSize > 100;
+
+  const monthlyTotal =
+    teamSize <= baseEmployeesIncluded
+      ? basePlanPrice
+      : basePlanPrice + (teamSize - baseEmployeesIncluded) * additionalPricePerEmployee;
+
   const traditionalMonthlyTotal = teamSize * traditionalAvgPrice;
-  const monthlySavings = traditionalMonthlyTotal - monthlyTotal;
 
   const comparisonData = [
     {
-      feature: "Monthly price per user",
+      feature: "Monthly pricing model",
       traditional: "₹150 – ₹400 / employee",
       traditionalNote: "+ module tier add-ons",
-      teamstuff: "₹59 / employee",
-      teamstuffNote: "Flat all-inclusive rate",
+      teamstuff: "₹2,499 / mo (10 included)",
+      teamstuffNote: "+ ₹149/mo per additional employee",
       highlight: true,
     },
     {
@@ -281,15 +392,15 @@ function PricingPage() {
   const faqs = [
     {
       q: "Are there any setup fees or hidden charges?",
-      a: "No. Pricing is strictly ₹59 per active employee per month. There are zero onboarding fees, module unlock charges, or surprise extras.",
+      a: "No. Pricing is strictly ₹2,499/month for your first 10 employees, and ₹149 per additional employee per month thereafter. There are zero onboarding fees, module unlock charges, or surprise extras.",
     },
     {
-      q: "Are all modules included in the ₹59 plan?",
-      a: "Yes! Every single module — Tasks & Kanban, Attendance, Leaves, Payroll & Payslips, Corporate Hub policies, Induction Guides, Files Cloud Drive, Internal Forum, and Multi-level Approvals — is included for all your employees.",
+      q: "Are all modules included in the plan?",
+      a: "Yes! Every single module — Tasks & Kanban, Attendance, Leaves, Payroll & Payslips, Corporate Hub policies, Induction Guides, Files Cloud Drive, Internal Forum, and Multi-level Approvals — is included for all your active team members.",
     },
     {
       q: "How does billing work when we add or remove employees?",
-      a: "Your subscription automatically adjusts based on your active employee count. You only ever pay for what your organization actually uses.",
+      a: "Your base plan covers up to 10 employees. For teams larger than 10, your subscription automatically scales at ₹149 per additional active employee per month. You can add or remove team members anytime.",
     },
     {
       q: "Can we test the platform before committing?",
@@ -346,9 +457,9 @@ function PricingPage() {
             </h1>
 
             <p className="pricing-hero-subtitle">
-              No setup fees, no feature tiers, and no hidden add-on costs. Just flat{" "}
+              No setup fees, no feature tiers, and no hidden add-on costs. Base plan{" "}
               <span className="pricing-highlight-price">
-                ₹59 per employee
+                ₹2,499 / month
                 <svg
                   viewBox="0 0 160 14"
                   fill="none"
@@ -364,7 +475,7 @@ function PricingPage() {
                   />
                 </svg>
               </span>{" "}
-              per month.
+              includes up to 10 employees, then just ₹149 per additional employee.
             </p>
 
             {/* Comparison & Calculator Table */}
@@ -416,15 +527,15 @@ function PricingPage() {
                           </div>
                           <div className="pricing-calc-slider-box">
                             <div className="pricing-calc-count-header">
-                              <span>Headcount:</span>
+                              <span>Seats:</span>
                               <span className="pricing-calc-count-val">
-                                {teamSize} employees
+                                {isEnterprise ? "100+ (Custom Enterprise)" : `${teamSize} seats`}
                               </span>
                             </div>
                             <input
                               type="range"
                               min={5}
-                              max={250}
+                              max={105}
                               step={5}
                               value={teamSize}
                               onChange={(e) => setTeamSize(Number(e.target.value))}
@@ -437,166 +548,28 @@ function PricingPage() {
                         {/* Col 2: Traditional Cost */}
                         <td>
                           <p className="pricing-trad-total-val">
-                            ₹{traditionalMonthlyTotal.toLocaleString("en-IN")} / mo
+                            {isEnterprise ? "Custom" : `₹${traditionalMonthlyTotal.toLocaleString("en-IN")} / mo`}
                           </p>
-                          <p className="pricing-trad-note">+ mandatory setup fees</p>
+                          <p className="pricing-trad-note">
+                            {isEnterprise ? "Volume licensing & SLA" : "+ mandatory setup fees"}
+                          </p>
                         </td>
 
-                        {/* Col 3: Teamstuff Real-Time Total */}
+                        {/* Col 3: Real-Time Total */}
                         <td className="pricing-td-teamstuff">
                           <div className="pricing-total-box">
                             <span className="pricing-total-price">
-                              ₹{monthlyTotal.toLocaleString("en-IN")}
+                              {isEnterprise ? "Custom" : `₹${monthlyTotal.toLocaleString("en-IN")}`}
                             </span>
-                            <span className="pricing-total-period">/ month</span>
+                            <span className="pricing-total-period">
+                              {isEnterprise ? "Enterprise" : "/ month"}
+                            </span>
                           </div>
-                          <p className="pricing-total-savings">
-                            Save ~₹{monthlySavings.toLocaleString("en-IN")}/mo • All modules
-                          </p>
-                        </td>
-                      </tr>
-
-                      {/* Permanent Inline Lead Form Row */}
-                      <tr className="pricing-lead-form-row">
-                        <td colSpan={3}>
-                          <div className="pricing-lead-form-wrap">
-                            {leadSubmitted ? (
-                              <div className="pricing-lead-success-card">
-                                <div className="pricing-lead-success-icon">
-                                  <CheckCircle2 size={22} />
-                                </div>
-                                <h4 className="pricing-lead-success-title">
-                                  Request received for {teamSize} employees
-                                </h4>
-                                <p className="pricing-lead-success-desc">
-                                  We will reach out to <strong>{leadFormData.workEmail}</strong> shortly with your team's workspace details.
-                                </p>
-                                <button
-                                  type="button"
-                                  onClick={() => {
-                                    setLeadSubmitted(false);
-                                    setLeadFormData({ name: "", workEmail: "", phone: "" });
-                                  }}
-                                  className="pricing-lead-reset-btn"
-                                >
-                                  Submit another request
-                                </button>
-                              </div>
-                            ) : (
-                              <form onSubmit={handleLeadSubmit}>
-                                <div className="pricing-lead-header">
-                                  <h4 className="pricing-lead-title">
-                                    Ready to get started?
-                                  </h4>
-                                  <span className="pricing-lead-subtitle">
-                                    Instant response • Zero commitments
-                                  </span>
-                                </div>
-
-                                <div className="pricing-lead-grid">
-                                  {/* Name */}
-                                  <div className="pricing-input-group">
-                                    <label className="pricing-input-label">
-                                      Your Name
-                                    </label>
-                                    <input
-                                      type="text"
-                                      placeholder="e.g. Rahul Sharma"
-                                      value={leadFormData.name}
-                                      onChange={(e) => {
-                                        setLeadFormData({ ...leadFormData, name: e.target.value });
-                                        if (leadErrors.name) setLeadErrors({ ...leadErrors, name: "" });
-                                      }}
-                                      className={`pricing-input-field ${leadErrors.name ? "error" : ""}`}
-                                    />
-                                    {leadErrors.name && (
-                                      <p className="pricing-input-error-msg">{leadErrors.name}</p>
-                                    )}
-                                  </div>
-
-                                  {/* Work Email */}
-                                  <div className="pricing-input-group">
-                                    <label className="pricing-input-label">
-                                      Work Email
-                                    </label>
-                                    <input
-                                      type="email"
-                                      placeholder="name@company.com"
-                                      value={leadFormData.workEmail}
-                                      onChange={(e) => {
-                                        setLeadFormData({ ...leadFormData, workEmail: e.target.value });
-                                        if (leadErrors.workEmail) setLeadErrors({ ...leadErrors, workEmail: "" });
-                                      }}
-                                      className={`pricing-input-field ${leadErrors.workEmail ? "error" : ""}`}
-                                    />
-                                    {leadErrors.workEmail && (
-                                      <p className="pricing-input-error-msg">{leadErrors.workEmail}</p>
-                                    )}
-                                  </div>
-
-                                  {/* Phone */}
-                                  <div className="pricing-input-group">
-                                    <label className="pricing-input-label">
-                                      Phone Number
-                                    </label>
-                                    <input
-                                      type="tel"
-                                      placeholder="+91 98765 43210"
-                                      value={leadFormData.phone}
-                                      onChange={(e) => {
-                                        setLeadFormData({ ...leadFormData, phone: e.target.value });
-                                        if (leadErrors.phone) setLeadErrors({ ...leadErrors, phone: "" });
-                                      }}
-                                      className={`pricing-input-field ${leadErrors.phone ? "error" : ""}`}
-                                    />
-                                    {leadErrors.phone && (
-                                      <p className="pricing-input-error-msg">{leadErrors.phone}</p>
-                                    )}
-                                  </div>
-
-                                  {/* Team Size */}
-                                  <div className="pricing-input-group">
-                                    <label className="pricing-input-label">
-                                      Team Size
-                                    </label>
-                                    <div className="pricing-team-size-wrap">
-                                      <input
-                                        type="number"
-                                        value={teamSize}
-                                        onChange={(e) => {
-                                          const val = parseInt(e.target.value, 10);
-                                          if (!isNaN(val) && val >= 1) {
-                                            setTeamSize(Math.min(val, 2000));
-                                          }
-                                        }}
-                                        className="pricing-team-size-input"
-                                        min={1}
-                                        max={2000}
-                                      />
-                                      <span className="pricing-team-size-suffix">
-                                        employees
-                                      </span>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <button
-                                  type="submit"
-                                  disabled={isSubmittingLead}
-                                  className="pricing-lead-submit-btn"
-                                >
-                                  {isSubmittingLead ? (
-                                    <>
-                                      <Loader2 size={16} className="animate-spin" />
-                                      <span>Submitting...</span>
-                                    </>
-                                  ) : (
-                                    <span>Submit Request</span>
-                                  )}
-                                </button>
-                              </form>
-                            )}
-                          </div>
+                          {!isEnterprise && (
+                            <p className="pricing-total-savings">
+                              Save ~₹{(traditionalMonthlyTotal - monthlyTotal > 0 ? traditionalMonthlyTotal - monthlyTotal : 0).toLocaleString("en-IN")}/mo • All modules
+                            </p>
+                          )}
                         </td>
                       </tr>
                     </tbody>
@@ -604,19 +577,250 @@ function PricingPage() {
                 </div>
               </div>
 
+              {/* Standalone Trial / Lead Form Card (Separated from the table above) */}
+              <div id="trial-form" className="pricing-trial-card">
+                {leadSubmitted ? (
+                  <div className="pricing-lead-success-wrap">
+                    <div className="pricing-success-badge">
+                      <Check size={20} strokeWidth={2.4} />
+                    </div>
+                    <h3 className="pricing-lead-success-title">
+                      {trialResult?.company?.name ? `${trialResult.company.name} is Ready!` : "Your 14-Day Free Trial is Ready!"}
+                    </h3>
+                    <p className="pricing-lead-success-desc">
+                      {trialResult?.emailSent ? (
+                        <>
+                          Your 14-day trial workspace ({trialResult.company?.seat_limit || teamSize} seats) has been provisioned. We sent your sign-in details to <strong style={{ color: "#09090B", fontWeight: 600 }}>{trialResult.adminEmail}</strong>.
+                        </>
+                      ) : (
+                        <>
+                          Your 14-day trial workspace ({trialResult?.company?.seat_limit || teamSize} seats) is active with all HRMS modules unlocked.
+                        </>
+                      )}
+                    </p>
+
+                    {trialResult?.tempPassword && (
+                      <div className="pricing-credentials-box">
+                        <div className="pricing-credential-row">
+                          <span className="pricing-credential-label">Work Email</span>
+                          <span className="pricing-credential-value">{trialResult.adminEmail}</span>
+                        </div>
+
+                        <div className="pricing-credential-divider" />
+
+                        <div className="pricing-credential-row">
+                          <span className="pricing-credential-label">Temporary Password</span>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <code className="pricing-credential-pass">{trialResult.tempPassword}</code>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (trialResult?.tempPassword) {
+                                  navigator.clipboard.writeText(trialResult.tempPassword);
+                                  setCopiedPass(true);
+                                  setTimeout(() => setCopiedPass(false), 2000);
+                                }
+                              }}
+                              className="pricing-copy-btn"
+                              title="Copy password"
+                            >
+                              {copiedPass ? <Check size={12} color="#16A34A" /> : <Copy size={12} />}
+                              <span>{copiedPass ? "Copied" : "Copy"}</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="pricing-credential-note">
+                          You can change this password anytime in HRMS Settings.
+                        </div>
+                      </div>
+                    )}
+
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12 }}>
+                      <button
+                        type="button"
+                        onClick={handleEnterWorkspace}
+                        disabled={isEnteringWorkspace}
+                        className="pricing-trial-submit-btn"
+                        style={{ maxWidth: 440, margin: "0 auto" }}
+                      >
+                        {isEnteringWorkspace ? (
+                          <>
+                            <Loader2 size={16} className="animate-spin" />
+                            <span>Opening workspace...</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>{trialResult?.session?.access_token ? "Enter Workspace Immediately" : "Sign In to Workspace"}</span>
+                            <ArrowRight size={16} />
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setLeadSubmitted(false);
+                          setTrialResult(null);
+                          setLeadFormData({ name: "", workEmail: "", phone: "", companyName: "" });
+                        }}
+                        className="pricing-lead-reset-btn"
+                      >
+                        Provision another workspace
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <form onSubmit={handleLeadSubmit} className="pricing-trial-form">
+                    <div className="pricing-trial-header">
+                      <h3 className="pricing-trial-title">Start your 14-day free trial</h3>
+                      <span className="pricing-trial-subtitle">
+                        Zero upfront cost • Instant workspace setup
+                      </span>
+                    </div>
+
+                    {leadErrors.form && (
+                      <div
+                        style={{
+                          marginBottom: 16,
+                          padding: "10px 14px",
+                          borderRadius: 8,
+                          backgroundColor: "#FEF2F2",
+                          border: "1px solid #FECACA",
+                          color: "#DC2626",
+                          fontSize: "0.85rem",
+                        }}
+                      >
+                        {leadErrors.form}
+                      </div>
+                    )}
+
+                    <div className="pricing-trial-grid">
+                      {/* Your Name */}
+                      <div className="pricing-input-group">
+                        <label className="pricing-input-label">Your Name</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Rahul Sharma"
+                          value={leadFormData.name}
+                          onChange={(e) => {
+                            setLeadFormData({ ...leadFormData, name: e.target.value });
+                            if (leadErrors.name) setLeadErrors({ ...leadErrors, name: "" });
+                          }}
+                          className={`pricing-input-field ${leadErrors.name ? "error" : ""}`}
+                        />
+                        {leadErrors.name && (
+                          <p className="pricing-input-error-msg">{leadErrors.name}</p>
+                        )}
+                      </div>
+
+                      {/* Work Email */}
+                      <div className="pricing-input-group">
+                        <label className="pricing-input-label">Work Email</label>
+                        <input
+                          type="email"
+                          placeholder="name@company.com"
+                          value={leadFormData.workEmail}
+                          onChange={(e) => {
+                            setLeadFormData({ ...leadFormData, workEmail: e.target.value });
+                            if (leadErrors.workEmail) setLeadErrors({ ...leadErrors, workEmail: "" });
+                          }}
+                          className={`pricing-input-field ${leadErrors.workEmail ? "error" : ""}`}
+                        />
+                        {leadErrors.workEmail && (
+                          <p className="pricing-input-error-msg">{leadErrors.workEmail}</p>
+                        )}
+                      </div>
+
+                      {/* Phone Number */}
+                      <div className="pricing-input-group">
+                        <label className="pricing-input-label">Phone Number</label>
+                        <input
+                          type="tel"
+                          placeholder="+91 98765 43210"
+                          value={leadFormData.phone}
+                          onChange={(e) => {
+                            setLeadFormData({ ...leadFormData, phone: e.target.value });
+                            if (leadErrors.phone) setLeadErrors({ ...leadErrors, phone: "" });
+                          }}
+                          className={`pricing-input-field ${leadErrors.phone ? "error" : ""}`}
+                        />
+                        {leadErrors.phone && (
+                          <p className="pricing-input-error-msg">{leadErrors.phone}</p>
+                        )}
+                      </div>
+
+                      {/* Seats Needed */}
+                      <div className="pricing-input-group">
+                        <label className="pricing-input-label">Seats Needed</label>
+                        <div className="pricing-team-size-wrap">
+                          <input
+                            type="number"
+                            value={teamSize}
+                            onChange={(e) => {
+                              const val = parseInt(e.target.value, 10);
+                              if (!isNaN(val) && val >= 1) {
+                                setTeamSize(Math.min(val, 2000));
+                              }
+                            }}
+                            className="pricing-team-size-input"
+                            min={1}
+                            max={2000}
+                          />
+                          <span className="pricing-team-size-suffix">seats</span>
+                        </div>
+                      </div>
+
+                      {/* Company or Workspace Name */}
+                      <div className="pricing-input-group pricing-input-fullwidth">
+                        <label className="pricing-input-label">Company or Workspace Name</label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Acme Growth Studio"
+                          value={leadFormData.companyName}
+                          onChange={(e) => {
+                            setLeadFormData({ ...leadFormData, companyName: e.target.value });
+                            if (leadErrors.companyName) setLeadErrors({ ...leadErrors, companyName: "" });
+                          }}
+                          className={`pricing-input-field ${leadErrors.companyName ? "error" : ""}`}
+                        />
+                        {leadErrors.companyName && (
+                          <p className="pricing-input-error-msg">{leadErrors.companyName}</p>
+                        )}
+                      </div>
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isSubmittingLead}
+                      className="pricing-trial-submit-btn"
+                    >
+                      {isSubmittingLead ? (
+                        <>
+                          <Loader2 size={16} className="animate-spin" />
+                          <span>Starting trial...</span>
+                        </>
+                      ) : (
+                        <span>Start 14-Day Free Trial</span>
+                      )}
+                    </button>
+                  </form>
+                )}
+              </div>
+
               {/* Trust Guarantees */}
               <div className="pricing-trust-bar">
-                <div className="pricing-trust-item">
-                  <ShieldCheck size={16} color="#18181B" />
-                  <span>Zero setup fee</span>
+                <div className="pricing-trust-pill">
+                  <CheckCircle2 size={15} />
+                  <span>14-day free trial • ₹0 upfront</span>
                 </div>
-                <div className="pricing-trust-item">
-                  <Lock size={16} color="#18181B" />
+                <div className="pricing-trust-pill">
+                  <Lock size={14} />
                   <span>No lock-in contracts</span>
                 </div>
-                <div className="pricing-trust-item">
-                  <Headphones size={16} color="#18181B" />
-                  <span>Priority Indian support</span>
+                <div className="pricing-trust-pill">
+                  <Headphones size={14} />
+                  <span>Priority support</span>
                 </div>
               </div>
             </div>
@@ -680,7 +884,7 @@ function PricingPage() {
               Ready to simplify your workspace?
             </h2>
             <p className="pricing-bottom-cta-subtitle">
-              Start for just ₹59 per employee per month. No long-term lock-in, cancel anytime.
+              Start with 10 employees for ₹2,499/mo, or ₹149 per employee beyond. No long-term lock-in, cancel anytime.
             </p>
             <div className="pricing-bottom-cta-actions">
               <button
@@ -716,7 +920,7 @@ function PricingPage() {
       <BookDemoModal
         open={demoModalOpen}
         onClose={() => setDemoModalOpen(false)}
-        defaultTeamSize={teamSize}
+        defaultTeamSize={isEnterprise ? 100 : teamSize}
       />
     </div>
   );

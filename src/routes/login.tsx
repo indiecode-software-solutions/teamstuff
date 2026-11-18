@@ -48,11 +48,12 @@ export const Route = createFileRoute("/login")({
       rawShortName.toLowerCase() !== "indiecode" &&
       rawShortName.toLowerCase() !== "indiecode hrms";
     const title = isCustomCompany ? `${rawShortName} HRMS` : brand.appName;
+    const neutralFavicon = generateLetterFaviconSvg("I", "#18181B");
     const favicon = tenantBrand?.faviconUrl?.trim()
       ? tenantBrand.faviconUrl.trim()
       : isCustomCompany
       ? generateLetterFaviconSvg(rawShortName, tenantBrand?.brandColor || undefined)
-      : brand.favicon;
+      : neutralFavicon;
 
     return {
       title,

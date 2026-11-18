@@ -486,52 +486,66 @@
 }
 
 /* ==========================================================================
-   Permanent Inline Lead Form (Minimal 8px Radius)
+   Dedicated Trial / Lead Form Card (Separated from table above)
    ========================================================================== */
-.pricing-lead-form-row {
+.pricing-trial-card {
+  margin-top: 24px;
+  scroll-margin-top: 32px;
   background-color: #FFFFFF;
-  border-top: 1px solid #E4E4E7;
+  border-radius: 16px;
+  border: 1px solid rgba(228, 228, 231, 0.9);
+  box-shadow: 0 20px 45px -12px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.7);
+  padding: 32px 36px;
+  text-align: left;
 }
 
-.pricing-lead-form-wrap {
-  max-width: 760px;
-  margin: 0 auto;
-  padding: 8px 0;
+@media (max-width: 640px) {
+  .pricing-trial-card {
+    padding: 22px 18px 20px 18px;
+    margin-top: 18px;
+    border-radius: 14px;
+  }
 }
 
-.pricing-lead-header {
-  margin-bottom: 20px;
+.pricing-trial-header {
+  margin-bottom: 24px;
   display: flex;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
 }
 
-.pricing-lead-title {
-  font-size: 1.15rem;
+.pricing-trial-title {
+  font-family: 'Poppins', -apple-system, sans-serif;
+  font-size: 1.25rem;
   font-weight: 600;
   color: #09090B;
   margin: 0;
+  letter-spacing: -0.01em;
 }
 
-.pricing-lead-subtitle {
-  font-size: 0.78rem;
+.pricing-trial-subtitle {
+  font-size: 0.82rem;
   color: #71717A;
   font-weight: 500;
 }
 
-.pricing-lead-grid {
+.pricing-trial-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: 18px 20px;
+  margin-bottom: 22px;
 }
 
 @media (min-width: 640px) {
-  .pricing-lead-grid {
+  .pricing-trial-grid {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+.pricing-input-fullwidth {
+  grid-column: 1 / -1;
 }
 
 .pricing-input-group {
@@ -541,23 +555,27 @@
 }
 
 .pricing-input-label {
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 500;
-  color: #27272A;
+  color: #18181B;
 }
 
 .pricing-input-field {
   width: 100%;
   box-sizing: border-box;
-  padding: 10px 14px;
+  padding: 11px 14px;
   border-radius: 8px;
-  border: 1px solid #D4D4D8;
-  background-color: #F8FAFC;
+  border: 1px solid #E4E4E7;
+  background-color: #FAFAFA;
   font-size: 0.92rem;
   color: #09090B;
   outline: none;
   transition: all 0.15s ease;
   font-family: inherit;
+}
+
+.pricing-input-field::placeholder {
+  color: #A1A1AA;
 }
 
 .pricing-input-field:focus {
@@ -580,10 +598,11 @@
 .pricing-team-size-wrap {
   display: flex;
   align-items: center;
-  background-color: #F8FAFC;
-  border: 1px solid #D4D4D8;
+  background-color: #FAFAFA;
+  border: 1px solid #E4E4E7;
   border-radius: 8px;
-  padding: 0 12px;
+  padding: 0 14px;
+  transition: all 0.15s ease;
 }
 
 .pricing-team-size-wrap:focus-within {
@@ -596,7 +615,7 @@
   border: none;
   background: transparent;
   outline: none;
-  padding: 10px 0;
+  padding: 11px 0;
   font-size: 0.92rem;
   color: #09090B;
   width: 100%;
@@ -607,17 +626,18 @@
   font-size: 0.85rem;
   color: #71717A;
   font-weight: 500;
+  user-select: none;
 }
 
-.pricing-lead-submit-btn {
+.pricing-trial-submit-btn {
   width: 100%;
-  padding: 12px 24px;
+  padding: 13px 24px;
   border-radius: 8px;
   background-color: #18181B;
   color: #FFFFFF;
   border: 1px solid #18181B;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.18s ease;
   display: flex;
@@ -625,84 +645,176 @@
   justify-content: center;
   gap: 8px;
   font-family: inherit;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
-.pricing-lead-submit-btn:hover:not(:disabled) {
+.pricing-trial-submit-btn:hover:not(:disabled) {
   background-color: #27272A;
   border-color: #27272A;
   transform: translateY(-1px);
 }
 
-.pricing-lead-submit-btn:disabled {
+.pricing-trial-submit-btn:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
 
-.pricing-lead-success-card {
+/* ==========================================================================
+   Trial Provisioned Success State (Clean, minimal, unboxed)
+   ========================================================================== */
+.pricing-lead-success-wrap {
   text-align: center;
-  padding: 24px 16px;
-  background-color: #F4F4F5;
-  border-radius: 12px;
-  border: 1px solid #E4E4E7;
+  padding: 16px 8px 12px;
+  max-width: 520px;
+  margin: 0 auto;
 }
 
-.pricing-lead-success-icon {
-  width: 40px;
-  height: 40px;
+.pricing-success-badge {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background-color: #18181B;
-  color: #FFFFFF;
+  background: #F0FDF4;
+  border: 1px solid #BBF7D0;
+  color: #16A34A;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 12px;
+  margin: 0 auto 16px;
+  box-shadow: 0 4px 14px rgba(22, 163, 74, 0.1);
 }
 
 .pricing-lead-success-title {
-  font-size: 1.1rem;
+  font-size: 1.35rem;
   font-weight: 600;
   color: #09090B;
-  margin: 0 0 6px 0;
+  letter-spacing: -0.025em;
+  margin: 0 0 8px 0;
 }
 
 .pricing-lead-success-desc {
-  font-size: 0.88rem;
-  color: #52525B;
+  font-size: 0.90rem;
+  color: #71717A;
+  line-height: 1.55;
   max-width: 440px;
-  margin: 0 auto 18px;
+  margin: 0 auto 24px;
+}
+
+.pricing-credentials-box {
+  max-width: 440px;
+  margin: 0 auto 24px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1px solid #E4E4E7;
+  background-color: #FAFAFA;
+  text-align: left;
+}
+
+.pricing-credential-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.pricing-credential-label {
+  font-size: 0.8125rem;
+  color: #71717A;
+}
+
+.pricing-credential-value {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #09090B;
+}
+
+.pricing-credential-divider {
+  height: 1px;
+  background-color: #F4F4F5;
+  margin: 10px 0;
+}
+
+.pricing-credential-pass {
+  background-color: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-family: var(--font-mono, monospace);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #18181B;
+  letter-spacing: 0.02em;
+}
+
+.pricing-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #FFFFFF;
+  border: 1px solid #E4E4E7;
+  border-radius: 6px;
+  padding: 4px 9px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #3F3F46;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pricing-copy-btn:hover {
+  background: #F4F4F5;
+  color: #09090B;
+}
+
+.pricing-credential-note {
+  font-size: 0.75rem;
+  color: #A1A1AA;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed #E4E4E7;
+  text-align: center;
 }
 
 .pricing-lead-reset-btn {
   background: transparent;
   border: none;
-  color: #71717A;
-  font-size: 0.82rem;
+  color: #A1A1AA;
+  font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
   text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
 }
 
 .pricing-lead-reset-btn:hover {
-  color: #09090B;
+  color: #18181B;
 }
 
-/* Trust Guarantees Bar */
+/* Trust Bar / Frosted Pills below Card */
 .pricing-trust-bar {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 24px;
+  gap: 12px;
   flex-wrap: wrap;
   margin-top: 24px;
 }
 
-.pricing-trust-item {
-  display: flex;
+.pricing-trust-pill {
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  font-size: 0.85rem;
+  gap: 7px;
+  padding: 7px 16px;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(228, 228, 231, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 0.82rem;
   color: #52525B;
   font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
 }
 
 /* ==========================================================================

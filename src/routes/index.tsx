@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { BookDemoModal } from "../components/BookDemoModal";
+import { useScrollReveal, useSpotlightSurface } from "../hooks/useKineticMotion";
 import {
   ArrowRight,
   LayoutDashboard,
@@ -74,55 +75,8 @@ export const Route = createFileRoute("/")({
 function BrandLogo() {
   return (
     <a href="/" className="landing-brand-link">
-      <span className="landing-brand-text">indiecode HRMS</span>
+      <span className="landing-brand-name">indiecode hrms</span>
     </a>
-  );
-}
-
-// Ticker Rotating Words
-const tickerWords = ["HR?", "Attendance?", "Payroll?", "Leave?", "Tasks?", "Approvals?", "Directory?"];
-
-// Vertical Bottom-Up Smooth Text Ticker Component
-function VerticalTextTicker() {
-  const [index, setIndex] = useState(0);
-  const [tickerWidth, setTickerWidth] = useState<number | "auto">("auto");
-  const measureRef = useRef<HTMLSpanElement>(null);
-
-  useEffect(() => {
-    if (measureRef.current) {
-      setTickerWidth(Math.ceil(measureRef.current.getBoundingClientRect().width));
-    }
-  }, [index]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setIndex((prev) => (prev + 1) % tickerWords.length);
-    }, 2400);
-    return () => clearInterval(timer);
-  }, []);
-
-  return (
-    <div className="landing-ticker-chip">
-      {/* Offscreen element to measure exact text width */}
-      <span ref={measureRef} className="landing-ticker-measure">
-        {tickerWords[index]}
-      </span>
-
-      {/* Smoothly animated width container */}
-      <div
-        className="landing-ticker-animated-box"
-        style={{ width: tickerWidth === "auto" ? "auto" : `${tickerWidth}px` }}
-      >
-        <span key={index} className="landing-ticker-word-olive">
-          {tickerWords[index]}
-        </span>
-      </div>
-
-      {/* Brand suffix */}
-      <span className="landing-ticker-brand-text">
-        indiecode HRMS.
-      </span>
-    </div>
   );
 }
 
@@ -201,108 +155,19 @@ function RevealOnScroll({
   );
 }
 
-// UI Sidebar Groups & Screenshot Configuration matching exact app navigation
-interface SidebarNavSection {
-  sectionTitle: string;
-  items: {
-    id: string;
-    label: string;
-    icon: React.ElementType;
-    image: string;
-    hasSubmenu?: boolean;
-  }[];
-}
-
-const sidebarSections: SidebarNavSection[] = [
-  {
-    sectionTitle: "MAIN",
-    items: [
-      {
-        id: "Dashboard",
-        label: "Dashboard",
-        icon: LayoutDashboard,
-        image: "/previews/preview_1.png",
-      },
-      {
-        id: "Corporate Hub",
-        label: "Corporate Hub",
-        icon: Building2,
-        image: "/previews/preview_2.png",
-      },
-    ],
-  },
-  {
-    sectionTitle: "WORK",
-    items: [
-      {
-        id: "Tasks",
-        label: "Tasks",
-        icon: ClipboardCheck,
-        image: "/previews/preview_3.png",
-      },
-      {
-        id: "To-Do's",
-        label: "To-Do's",
-        icon: ListTodo,
-        image: "/UI_images/TO-DO_Kanban.png",
-      },
-      {
-        id: "Files",
-        label: "Files",
-        icon: FileText,
-        image: "/previews/preview_5.png",
-      },
-      {
-        id: "Approvals",
-        label: "Approvals",
-        icon: FileCheck,
-        image: "/previews/preview_6.png",
-      },
-    ],
-  },
-  {
-    sectionTitle: "PERSONAL",
-    items: [
-      {
-        id: "Attendance",
-        label: "Attendance",
-        icon: Clock,
-        image: "/previews/preview_7.png",
-      },
-      {
-        id: "Payslips",
-        label: "Payslips",
-        icon: ReceiptText,
-        image: "/previews/preview_8.png",
-      },
-    ],
-  },
-  {
-    sectionTitle: "WORKSPACES",
-    items: [
-      {
-        id: "Admin",
-        label: "Admin",
-        icon: ShieldAlert,
-        image: "/previews/preview_9.png",
-        hasSubmenu: true,
-      },
-    ],
-  },
-];
-
-const allNavItems = sidebarSections.flatMap((s) => s.items);
-
 function LandingPage() {
   const navigate = useNavigate();
   const [checkingAuth, setCheckingAuth] = useState(true);
   const [demoModalOpen, setDemoModalOpen] = useState(false);
-  const [activeBoardTab, setActiveBoardTab] = useState("Dashboard");
   const [emailSubscribed, setEmailSubscribed] = useState(false);
   const [emailInput, setEmailInput] = useState("");
 
+  const pageRef = useRef<HTMLDivElement>(null);
   const heroRef = useRef<HTMLDivElement>(null);
-  const previewBoxRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+
+  useScrollReveal(pageRef);
+  useSpotlightSurface(ctaRef);
 
   useEffect(() => {
     const brand = getBrandConfig();
@@ -332,32 +197,13 @@ function LandingPage() {
     });
   }, [navigate]);
 
-  // Viewport-aware scroll tracking with dynamic scale & 3D tilt
+  // Subtle Parallax Scroll Effect for Hero Background
   useEffect(() => {
     let ticking = false;
 
     const updateTransforms = () => {
       const scrollY = window.scrollY || window.pageYOffset || 0;
       document.documentElement.style.setProperty("--scroll-y", `${scrollY}`);
-
-      if (previewBoxRef.current) {
-        const rect = previewBoxRef.current.getBoundingClientRect();
-        const windowHeight = window.innerHeight || 800;
-
-        const startY = windowHeight * 0.90;
-        const endY = windowHeight * 0.10;
-        const rawProgress = (startY - rect.top) / (startY - endY);
-        const progress = Math.min(Math.max(rawProgress, 0), 1);
-
-        document.documentElement.style.setProperty("--scroll-progress", `${progress.toFixed(4)}`);
-
-        const innerCard = previewBoxRef.current.firstElementChild as HTMLElement | null;
-        if (innerCard) {
-          const currentTilt = (28 * (1 - progress)).toFixed(2);
-          const currentScale = (0.76 + progress * 0.28).toFixed(3);
-          innerCard.style.transform = `rotateX(${currentTilt}deg) scale(${currentScale})`;
-        }
-      }
       ticking = false;
     };
 
@@ -368,26 +214,17 @@ function LandingPage() {
       }
     };
 
-    setTimeout(updateTransforms, 50);
-
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("resize", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("resize", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   if (checkingAuth) {
     return null;
   }
 
-  const currentTab = allNavItems.find((t) => t.id === activeBoardTab) || allNavItems[0];
-
   return (
-    <div className="landing-page-root">
-      {/* Outer Curved Tablet/Window Container Frame */}
+    <div ref={pageRef} className="landing-page-root">
+      {/* Outer Curved Architectural Window Container Frame */}
       <div className="landing-outer-frame">
         {/* Main Sky Hero Shell */}
         <div ref={heroRef} className="landing-sky-hero">
@@ -423,379 +260,218 @@ function LandingPage() {
 
           {/* 2. Hero Headline & Subtitle */}
           <div className="landing-hero-content">
-            {/* Vertical Smooth Text Ticker Chip */}
-            <VerticalTextTicker />
-
-            {/* Animated Floating Words Headline */}
-            <h1 className="landing-hero-h1">
-              <span style={{ display: "inline-block" }}>
-                <span className="hero-word-wrap" style={{ animationDelay: "0.12s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "0s", color: "#09090B", fontWeight: 600 }}>Work</span>
+            {/* Main Display Headline (Clean, minimal aesthetic) */}
+            <div className="hero-headline-container">
+              <h1 className="hero-main-title">
+                <span className="hero-title-row-1">
+                  Work has a lot of stuff.
                 </span>
-                <span className="hero-word-wrap" style={{ animationDelay: "0.20s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "0.35s", color: "#71717A" }}>has</span>
+                <span className="hero-title-row-2">
+                  We put it in one place.
                 </span>
-                <span className="hero-word-wrap" style={{ animationDelay: "0.28s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "0.7s", color: "#71717A" }}>a</span>
-                </span>
-                <span className="hero-word-wrap" style={{ animationDelay: "0.36s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "1.05s", color: "#71717A" }}>lot</span>
-                </span>
-                <span className="hero-word-wrap" style={{ animationDelay: "0.44s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "1.4s", color: "#71717A" }}>of</span>
-                </span>
-                <span className="hero-word-wrap" style={{ animationDelay: "0.52s" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "1.75s", color: "#71717A" }}>stuff.</span>
-                </span>
-              </span>
-              <br />
-              <span style={{ display: "inline-block" }}>
-                <span className="hero-word-wrap" style={{ animationDelay: "0.62s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "2.1s", color: "#71717A" }}>We</span>
-                </span>
-                <span className="hero-word-wrap" style={{ animationDelay: "0.70s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "2.45s", color: "#71717A" }}>put</span>
-                </span>
-                <span className="hero-word-wrap" style={{ animationDelay: "0.78s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "2.8s", color: "#71717A" }}>it</span>
-                </span>
-                <span className="hero-word-wrap" style={{ animationDelay: "0.86s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "3.15s", color: "#71717A" }}>in</span>
-                </span>
-                <span className="hero-word-wrap" style={{ animationDelay: "0.94s", marginRight: "0.26em" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "3.5s", color: "#71717A" }}>one</span>
-                </span>
-                <span className="hero-word-wrap" style={{ animationDelay: "1.02s" }}>
-                  <span className="hero-float-inner" style={{ animationDelay: "3.85s", color: "#09090B", fontWeight: 600 }}>place.</span>
-                </span>
-              </span>
-            </h1>
-
-            {/* Hero Subtitle */}
-            <div className="landing-hero-subtitle-box">
-              <p className="landing-hero-subtitle">
-                From <strong>attendance</strong> and <strong>payroll</strong> to <strong>tasks</strong>, <strong>files</strong> and <strong>team discussions</strong> — it's all here.
-              </p>
+              </h1>
             </div>
 
-            {/* Dark Pill CTA Demo Button */}
-            <div className="landing-hero-cta-wrap">
+            {/* Subtitle */}
+            <p className="hero-subtitle">
+              Designed for high-output teams that value their time. Strip away administrative friction, eliminate hours of weekly busywork, and give your people the clarity they need to move fast and do their best work.
+            </p>
+
+            {/* Two Clean Hero CTA Action Buttons */}
+            <div className="hero-cta-wrapper">
               <button
                 type="button"
-                className="landing-hero-cta-btn"
+                className="hero-cta-pill"
+                onClick={() => navigate({ to: "/pricing", hash: "trial-form", hashScrollIntoView: false })}
+              >
+                <span>Start 14-day free trial</span>
+                <span className="hero-cta-arrow">
+                  <ArrowRight size={15} strokeWidth={2.5} />
+                </span>
+              </button>
+
+              <button
+                type="button"
+                className="hero-cta-secondary"
                 onClick={() => setDemoModalOpen(true)}
               >
-                Book A Free Demo
+                Book a demo
               </button>
-            </div>
-          </div>
-
-          {/* 3. Floating 3D Showcase App Window */}
-          <div ref={previewBoxRef} className="landing-preview-perspective">
-            <div className="landing-preview-card">
-              {/* App Navigation Sidebar matching exact UI */}
-              <div className="landing-showcase-sidebar">
-                {sidebarSections.map((section, sIdx) => (
-                  <div key={sIdx}>
-                    <div className="landing-showcase-section-title">
-                      {section.sectionTitle}
-                    </div>
-
-                    <div className="landing-showcase-item-group">
-                      {section.items.map((item) => {
-                        const isSelected = activeBoardTab === item.id;
-                        const IconComponent = item.icon;
-                        return (
-                          <div
-                            key={item.id}
-                            onClick={() => setActiveBoardTab(item.id)}
-                            className={`landing-sidebar-item ${isSelected ? "active" : ""}`}
-                          >
-                            <div className="landing-sidebar-item-content">
-                              <IconComponent
-                                size={18}
-                                strokeWidth={isSelected ? 2.2 : 1.8}
-                                color={isSelected ? "#0F172A" : "#5A6A80"}
-                              />
-                              <span>{item.label}</span>
-                            </div>
-
-                            {/* Orange status dot for active item */}
-                            {isSelected && <div className="landing-sidebar-dot" />}
-
-                            {/* Submenu arrow for Admin */}
-                            {item.hasSubmenu && !isSelected && (
-                              <ChevronRight size={15} color="#94A3B8" />
-                            )}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Dynamic Tab Image View Pane */}
-              <div className="landing-showcase-pane">
-                {/* Mobile Tab Switcher */}
-                <div className="landing-mobile-tabs">
-                  {allNavItems.map((tab) => (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      onClick={() => setActiveBoardTab(tab.id)}
-                      className={`landing-mobile-tab-btn ${activeBoardTab === tab.id ? "active" : ""}`}
-                    >
-                      {tab.label}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Screenshot Container with smooth blur-in */}
-                <div key={currentTab.id} className="landing-preview-frame">
-                  <img
-                    src={currentTab.image}
-                    alt={currentTab.label}
-                    className="landing-preview-img"
-                  />
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 4. Core System Modules Overview */}
-      <section id="features" className="landing-modules-section">
-        <div className="landing-section-container">
-          {/* Section Header */}
-          <RevealOnScroll direction="up" distance={25}>
-            <div className="landing-section-header">
-              <div className="landing-section-tag">Built-In Modules</div>
-              <h2 className="landing-section-title">
-                One login. Every daily tool in place.
-              </h2>
-              <p className="landing-section-subtitle">
-                Everything connects directly to your company database — from tasks and biometric attendance to payslips and document storage.
-              </p>
-            </div>
-          </RevealOnScroll>
-
-          {/* Module 1: Tasks & Sprint Tracking */}
-          <div className="landing-module-row">
-            <RevealOnScroll direction="right" distance={36} duration={0.8}>
-              <div>
-                <div className="landing-module-badge">
-                  <ClipboardCheck size={16} color="#18181B" />
-                  <span>Task Management</span>
-                </div>
-
-                <h3 className="landing-module-h3">
-                  Organize work with Kanban boards & personal to-dos.
-                </h3>
-
-                <p className="landing-module-desc">
-                  Create tasks, assign team members, attach relevant documents, set priority levels, and track progress from backlog to completion.
-                </p>
-
-                <div className="landing-module-points">
-                  {[
-                    "Kanban columns with custom status workflows",
-                    "Personal To-Do checklists for daily priorities",
-                    "Direct file attachments & assignee notifications",
-                  ].map((item, idx) => (
-                    <div key={idx} className="landing-module-point-item">
-                      <CheckCircle2 size={18} color="#18181B" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </RevealOnScroll>
-
-            <RevealOnScroll direction="left" distance={36} duration={0.8} delay={0.15}>
-              <div className="landing-module-card-box">
-                <img
-                  src="/UI_images/TO-DO_Kanban.png"
-                  alt="Kanban Board preview"
-                  className="landing-module-card-img"
-                />
-              </div>
-            </RevealOnScroll>
-          </div>
-
-          {/* Module 2: Attendance, Clock-In & Leaves */}
-          <div className="landing-module-row">
-            <RevealOnScroll
-              direction="right"
-              distance={36}
-              duration={0.8}
-              delay={0.15}
-              style={{ order: typeof window !== "undefined" && window.innerWidth >= 900 ? 1 : 2 }}
-            >
-              <div className="landing-module-card-box">
-                <img
-                  src="/previews/preview_7.png"
-                  alt="Attendance preview"
-                  className="landing-module-card-img"
-                />
-              </div>
-            </RevealOnScroll>
-
-            <RevealOnScroll
-              direction="left"
-              distance={36}
-              duration={0.8}
-              style={{ order: typeof window !== "undefined" && window.innerWidth >= 900 ? 2 : 1 }}
-            >
-              <div>
-                <div className="landing-module-badge">
-                  <Clock size={16} color="#18181B" />
-                  <span>Attendance & Time Tracking</span>
-                </div>
-
-                <h3 className="landing-module-h3">
-                  Effortless clock-ins, biometric logs & leave approvals.
-                </h3>
-
-                <p className="landing-module-desc">
-                  Empower employees with self-service attendance punches, monthly timesheet histories, and fast leave requests with real-time manager approvals.
-                </p>
-
-                <div className="landing-module-points">
-                  {[
-                    "Daily clock-in and clock-out with geolocation stamps",
-                    "Automated leave quotas and entitlement tracking",
-                    "Monthly attendance summaries ready for payroll sync",
-                  ].map((item, idx) => (
-                    <div key={idx} className="landing-module-point-item">
-                      <CheckCircle2 size={18} color="#18181B" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </RevealOnScroll>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. Complete App Features Matrix */}
-      <section className="landing-matrix-section">
-        <div className="landing-section-container">
-          <RevealOnScroll direction="up" distance={25}>
-            <div className="landing-section-header">
-              <h3 className="landing-section-title">
-                All features included in indiecode HRMS
-              </h3>
-              <p className="landing-section-subtitle">
-                The complete set of workspace tools available out of the box.
-              </p>
-            </div>
-          </RevealOnScroll>
-
-          <div className="landing-matrix-grid">
-            {[
-              {
-                title: "Tasks & Kanban",
-                desc: "Task assignment, priorities, subtasks, and sprint progress boards.",
-                icon: ClipboardCheck,
-              },
-              {
-                title: "Attendance & Clock-In",
-                desc: "Geofenced check-ins, monthly summaries, and timesheet records.",
-                icon: Clock,
-              },
-              {
-                title: "Leaves & Holidays",
-                desc: "Leave request workflow, balance tracking, and company calendars.",
-                icon: Calendar,
-              },
-              {
-                title: "Payslips & Salary",
-                desc: "Monthly payslip view, salary breakdowns, and PDF downloads.",
-                icon: ReceiptText,
-              },
-              {
-                title: "Corporate Policies",
-                desc: "Categorized HR guidelines, conduct rules, and policy documents.",
-                icon: Building2,
-              },
-              {
-                title: "Files & Cloud Storage",
-                desc: "Personal drive and shared company library with file permissions.",
-                icon: FolderOpen,
-              },
-              {
-                title: "Internal Forum",
-                desc: "Company-wide discussions, announcements, and team feedback.",
-                icon: MessageSquare,
-              },
-              {
-                title: "Multi-Level Approvals",
-                desc: "Leave requests, asset allocations, and reimbursement approvals.",
-                icon: UserCheck,
-              },
-            ].map((feature, idx) => {
-              const IconComp = feature.icon;
-              return (
-                <RevealOnScroll
-                  key={idx}
-                  direction="up"
-                  distance={24}
-                  delay={idx * 0.06}
-                  duration={0.65}
-                >
-                  <div className="landing-feature-card">
-                    <div className="landing-feature-icon-box">
-                      <IconComp size={20} />
-                    </div>
-                    <h4 className="landing-feature-card-title">{feature.title}</h4>
-                    <p className="landing-feature-card-desc">{feature.desc}</p>
-                  </div>
-                </RevealOnScroll>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Full-Width CTA Section with Hero Sky Background */}
-      <section className="landing-bottom-cta">
-        {/* Background Hero Sky Image */}
-        <div className="landing-bottom-cta-bg" />
-
-        {/* Soft Contrast Gradient Overlay matching Hero */}
-        <div className="landing-bottom-cta-gradient" />
-
-        <div className="landing-bottom-cta-content">
-          <RevealOnScroll direction="up" distance={30} duration={0.8}>
-            <h2 className="landing-bottom-cta-h2">
-              Experience the simpler way to run work.
+      {/* 3. Editorial Vertical Flow Narrative (Feature Breakdown) */}
+      <section id="features" className="editorial-flow-section" aria-label="Product Workflow">
+        <div className="editorial-flow-container">
+          {/* Section Headline */}
+          <div className="editorial-section-header" data-scroll-reveal="header">
+            <h2 className="editorial-section-title">
+              Feature Breakdown<span className="editorial-title-dot">.</span>
             </h2>
+          </div>
 
-            <p className="landing-bottom-cta-subtitle">
-              Join teams using indiecode HRMS to bring attendance, payroll, tasks, files and discussions into one unified workspace.
-            </p>
-
-            <div className="landing-bottom-cta-actions">
-              <button
-                type="button"
-                className="landing-bottom-btn-demo"
-                onClick={() => setDemoModalOpen(true)}
-              >
-                Book A Free Demo
-              </button>
-
-              <button
-                type="button"
-                className="landing-bottom-btn-signin"
-                onClick={() => navigate({ to: "/login" })}
-              >
-                Sign In
-              </button>
+          {/* BLOCK 01: GEOFENCED ATTENDANCE */}
+          <article className="editorial-story-block" data-scroll-reveal="story">
+            <div className="editorial-lead-meta">
+              <span className="editorial-index">01</span>
+              <span className="editorial-category">Attendance & Time</span>
             </div>
-          </RevealOnScroll>
+            <div className="editorial-main-content">
+              <h3 className="editorial-statement">
+                Attendance without the friction.<br />
+                <span className="editorial-statement-accent">Geofenced, automated, and tamper-proof.</span>
+              </h3>
+              <p className="editorial-description">
+                Eliminate proxy clock-ins, biometric hardware failures, and messy manual spreadsheets. indiecode HRMS enforces real-time GPS geofenced check-ins, automated shift rosters, and instant timesheet aggregation directly from mobile or desktop.
+              </p>
+              <div className="editorial-highlight-row" data-stagger-group="stats">
+                <div className="editorial-stat-item">
+                  <span className="editorial-stat-value">12ms</span>
+                  <span className="editorial-stat-label">Geofence coordinate verification</span>
+                </div>
+                <div className="editorial-stat-item">
+                  <span className="editorial-stat-value">Zero</span>
+                  <span className="editorial-stat-label">Hardware biometric failure rates</span>
+                </div>
+                <div className="editorial-stat-item">
+                  <span className="editorial-stat-value">100%</span>
+                  <span className="editorial-stat-label">Real-time attendance audit trail</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          {/* Subtle Divider */}
+          <div className="editorial-divider" data-scroll-reveal="divider" aria-hidden="true" />
+
+          {/* BLOCK 02: PAYROLL & STATUTORY COMPLIANCE */}
+          <article className="editorial-story-block" data-scroll-reveal="story">
+            <div className="editorial-lead-meta">
+              <span className="editorial-index">02</span>
+              <span className="editorial-category">Payroll & Salary</span>
+            </div>
+            <div className="editorial-main-content">
+              <h3 className="editorial-statement">
+                Salary disbursements in minutes,<br />
+                <span className="editorial-statement-accent">not the final week of every month.</span>
+              </h3>
+              <p className="editorial-description">
+                Seamlessly sync verified attendance, leave balances, and overtime deductions into automated monthly payroll calculations. Generate compliant, professional payslips and itemized salary structures ready for instant PDF export.
+              </p>
+              <div className="editorial-highlight-row" data-stagger-group="stats">
+                <div className="editorial-stat-item">
+                  <span className="editorial-stat-value">1-Click</span>
+                  <span className="editorial-stat-label">Automated monthly payroll run</span>
+                </div>
+                <div className="editorial-stat-item">
+                  <span className="editorial-stat-value">Zero</span>
+                  <span className="editorial-stat-label">Manual Excel formula errors</span>
+                </div>
+                <div className="editorial-stat-item">
+                  <span className="editorial-stat-value">PDF</span>
+                  <span className="editorial-stat-label">Instant employee self-serve payslips</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          {/* Subtle Divider */}
+          <div className="editorial-divider" data-scroll-reveal="divider" aria-hidden="true" />
+
+          {/* BLOCK 03: TASKS & SPRINT MANAGEMENT */}
+          <article className="editorial-story-block" data-scroll-reveal="story">
+            <div className="editorial-lead-meta">
+              <span className="editorial-index">03</span>
+              <span className="editorial-category">Work & Sprints</span>
+            </div>
+            <div className="editorial-main-content">
+              <h3 className="editorial-statement">
+                Stop paying for five separate tools.<br />
+                <span className="editorial-statement-accent">Tasks and HR in the exact same workspace.</span>
+              </h3>
+              <p className="editorial-description">
+                Keep your teams aligned without context switching. Assign priorities, manage Kanban sprint boards, track deliverables, and run team check-ins alongside company holidays, leaves, and employee directories.
+              </p>
+              <div className="editorial-highlight-row" data-stagger-group="stats">
+                <div className="editorial-stat-item">
+                  <span className="editorial-stat-value">Kanban</span>
+                  <span className="editorial-stat-label">Interactive drag-and-drop boards</span>
+                </div>
+                <div className="editorial-stat-item">
+                  <span className="editorial-stat-value">Zero</span>
+                  <span className="editorial-stat-label">Extra subscription fees for Jira/Trello</span>
+                </div>
+                <div className="editorial-stat-item">
+                  <span className="editorial-stat-value">Unified</span>
+                  <span className="editorial-stat-label">Seamless link between team & work</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          {/* Subtle Divider */}
+          <div className="editorial-divider" data-scroll-reveal="divider" aria-hidden="true" />
+
+          {/* BLOCK 04: ORGANIZATION & CULTURE */}
+          <article className="editorial-story-block" data-scroll-reveal="story">
+            <div className="editorial-lead-meta">
+              <span className="editorial-index">04</span>
+              <span className="editorial-category">People & Culture</span>
+            </div>
+            <div className="editorial-main-content">
+              <h3 className="editorial-statement">
+                One clean home for policies,<br />
+                <span className="editorial-statement-accent">announcements, documents, and approvals.</span>
+              </h3>
+              <p className="editorial-description">
+                Give your company a single source of truth. Manage multi-tier leave approval chains, publish corporate policies, store employee identity documents securely, and facilitate team discussions in a private internal forum.
+              </p>
+              <div className="editorial-highlight-row" data-stagger-group="stats">
+                <div className="editorial-stat-item">
+                  <span className="editorial-stat-value">Cloud</span>
+                  <span className="editorial-stat-label">Encrypted company document vault</span>
+                </div>
+                <div className="editorial-stat-item">
+                  <span className="editorial-stat-value">Multi-Tier</span>
+                  <span className="editorial-stat-label">Custom approval hierarchy</span>
+                </div>
+                <div className="editorial-stat-item">
+                  <span className="editorial-stat-value">100%</span>
+                  <span className="editorial-stat-label">Centralized team announcements</span>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      {/* 4. Dark CTA Architectural Banner with Interactive Cursor Spotlight */}
+      <section className="landing-cta-section" aria-label="Get Started Banner">
+        <div ref={ctaRef} className="cta-box spotlight-surface" data-scroll-reveal="dark-cta">
+          <div className="spotlight-grid-overlay" aria-hidden="true" />
+          <h2 className="cta-box-title">Start your 14-day free trial today.</h2>
+          <p className="cta-box-subtitle">
+            Equip your company with indiecode HRMS for 14 days at zero upfront cost.
+            Everything included — attendance, payroll, tasks, and directory.
+          </p>
+          <div className="cta-box-actions">
+            <button
+              type="button"
+              className="cta-btn-white"
+              onClick={() => navigate({ to: "/pricing", hash: "trial-form", hashScrollIntoView: false })}
+            >
+              Start 14-day free trial &rarr;
+            </button>
+            <button
+              type="button"
+              className="cta-btn-outline"
+              onClick={() => setDemoModalOpen(true)}
+            >
+              Book A Free Demo
+            </button>
+          </div>
         </div>
       </section>
 

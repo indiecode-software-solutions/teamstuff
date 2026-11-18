@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
 import { findAuthUserByEmail } from "./master.server";
 import { resolveTenantPortalUrl } from "./tenant-brand";
+import { syncSubscriptionSeatsWithRazorpay } from "./billing.server";
 
 export interface OnboardEmployeeParams {
   companyId: string;
@@ -156,6 +157,11 @@ export const adminOnboardEmployee = createServerFn({ method: "POST" })
       }
 
       console.log(`✅ Onboarded employee ${name} successfully. Email: ${email}`);
+
+      // Background: Sync Razorpay subscription seats if workspace is on active recurring billing
+      syncSubscriptionSeatsWithRazorpay(companyId).catch((syncErr) => {
+        console.warn("Could not sync Razorpay subscription seats on employee add:", syncErr);
+      });
 
       // 3. Query company details for tenant HRMS portal link and branding
       const { data: comp } = await adminClient
@@ -361,6 +367,13 @@ export const adminDeleteEmployee = createServerFn({ method: "POST" })
     const { employeeId } = data;
 
     try {
+      // 0. Lookup company_id prior to deletion for Razorpay seat sync
+      const { data: targetProfile } = await adminClient
+        .from("profiles")
+        .select("company_id")
+        .eq("id", employeeId)
+        .maybeSingle();
+
       // 1. Delete profiles record (will cascading delete references if any, or standard drop)
       const { error: profileErr } = await adminClient
         .from("profiles")
@@ -373,6 +386,13 @@ export const adminDeleteEmployee = createServerFn({ method: "POST" })
       const { error: authErr } = await adminClient.auth.admin.deleteUser(employeeId);
       if (authErr) {
         console.warn("Could not delete from Auth container directly:", authErr.message);
+      }
+
+      // 3. Sync Razorpay subscription seats in background if active
+      if (targetProfile?.company_id) {
+        syncSubscriptionSeatsWithRazorpay(targetProfile.company_id).catch((syncErr) => {
+          console.warn("Could not sync Razorpay subscription seats on employee delete:", syncErr);
+        });
       }
 
       return { success: true };
@@ -395,6 +415,8 @@ export interface UpdateEmployeeParams {
   shiftId?: string | null;
   reportingTo?: string | null;
   dateOfJoining?: string | null;
+  permissions?: Record<string, any> | null;
+  isActive?: boolean;
 }
 
 export const adminUpdateEmployee = createServerFn({ method: "POST" })
@@ -428,6 +450,8 @@ export const adminUpdateEmployee = createServerFn({ method: "POST" })
       shiftId,
       reportingTo,
       dateOfJoining,
+      permissions,
+      isActive,
     } = data;
 
     try {
@@ -446,6 +470,14 @@ export const adminUpdateEmployee = createServerFn({ method: "POST" })
         date_of_joining: dateOfJoining || null,
         updated_at: new Date().toISOString(),
       };
+
+      if (permissions !== undefined) {
+        updatePayload.permissions = permissions;
+      }
+      if (isActive !== undefined) {
+        updatePayload.is_active = isActive;
+      }
+
       if (shiftId === null) {
         // Explicitly unassign — fall back to company default timing
         updatePayload.shift_id = null;
@@ -466,12 +498,22 @@ export const adminUpdateEmployee = createServerFn({ method: "POST" })
         updatePayload.work_end_time = shiftEnd;
       }
 
-      const { error } = await adminClient
+      const { data: updatedProfile, error } = await adminClient
         .from("profiles")
         .update(updatePayload)
-        .eq("id", employeeId);
+        .eq("id", employeeId)
+        .select("company_id")
+        .single();
 
       if (error) throw error;
+
+      // If active state changed, sync Razorpay seats in background
+      if (isActive !== undefined && updatedProfile?.company_id) {
+        syncSubscriptionSeatsWithRazorpay(updatedProfile.company_id).catch((syncErr) => {
+          console.warn("Could not sync Razorpay subscription seats on profile update:", syncErr);
+        });
+      }
+
       return { success: true };
     } catch (err: any) {
       console.error("Update profile exception:", err);

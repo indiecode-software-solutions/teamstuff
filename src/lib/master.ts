@@ -160,6 +160,26 @@ export interface MasterCompany {
   brand_tagline?: string;
   login_hero_url?: string;
   favicon_url?: string;
+  subscription_status?: string;
+  trial_starts_at?: string;
+  trial_ends_at?: string;
+  is_billing_exempt?: boolean;
+  owner_email?: string;
+  price_per_seat_inr?: number;
+  current_period_end?: string;
+}
+
+export interface MasterTrialEnrollment {
+  id: string;
+  full_name: string;
+  company_name?: string | null;
+  work_email: string;
+  phone: string;
+  requested_seats: number;
+  status: string;
+  provisioned_company_id?: string | null;
+  notes?: string | null;
+  created_at: string;
 }
 
 export const getMasterDashboard = createServerFn({ method: "POST" })
@@ -180,6 +200,7 @@ export const getMasterDashboard = createServerFn({ method: "POST" })
         totalUsedBytes: number;
       };
       companies?: MasterCompany[];
+      trialEnrollments?: MasterTrialEnrollment[];
     }> => {
       const admin = getAdminClient();
       if (!admin) return { success: false, error: "Database configuration error" };
@@ -197,7 +218,7 @@ export const getMasterDashboard = createServerFn({ method: "POST" })
       const primaryRes = await admin
         .from("companies")
         .select(
-          "id, name, short_name, tenant_domain, plan, seat_limit, storage_quota_gb, status, created_at, brand_color, logo_url, brand_tagline, login_hero_url, favicon_url",
+          "id, name, short_name, tenant_domain, plan, seat_limit, storage_quota_gb, status, created_at, brand_color, logo_url, brand_tagline, login_hero_url, favicon_url, subscription_status, trial_starts_at, trial_ends_at, is_billing_exempt, owner_email, price_per_seat_inr, current_period_end",
         )
         .order("created_at", { ascending: false });
 
@@ -210,7 +231,7 @@ export const getMasterDashboard = createServerFn({ method: "POST" })
         const fallbackRes = await admin
           .from("companies")
           .select(
-            "id, name, short_name, tenant_domain, plan, seat_limit, storage_quota_gb, status, created_at, brand_color, logo_url, brand_tagline, login_hero_url",
+            "id, name, short_name, tenant_domain, plan, seat_limit, storage_quota_gb, status, created_at, brand_color, logo_url, brand_tagline, login_hero_url, subscription_status, trial_starts_at, trial_ends_at, is_billing_exempt, owner_email, price_per_seat_inr, current_period_end",
           )
           .order("created_at", { ascending: false });
         companies = fallbackRes.data;
@@ -237,6 +258,11 @@ export const getMasterDashboard = createServerFn({ method: "POST" })
         usedBytes[f.company_id] = (usedBytes[f.company_id] || 0) + (Number(f.size_bytes) || 0);
       });
 
+      const { data: trialRows } = await admin
+        .from("trial_enrollments")
+        .select("*")
+        .order("created_at", { ascending: false });
+
       const list: MasterCompany[] = (companies || []).map((c: any) => ({
         id: c.id,
         name: c.name || "",
@@ -254,6 +280,13 @@ export const getMasterDashboard = createServerFn({ method: "POST" })
         brand_tagline: c.brand_tagline || null,
         login_hero_url: c.login_hero_url || null,
         favicon_url: c.favicon_url || null,
+        subscription_status: c.subscription_status || "trialing",
+        trial_starts_at: c.trial_starts_at,
+        trial_ends_at: c.trial_ends_at,
+        is_billing_exempt: Boolean(c.is_billing_exempt),
+        owner_email: c.owner_email || null,
+        price_per_seat_inr: Number(c.price_per_seat_inr) || 149,
+        current_period_end: c.current_period_end || null,
       }));
 
       const stats = {
@@ -265,7 +298,13 @@ export const getMasterDashboard = createServerFn({ method: "POST" })
         totalUsedBytes: list.reduce((a, c) => a + c.usedBytes, 0),
       };
 
-      return { success: true, adminName: me.name, stats, companies: list };
+      return {
+        success: true,
+        adminName: me.name,
+        stats,
+        companies: list,
+        trialEnrollments: (trialRows || []) as MasterTrialEnrollment[],
+      };
     },
   );
 
@@ -956,6 +995,137 @@ export const masterResetEmployeePassword = createServerFn({ method: "POST" })
       }
     },
   );
+
+export const masterUpdateSubscription = createServerFn({ method: "POST" })
+  .validator(
+    (d: {
+      userId: string;
+      companyId: string;
+      action: "extend_7d" | "extend_14d" | "expire" | "activate_30d" | "toggle_exempt" | "update_seats";
+      seats?: number;
+    }) => d,
+  )
+  .handler(async ({ data }) => {
+    const admin = getAdminClient();
+    if (!admin) return { success: false, error: "Database configuration error" };
+
+    const { data: me } = await admin
+      .from("master_admins")
+      .select("id")
+      .eq("auth_user_id", data.userId)
+      .maybeSingle();
+    if (!me) return { success: false, error: "Not authorized" };
+
+    const { data: company, error: fetchErr } = await admin
+      .from("companies")
+      .select("id, trial_ends_at, is_billing_exempt, subscription_status, seat_limit")
+      .eq("id", data.companyId)
+      .single();
+
+    if (fetchErr || !company) return { success: false, error: "Company not found" };
+
+    const updates: Record<string, any> = { updated_at: new Date().toISOString() };
+    const currentEnd = company.trial_ends_at ? new Date(company.trial_ends_at) : new Date();
+    const baseMs = Math.max(Date.now(), currentEnd.getTime());
+
+    switch (data.action) {
+      case "extend_7d":
+        updates.trial_ends_at = new Date(baseMs + 7 * 24 * 60 * 60 * 1000).toISOString();
+        updates.subscription_status = "trialing";
+        break;
+      case "extend_14d":
+        updates.trial_ends_at = new Date(baseMs + 14 * 24 * 60 * 60 * 1000).toISOString();
+        updates.subscription_status = "trialing";
+        break;
+      case "expire":
+        updates.trial_ends_at = new Date(Date.now() - 60 * 1000).toISOString();
+        updates.subscription_status = "expired";
+        break;
+      case "toggle_exempt":
+        updates.is_billing_exempt = !company.is_billing_exempt;
+        if (updates.is_billing_exempt) updates.subscription_status = "active";
+        break;
+      case "activate_30d":
+        updates.subscription_status = "active";
+        updates.current_period_start = new Date().toISOString();
+        updates.current_period_end = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+        break;
+      case "update_seats":
+        if (data.seats && data.seats >= 1) updates.seat_limit = data.seats;
+        break;
+    }
+
+    const { error: updateErr } = await admin
+      .from("companies")
+      .update(updates)
+      .eq("id", data.companyId);
+
+    if (updateErr) return { success: false, error: updateErr.message };
+    return { success: true, updates };
+  });
+
+export const masterImpersonateCompanyUser = createServerFn({ method: "POST" })
+  .validator((d: { userId: string; companyId: string }) => d)
+  .handler(async ({ data }) => {
+    const admin = getAdminClient();
+    if (!admin) return { success: false, error: "Database configuration error" };
+
+    const { data: me } = await admin
+      .from("master_admins")
+      .select("id")
+      .eq("auth_user_id", data.userId)
+      .maybeSingle();
+    if (!me) return { success: false, error: "Not authorized" };
+
+    const { data: profiles, error: profErr } = await admin
+      .from("profiles")
+      .select("id, email, name, role")
+      .eq("company_id", data.companyId)
+      .order("role", { ascending: true })
+      .limit(1);
+
+    const targetUser = profiles?.[0];
+    if (profErr || !targetUser?.email) {
+      return { success: false, error: "No user found in this workspace to impersonate." };
+    }
+
+    try {
+      const { data: linkData, error: linkErr } = await admin.auth.admin.generateLink({
+        type: "magiclink",
+        email: targetUser.email,
+      });
+
+      if (linkErr || !linkData?.properties?.hashed_token) {
+        return { success: false, error: linkErr?.message || "Could not generate impersonation token." };
+      }
+
+      const supabaseUrl = process.env["VITE_SUPABASE_URL"]!;
+      const anonKey = process.env["VITE_SUPABASE_ANON_KEY"]!;
+      const anonClient = createClient(supabaseUrl, anonKey, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
+
+      const { data: verified, error: verifyErr } = await anonClient.auth.verifyOtp({
+        token_hash: linkData.properties.hashed_token,
+        type: "magiclink",
+      });
+
+      if (verifyErr || !verified?.session) {
+        return { success: false, error: verifyErr?.message || "Failed to mint impersonation session." };
+      }
+
+      return {
+        success: true,
+        impersonatedUser: { id: targetUser.id, name: targetUser.name, email: targetUser.email },
+        session: {
+          access_token: verified.session.access_token,
+          refresh_token: verified.session.refresh_token,
+        },
+      };
+    } catch (err: any) {
+      return { success: false, error: err.message };
+    }
+  });
 
 /** Hash helper exposed for bootstrapping extra admins via scripts. */
 export { hashPassword };

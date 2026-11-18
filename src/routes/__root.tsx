@@ -45,6 +45,7 @@ import {
   type CompanyDocumentRequirement,
 } from "../lib/employee-documents";
 import { Toaster } from "../components/ui/sonner";
+import { TrialExpiredPaywall } from "../components/billing/TrialExpiredPaywall";
 import {
   MAX_PROFILE_PHOTO_BYTES,
   uploadProfilePhoto,
@@ -197,7 +198,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         },
         {
           rel: "stylesheet",
-          href: "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap",
+          href: "https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600&family=Inter:wght@300;400;500;600&display=swap",
         },
         {
           rel: "icon",
@@ -359,6 +360,9 @@ function RootComponent() {
 
   // Onboarding blocker states
   const [sessionUser, setSessionUser] = React.useState<any>(null);
+  const [isSubscriptionLocked, setIsSubscriptionLocked] = React.useState(false);
+  const [lockedCompanyData, setLockedCompanyData] = React.useState<any | null>(null);
+  const [activeSeatsCount, setActiveSeatsCount] = React.useState<number>(1);
   const [profileStatus, setProfileStatus] = React.useState<string | null>(() => {
     if (typeof window === "undefined") return null;
     return sessionStorage.getItem("cached_onboarding_status");
@@ -508,21 +512,57 @@ function RootComponent() {
 
       const { data: profile } = await supabase
         .from("profiles")
-        .select("company_id")
+        .select("id, email, role, permissions, company_id")
         .eq("id", uid)
         .maybeSingle();
       if (!profile?.company_id) return;
+      setSessionUser(profile);
+
       const { data: company } = await supabase
         .from("companies")
-        .select("status")
+        .select(
+          "id, name, status, subscription_status, trial_starts_at, trial_ends_at, is_billing_exempt, price_per_seat_inr, base_price_inr, seat_limit, owner_email, owner_phone, current_period_start, current_period_end, razorpay_subscription_id",
+        )
         .eq("id", profile.company_id)
         .maybeSingle();
+
       if (company && company.status !== "active") {
         sessionStorage.setItem(
           "login_banner",
           "Your company has been suspended. Contact your platform administrator.",
         );
         await supabase.auth.signOut();
+        return;
+      }
+
+      if (company) {
+        setLockedCompanyData(company);
+        const { count } = await supabase
+          .from("profiles")
+          .select("id", { count: "exact", head: true })
+          .eq("company_id", company.id)
+          .or("is_active.is.null,is_active.eq.true");
+
+        setActiveSeatsCount(count || 1);
+
+        // Check if subscription or trial is locked
+        const isLocked = (() => {
+          if (company.is_billing_exempt) return false;
+          const status = String(company.subscription_status || "").toLowerCase();
+          if (["expired", "past_due", "cancelled"].includes(status)) return true;
+          if (status === "trialing") {
+            if (!company.trial_ends_at) return false;
+            return new Date(company.trial_ends_at).getTime() <= Date.now();
+          }
+          if (status === "active" && company.current_period_end) {
+            const endMs = new Date(company.current_period_end).getTime();
+            const GRACE_MS = 3 * 24 * 60 * 60 * 1000;
+            if (endMs + GRACE_MS <= Date.now()) return true;
+          }
+          return false;
+        })();
+
+        setIsSubscriptionLocked(isLocked);
       }
     } catch (err) {
       console.error("Company status check failed:", err);
@@ -2166,6 +2206,25 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. */}
       <Outlet />
+
+      {/* Trial Expired / Subscription Paywall Modal */}
+      {isSubscriptionLocked &&
+        lockedCompanyData &&
+        sessionUser &&
+        !isPublicView &&
+        location.pathname !== "/login" &&
+        location.pathname !== "/settings" && (
+          <TrialExpiredPaywall
+            company={lockedCompanyData}
+            user={sessionUser}
+            activeSeatsCount={activeSeatsCount}
+            onActivated={() => {
+              setIsSubscriptionLocked(false);
+              const uid = sessionUser?.id;
+              if (uid) checkCompanyStatus(uid);
+            }}
+          />
+        )}
 
       {/* Timed Bottom-Center Notification Reminder for Pending KYC Documents */}
       {pendingDocAlert.open && (

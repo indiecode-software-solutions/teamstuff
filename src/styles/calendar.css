@@ -213,14 +213,14 @@
 }
 
 .calendar-compact-cell-today {
-  border: 2px solid var(--color-text-primary, #18181b);
+  border: 1.2px solid var(--color-text-primary, #18181b);
   font-weight: var(--font-weight-semibold, 600);
 }
 
 .calendar-compact-cell-holiday {
-  background-color: var(--color-surface-subtle);
-  border-color: var(--color-border);
-  font-weight: var(--font-weight-semibold, 600);
+    background-color: #ffffff;
+    border-color: #ffa0a0;
+    color: #DB7070;
 }
 
 .calendar-legend-row {

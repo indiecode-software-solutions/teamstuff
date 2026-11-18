@@ -20,6 +20,7 @@ import {
   adminDeleteEmployee,
   adminUpdateEmployee,
 } from "../../lib/onboarding";
+import { canUserManageBilling } from "../../lib/permissions";
 import { CreateTaskDialog } from "../tasks/CreateTaskDialog";
 import { PayslipsTab } from "./PayslipsTab";
 import { PoliciesTab } from "./PoliciesTab";
@@ -360,6 +361,9 @@ export function HRWorkspaceTabs({ activeTab, showToast }: HRWorkspaceTabsProps) 
   const [editShiftId, setEditShiftId] = React.useState("");
   const [editReportingTo, setEditReportingTo] = React.useState<string | null>(null);
   const [editDateOfJoining, setEditDateOfJoining] = React.useState("");
+  const [editManageBilling, setEditManageBilling] = React.useState(false);
+  const [companyOwnerEmail, setCompanyOwnerEmail] = React.useState("");
+  const [currentUserCanManageBilling, setCurrentUserCanManageBilling] = React.useState(false);
   const [editLoading, setEditLoading] = React.useState(false);
 
   // HR inline state
@@ -514,15 +518,30 @@ export function HRWorkspaceTabs({ activeTab, showToast }: HRWorkspaceTabsProps) 
       if (!user) return;
       const { data: profile } = await supabase
         .from("profiles")
-        .select("company_id")
+        .select("company_id, role, permissions, email")
         .eq("id", user.id)
         .single();
       if (!profile?.company_id) return;
 
+      const { data: comp } = await supabase
+        .from("companies")
+        .select("owner_email")
+        .eq("id", profile.company_id)
+        .maybeSingle();
+
+      const ownerEmail = comp?.owner_email || "";
+      setCompanyOwnerEmail(ownerEmail);
+      setCurrentUserCanManageBilling(
+        canUserManageBilling(
+          { id: user.id, email: user.email, role: profile.role, permissions: profile.permissions },
+          comp,
+        ),
+      );
+
       const { data: employees, error } = await supabase
         .from("profiles")
         .select(
-          "id, name, email, role, department, onboarding_status, job_title, employee_code, work_location, employment_type, shift_id, reporting_to, date_of_joining",
+          "id, name, email, role, department, onboarding_status, job_title, employee_code, work_location, employment_type, shift_id, reporting_to, date_of_joining, permissions, is_active",
         )
         .eq("company_id", profile.company_id)
         .order("name", { ascending: true });
@@ -1270,9 +1289,28 @@ export function HRWorkspaceTabs({ activeTab, showToast }: HRWorkspaceTabsProps) 
                           </span>
                         </td>
                         <td>
-                          <span className="hr-badge" style={{ textTransform: "capitalize" }}>
-                            {emp.role || "employee"}
-                          </span>
+                          <div style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                            <span className="hr-badge" style={{ textTransform: "capitalize" }}>
+                              {emp.role || "employee"}
+                            </span>
+                            {(emp.permissions?.admin?.manage_billing ||
+                              (companyOwnerEmail && emp.email?.toLowerCase() === companyOwnerEmail.toLowerCase())) && (
+                              <span
+                                style={{
+                                  fontSize: "10px",
+                                  fontWeight: 600,
+                                  color: "#1d4ed8",
+                                  background: "#eff6ff",
+                                  padding: "1px 5px",
+                                  borderRadius: "3px",
+                                  border: "1px solid #bfdbfe",
+                                }}
+                                title="Has Billing Access"
+                              >
+                                Billing
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td>
                           <span style={{ color: "var(--color-text-primary)" }}>
@@ -1310,6 +1348,10 @@ export function HRWorkspaceTabs({ activeTab, showToast }: HRWorkspaceTabsProps) 
                                     ? (String(emp.date_of_joining).split("T")[0] ?? "")
                                     : "",
                                 );
+                                const hasBilling =
+                                  emp.permissions?.admin?.manage_billing === true ||
+                                  (companyOwnerEmail && emp.email?.toLowerCase() === companyOwnerEmail.toLowerCase());
+                                setEditManageBilling(Boolean(hasBilling));
                               }}
                               className="hr-btn-icon"
                               title="Edit Employee"
@@ -1537,6 +1579,59 @@ export function HRWorkspaceTabs({ activeTab, showToast }: HRWorkspaceTabsProps) 
                       ))}
                     </select>
                   </div>
+
+                  {currentUserCanManageBilling && (
+                    <div
+                      style={{
+                        marginTop: "1rem",
+                        padding: "0.75rem 1rem",
+                        background: "var(--color-bg-subtle, #f4f4f5)",
+                        borderRadius: "8px",
+                        border: "1px solid var(--color-border-subtle, #e4e4e7)",
+                      }}
+                    >
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                        <div>
+                          <label
+                            style={{
+                              fontSize: "0.8125rem",
+                              fontWeight: 600,
+                              color: "var(--color-text, #09090b)",
+                              display: "block",
+                            }}
+                          >
+                            Billing & Subscription Access
+                          </label>
+                          <span style={{ fontSize: "0.6875rem", color: "var(--color-text-muted, #71717a)" }}>
+                            Allow this user to manage subscriptions, buy seats, and view invoices
+                          </span>
+                        </div>
+                        {companyOwnerEmail &&
+                        editingEmployee?.email?.toLowerCase() === companyOwnerEmail.toLowerCase() ? (
+                          <span
+                            style={{
+                              fontSize: "0.6875rem",
+                              fontWeight: 600,
+                              color: "#166534",
+                              background: "#f0fdf4",
+                              padding: "2px 8px",
+                              borderRadius: "4px",
+                              border: "1px solid #bbf7d0",
+                            }}
+                          >
+                            Workspace Owner (Permanent)
+                          </span>
+                        ) : (
+                          <input
+                            type="checkbox"
+                            checked={editManageBilling}
+                            onChange={(e) => setEditManageBilling(e.target.checked)}
+                            style={{ width: "16px", height: "16px", cursor: "pointer" }}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -1586,6 +1681,14 @@ export function HRWorkspaceTabs({ activeTab, showToast }: HRWorkspaceTabsProps) 
                         }
                       }
 
+                      const updatedPermissions = {
+                        ...(editingEmployee.permissions || {}),
+                        admin: {
+                          ...(editingEmployee.permissions?.admin || {}),
+                          manage_billing: editManageBilling,
+                        },
+                      };
+
                       const res = await adminUpdateEmployee({
                         data: {
                           employeeId: editingEmployee.id,
@@ -1600,6 +1703,7 @@ export function HRWorkspaceTabs({ activeTab, showToast }: HRWorkspaceTabsProps) 
                           shiftId: editShiftId || null,
                           reportingTo: editReportingTo,
                           dateOfJoining: editDateOfJoining || null,
+                          permissions: updatedPermissions,
                         },
                       });
 
