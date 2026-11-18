@@ -99,6 +99,11 @@ import {
   triggerLocalNotification,
 } from "../lib/mobile-notifications";
 import { registerPushNotifications } from "../lib/push-registration";
+import {
+  buildMetaPixelHeadScript,
+  getMetaPixelId,
+  trackPageView,
+} from "../lib/meta-pixel";
 
 function NotFoundComponent() {
   return (
@@ -303,13 +308,30 @@ const instantBrandScript = `(function() {
 })();`;
 
 function RootShell({ children }: { children: ReactNode }) {
+  const metaPixelId = getMetaPixelId();
+  const metaPixelScript = metaPixelId ? buildMetaPixelHeadScript(metaPixelId) : "";
+
   return (
     <html lang="en">
       <head>
         <HeadContent />
         <script dangerouslySetInnerHTML={{ __html: instantBrandScript }} />
+        {metaPixelScript && (
+          <script dangerouslySetInnerHTML={{ __html: metaPixelScript }} />
+        )}
       </head>
       <body>
+        {metaPixelId && (
+          <noscript>
+            <img
+              height="1"
+              width="1"
+              style={{ display: "none" }}
+              alt=""
+              src={`https://www.facebook.com/tr?id=${encodeURIComponent(metaPixelId)}&ev=PageView&noscript=1`}
+            />
+          </noscript>
+        )}
         {children}
         <Scripts />
       </body>
@@ -322,6 +344,16 @@ function RootComponent() {
   const navigate = useNavigate();
   const location = useLocation();
   const isPublicView = isPublicPath(location.pathname, location.search);
+
+  // Track Meta Pixel PageView on client-side SPA route transitions
+  // (Initial load PageView is fired by the base Meta Pixel script in <head>)
+  const prevPathnameRef = React.useRef<string>(location.pathname);
+  React.useEffect(() => {
+    if (prevPathnameRef.current !== location.pathname) {
+      prevPathnameRef.current = location.pathname;
+      trackPageView();
+    }
+  }, [location.pathname]);
 
   const [brandColor, setBrandColor] = React.useState<string>(() => getActiveBrandColor());
   const [branding, setBranding] = React.useState<TenantBranding | CompanyBranding | null>(() => {

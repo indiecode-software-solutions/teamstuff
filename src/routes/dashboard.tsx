@@ -10,6 +10,7 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { supabase } from "../lib/supabase";
+import { flushPendingTrialActivation } from "../lib/meta-pixel";
 import {
   getTasksAssignedToUser,
   getTasksAssignedByUser,
@@ -789,6 +790,10 @@ function DashboardPage() {
 
       if (!targetCompanyId && profile?.company_id) {
         targetCompanyId = profile.company_id;
+      }
+
+      if (targetCompanyId) {
+        flushPendingTrialActivation(targetCompanyId);
       }
 
       const todayStr = new Date().toISOString().slice(0, 10);

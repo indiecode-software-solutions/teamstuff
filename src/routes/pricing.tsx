@@ -17,6 +17,12 @@ import { getBrandConfig } from "../lib/brand-config";
 import { getTenantFromHost } from "../lib/tenant-brand";
 import { supabase } from "../lib/supabase";
 import { enrollTrialServerFn } from "../lib/trial";
+import {
+  trackFormStart,
+  trackCompleteRegistration,
+  markPendingTrialActivation,
+  trackTrialActivated,
+} from "../lib/meta-pixel";
 
 export const Route = createFileRoute("/pricing")({
   beforeLoad: () => {
@@ -186,6 +192,20 @@ function PricingPage() {
   const [leadSubmitted, setLeadSubmitted] = useState<boolean>(false);
   const [isEnteringWorkspace, setIsEnteringWorkspace] = useState<boolean>(false);
   const [copiedPass, setCopiedPass] = useState<boolean>(false);
+  const hasStartedFormRef = useRef<boolean>(false);
+
+  const handleFormFocusCapture = (e: React.FocusEvent<HTMLFormElement>) => {
+    if (hasStartedFormRef.current) return;
+    const target = e.target as HTMLElement | null;
+    if (target && (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.tagName === "SELECT")) {
+      hasStartedFormRef.current = true;
+      const fieldName =
+        target.getAttribute("name") ||
+        target.getAttribute("type") ||
+        "unknown";
+      trackFormStart({ first_field: fieldName });
+    }
+  };
   const [trialResult, setTrialResult] = useState<{
     provisioned: boolean;
     company: { id: string; name: string; slug: string; trial_ends_at: string; seat_limit: number } | null;
@@ -258,6 +278,19 @@ function PricingPage() {
         return;
       }
 
+      const provisionedSeats = res.company?.seat_limit || teamSize;
+      const provisionedCompanyName = res.company?.name || leadFormData.companyName.trim();
+
+      trackCompleteRegistration({
+        seats: provisionedSeats,
+        company_name: provisionedCompanyName,
+        estimated_monthly_value: monthlyTotal,
+      });
+
+      if (res.company?.id) {
+        markPendingTrialActivation(res.company.id, provisionedSeats);
+      }
+
       setTrialResult({
         provisioned: Boolean(res.provisioned),
         company: res.company || null,
@@ -281,6 +314,11 @@ function PricingPage() {
       try {
         setIsEnteringWorkspace(true);
         await supabase.auth.setSession(trialResult.session);
+        trackTrialActivated({
+          companyId: trialResult?.company?.id,
+          seats: trialResult?.company?.seat_limit || teamSize,
+          method: "instant_enter",
+        });
         navigate({ to: "/dashboard" });
       } catch (err) {
         console.error("Direct session navigation error:", err);
@@ -662,6 +700,7 @@ function PricingPage() {
                         onClick={() => {
                           setLeadSubmitted(false);
                           setTrialResult(null);
+                          hasStartedFormRef.current = false;
                           setLeadFormData({ name: "", workEmail: "", phone: "", companyName: "" });
                         }}
                         className="pricing-lead-reset-btn"
@@ -671,7 +710,11 @@ function PricingPage() {
                     </div>
                   </div>
                 ) : (
-                  <form onSubmit={handleLeadSubmit} className="pricing-trial-form">
+                  <form
+                    onSubmit={handleLeadSubmit}
+                    onFocusCapture={handleFormFocusCapture}
+                    className="pricing-trial-form"
+                  >
                     <div className="pricing-trial-header">
                       <h3 className="pricing-trial-title">Start your 14-day free trial</h3>
                       <span className="pricing-trial-subtitle">
@@ -701,6 +744,7 @@ function PricingPage() {
                         <label className="pricing-input-label">Your Name</label>
                         <input
                           type="text"
+                          name="name"
                           placeholder="e.g. Rahul Sharma"
                           value={leadFormData.name}
                           onChange={(e) => {
@@ -719,6 +763,7 @@ function PricingPage() {
                         <label className="pricing-input-label">Work Email</label>
                         <input
                           type="email"
+                          name="workEmail"
                           placeholder="name@company.com"
                           value={leadFormData.workEmail}
                           onChange={(e) => {
@@ -737,6 +782,7 @@ function PricingPage() {
                         <label className="pricing-input-label">Phone Number</label>
                         <input
                           type="tel"
+                          name="phone"
                           placeholder="+91 98765 43210"
                           value={leadFormData.phone}
                           onChange={(e) => {
@@ -756,6 +802,7 @@ function PricingPage() {
                         <div className="pricing-team-size-wrap">
                           <input
                             type="number"
+                            name="seats"
                             value={teamSize}
                             onChange={(e) => {
                               const val = parseInt(e.target.value, 10);
@@ -776,6 +823,7 @@ function PricingPage() {
                         <label className="pricing-input-label">Company or Workspace Name</label>
                         <input
                           type="text"
+                          name="companyName"
                           placeholder="e.g. Acme Growth Studio"
                           value={leadFormData.companyName}
                           onChange={(e) => {

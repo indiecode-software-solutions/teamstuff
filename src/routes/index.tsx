@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { createFileRoute, useNavigate, redirect } from "@tanstack/react-router";
 import { BookDemoModal } from "../components/BookDemoModal";
 import { useScrollReveal, useSpotlightSurface } from "../hooks/useKineticMotion";
+import { trackPricingClick, trackStartTrialClick } from "../lib/meta-pixel";
 import {
   ArrowRight,
   LayoutDashboard,
@@ -244,7 +245,10 @@ function LandingPage() {
               <button
                 type="button"
                 className="landing-pill-btn-pricing"
-                onClick={() => navigate({ to: "/pricing" })}
+                onClick={() => {
+                  trackPricingClick({ location: "header" });
+                  navigate({ to: "/pricing" });
+                }}
               >
                 Pricing
               </button>
@@ -282,7 +286,10 @@ function LandingPage() {
               <button
                 type="button"
                 className="hero-cta-pill"
-                onClick={() => navigate({ to: "/pricing", hash: "trial-form", hashScrollIntoView: false })}
+                onClick={() => {
+                  trackStartTrialClick({ location: "hero" });
+                  navigate({ to: "/pricing", hash: "trial-form", hashScrollIntoView: false });
+                }}
               >
                 <span>Start 14-day free trial</span>
                 <span className="hero-cta-arrow">
@@ -460,7 +467,10 @@ function LandingPage() {
             <button
               type="button"
               className="cta-btn-white"
-              onClick={() => navigate({ to: "/pricing", hash: "trial-form", hashScrollIntoView: false })}
+              onClick={() => {
+                trackStartTrialClick({ location: "bottom_cta" });
+                navigate({ to: "/pricing", hash: "trial-form", hashScrollIntoView: false });
+              }}
             >
               Start 14-day free trial &rarr;
             </button>
@@ -518,7 +528,20 @@ function LandingPage() {
                   { label: "Integrations", href: "/#features" },
                   { label: "What's New", href: "/#features" },
                 ].map((link, idx) => (
-                  <a key={idx} href={link.href} className="landing-footer-link">
+                  <a
+                    key={idx}
+                    href={link.href}
+                    className="landing-footer-link"
+                    onClick={
+                      link.href === "/pricing"
+                        ? (e) => {
+                            e.preventDefault();
+                            trackPricingClick({ location: "footer" });
+                            navigate({ to: "/pricing" });
+                          }
+                        : undefined
+                    }
+                  >
                     {link.label}
                   </a>
                 ))}
