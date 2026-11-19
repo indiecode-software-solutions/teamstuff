@@ -22,9 +22,13 @@ declare global {
   }
 }
 
+export const DEFAULT_META_PIXEL_ID = "995083513119895";
+
 export function getMetaPixelId(): string {
-  const id = (import.meta.env.VITE_META_PIXEL_ID as string | undefined) || "";
-  return id.trim();
+  const id =
+    (typeof import.meta !== "undefined" && import.meta.env?.VITE_META_PIXEL_ID) ||
+    DEFAULT_META_PIXEL_ID;
+  return String(id).trim();
 }
 
 export function buildMetaPixelHeadScript(pixelId: string): string {
